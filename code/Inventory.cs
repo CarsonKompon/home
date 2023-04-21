@@ -11,12 +11,12 @@ partial class Inventory
     {
         get
         {
-            return (Owner as ArcadeZonePlayer)?.ActiveChild;
+            return (Owner as AZPlayer)?.ActiveChild;
         }
 
         set
         {
-            if(Owner is ArcadeZonePlayer player)
+            if(Owner is AZPlayer player)
             {
                 player.ActiveChild = value;
             }

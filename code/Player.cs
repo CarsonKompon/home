@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace ArcadeZone;
 
-partial class ArcadeZonePlayer : AnimatedEntity
+partial class AZPlayer : AnimatedEntity
 {
     /// <summary>
 	/// The PlayerController takes player input and moves the player. This needs
@@ -45,12 +45,12 @@ partial class ArcadeZonePlayer : AnimatedEntity
 
     TimeSince timeSinceDied;
 
-    public ArcadeZonePlayer()
+    public AZPlayer()
     {
         Inventory = new Inventory( this );
     }
 
-    public ArcadeZonePlayer(IClient client) : this()
+    public AZPlayer(IClient client) : this()
     {
         // Load clothing from client data
         Clothing.LoadFromClient(client);

@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 namespace ArcadeZone;
 
 
-public partial class ArcadeZoneGame : GameManager
+public partial class AZGame : GameManager
 {
-	public ArcadeZoneGame()
+	public AZGame()
 	{
 		if (Game.IsServer)
 		{
 			// Create the HUD
-			_ = new ArcadeZoneHud();
+			_ = new AZHud();
 		}
 	}
 
 	public override void ClientJoined( IClient client )
 	{
 		base.ClientJoined( client );
-		var player = new ArcadeZonePlayer(client);
+		var player = new AZPlayer(client);
 		player.Respawn();
 
 		client.Pawn = player;

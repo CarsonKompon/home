@@ -4,15 +4,15 @@ using Sandbox.UI;
 namespace ArcadeZone;
 
 [Library]
-public partial class ArcadeZoneHud : HudEntity<RootPanel>
+public partial class AZHud : HudEntity<RootPanel>
 {
-    public ArcadeZoneHud()
+    public AZHud()
     {
         if(!Game.IsClient) return;
 
         RootPanel.StyleSheet.Load("/UI/ArcadeZoneHud.scss");
 
-        RootPanel.AddChild<ChatBox>();
+        RootPanel.AddChild<AZChatBox>();
         RootPanel.AddChild<AZVoiceList>();
         RootPanel.AddChild<AZVoiceSpeaker>();
     }

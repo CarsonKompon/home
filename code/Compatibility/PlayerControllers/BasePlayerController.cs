@@ -59,7 +59,7 @@ namespace ArcadeZone
 		{
 			base.FrameSimulate();
 
-			var pl = Pawn as ArcadeZonePlayer;
+			var pl = Pawn as AZPlayer;
 			EyeRotation = pl.ViewAngles.ToRotation();
 		}
 	}

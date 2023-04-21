@@ -91,13 +91,13 @@ namespace ArcadeZone
         {
             base.FrameSimulate();
 
-			var pl = Pawn as ArcadeZonePlayer;
+			var pl = Pawn as AZPlayer;
 			EyeRotation = pl.ViewAngles.ToRotation();
 		}
 
         public override void Simulate()
         {
-			var pl = Pawn as ArcadeZonePlayer;
+			var pl = Pawn as AZPlayer;
 
 			EyeLocalPosition = Vector3.Up * (EyeHeight * Pawn.Scale);
 			UpdateBBox();
@@ -542,7 +542,7 @@ namespace ArcadeZone
 
         public virtual void CheckLadder()
         {
-			var pl = Pawn as ArcadeZonePlayer;
+			var pl = Pawn as AZPlayer;
 
             var wishvel = new Vector3( pl.InputDirection.x.Clamp( -1f, 1f ), pl.InputDirection.y.Clamp( -1f, 1f ), 0);
             wishvel *= pl.ViewAngles.WithPitch(0).ToRotation();

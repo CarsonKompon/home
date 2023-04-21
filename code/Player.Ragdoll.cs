@@ -2,7 +2,7 @@ using Sandbox;
 
 namespace ArcadeZone;
 
-partial class ArcadeZonePlayer
+partial class AZPlayer
 {
     [ClientRpc]
 	private void BecomeRagdollOnClient( Vector3 velocity, Vector3 forcePos, Vector3 force, int bone, bool impulse, bool blast )

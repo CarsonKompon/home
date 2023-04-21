@@ -27,7 +27,7 @@ namespace ArcadeZone
 			Rotation = entity.Rotation;
 			Velocity = entity.Velocity;
 
-			if ( entity is ArcadeZonePlayer player )
+			if ( entity is AZPlayer player )
 			{
 				EyeRotation = player.EyeRotation;
 				EyeLocalPosition = player.EyeLocalPosition;
@@ -65,7 +65,7 @@ namespace ArcadeZone
 			target.GroundEntity = GroundEntity;
 			target.BaseVelocity = BaseVelocity;
 
-			if ( target is ArcadeZonePlayer player )
+			if ( target is AZPlayer player )
 			{
 				player.EyeLocalPosition = EyeLocalPosition;
 				player.EyeRotation = EyeRotation;
