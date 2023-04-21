@@ -16,7 +16,7 @@ public class AZVoiceSpeaker : Label
 		SetClass( "active", Voice.IsRecording );
 
 		var tr = new PanelTransform();
-		tr.AddScale( 1.0f.LerpTo( 1.2f, VoiceLevel ) );
+		tr.AddScale( 1.0f.LerpTo( 1.5f, VoiceLevel ) );
 		Style.Transform = tr;
 	}
 }

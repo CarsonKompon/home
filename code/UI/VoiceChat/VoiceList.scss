@@ -38,6 +38,7 @@ azvoicelist
 
 		.avatar
 		{
+			min-width: 50px;
 			width: 50px;
 			height: 50px;
 			border-radius: 50%;
@@ -49,7 +50,12 @@ azvoicelist
 			font-weight: 500;
 			margin-left: 10px;
 			flex-grow: 1;
-			color: #c0fb2e;
+			color: white;
+
+			.name-letter
+			{
+				display: inline-block;
+			}
 		}
 	}
 }
