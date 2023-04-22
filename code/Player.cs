@@ -39,7 +39,7 @@ partial class AZPlayer : AnimatedEntity
     private DamageInfo lastDamage;
 
 	public float ThirdPersonZoom { get; set; } = 0;
-	public Rotation ThirdPersonRotation { get; set; }
+	public Angles ThirdPersonRotation { get; set; }
 
     /// <summary>
     /// The clothing container is what dresses the citizen
@@ -84,7 +84,8 @@ partial class AZPlayer : AnimatedEntity
 
 		if ( LifeState == LifeState.Dead )
 		{
-			if ( timeSinceDied > 3 && Game.IsServer )
+			// Respawn
+			if ( (timeSinceDied > 3 || Input.Pressed("attack1")) && Game.IsServer )
 			{
 				Respawn();
 			}
@@ -106,6 +107,7 @@ partial class AZPlayer : AnimatedEntity
 		TickPlayerUse();
 		SimulateActiveChild(cl, ActiveChild);
 
+		// Third Person Toggle
 		if(Input.Pressed("view"))
 		{
 			if(ThirdPersonZoom > 0f) ThirdPersonZoom = 0f;
@@ -192,24 +194,32 @@ partial class AZPlayer : AnimatedEntity
 
     public override void FrameSimulate( IClient cl )
 	{
-		Camera.Rotation = ViewAngles.ToRotation();
+		if(ThirdPersonZoom > 0f) // THIRD PERSON CAM
+		{
+			Camera.Rotation = ViewAngles.ToRotation() * ThirdPersonRotation.ToRotation();
+		}
+		else // FIRST PERSON CAM
+		{
+			Camera.Rotation = ViewAngles.ToRotation();
+			ThirdPersonRotation = default;
+		}
 		Camera.FieldOfView = Screen.CreateVerticalFieldOfView( Game.Preferences.FieldOfView );
 
-		if(Input.MouseWheel != 0)
+		if(Input.MouseWheel != 0) // ZOOM CAMERA IN/OUT
 		{
 			float previousZoom = ThirdPersonZoom;
-			ThirdPersonZoom = MathX.Clamp(ThirdPersonZoom - Input.MouseWheel * 10, 32, 400);
-			if(Input.MouseWheel > 0f && ThirdPersonZoom <= 32f)
+			ThirdPersonZoom = MathX.Clamp(ThirdPersonZoom - Input.MouseWheel * 10, 10, 400);
+			if(Input.MouseWheel > 0f && ThirdPersonZoom <= 10)
 			{
 				ThirdPersonZoom = 0f;
 			}
-			else if(Input.MouseWheel < 0f && ThirdPersonZoom < 32f)
+			else if(Input.MouseWheel < 0f && ThirdPersonZoom < 10)
 			{
-				ThirdPersonZoom = 32f;
+				ThirdPersonZoom = 10;
 			}
 		}
 
-		if ( LifeState != LifeState.Alive && Corpse.IsValid() )
+		if ( LifeState != LifeState.Alive && Corpse.IsValid() ) // RAGDOLL CAM
 		{
 			Corpse.EnableDrawing = true;
 
@@ -225,7 +235,7 @@ partial class AZPlayer : AnimatedEntity
 			Camera.Position = tr.EndPosition;
 			Camera.FirstPersonViewer = null;
 		}
-		else if ( ThirdPersonZoom > 0f )
+		else if ( ThirdPersonZoom > 0f ) // THIRD PERSON CAM
 		{
 			Camera.FirstPersonViewer = null;
 
@@ -240,12 +250,7 @@ partial class AZPlayer : AnimatedEntity
 			// targetPos += rot.Forward * -distance;
 
 			var pos = Position + Vector3.Up * 64;
-			var targetPos = pos + Camera.Rotation.Backward * ThirdPersonZoom;
-
-			if(Input.Down("attack2"))
-			{
-				
-			}
+			var targetPos = pos + (Camera.Rotation).Backward * ThirdPersonZoom;
 
 			var tr = Trace.Ray( pos, targetPos )
 				.WithAnyTags( "solid" )
@@ -255,7 +260,7 @@ partial class AZPlayer : AnimatedEntity
 
 			Camera.Position = tr.EndPosition;
 		}
-		else
+		else // FIRST PERSON CAM
 		{
 			Camera.Position = EyePosition;
 			Camera.FirstPersonViewer = this;
@@ -371,7 +376,17 @@ partial class AZPlayer : AnimatedEntity
 		if ( Input.StopProcessing )
 			return;
 
-		var look = Input.AnalogLook;
+		Angles look = Input.AnalogLook;
+		
+		if(Input.Down("attack2"))
+		{
+			ThirdPersonRotation += look.WithYaw(look.yaw * 1f);
+			look = default;
+		}
+		else
+		{
+			ThirdPersonRotation = ThirdPersonRotation.LerpTo(default, Time.Delta * 10f);
+		}
 
 		if ( ViewAngles.pitch > 90f || ViewAngles.pitch < -90f )
 		{

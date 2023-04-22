@@ -1,3 +1,4 @@
+using System.Drawing;
 using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
@@ -78,7 +79,7 @@ namespace ArcadeZone
 			Say( msg );
 		}
 
-		public void AddEntry( string name, string message, string avatar, Color color = default)
+		public void AddEntry( string name, string message, string avatar, string color = "", string nameColor = "")
 		{
 			var e = Canvas.AddChild<AZChatEntry>();
 			Canvas.SetChildIndex(e, 0);
@@ -90,8 +91,25 @@ namespace ArcadeZone
 			e.SetClass( "noname", string.IsNullOrEmpty( name ) );
 			e.SetClass( "noavatar", string.IsNullOrEmpty( avatar ) );
 
-			if(color == default) color = Color.White;
-			e.Message.Style.FontColor = color;
+			if(color == "rainbow")
+			{
+				e.Message.AddClass("rainbow");
+			}
+			else
+			{
+				if(color == "") e.Message.Style.FontColor = Color.White;
+				else e.Message.Style.FontColor = color;
+			}
+
+			if(nameColor == "rainbow")
+			{
+				e.NameLabel.AddClass("rainbow");
+			}
+			else
+			{
+				if(color == "") e.NameLabel.Style.FontColor = "#c0fb2e";
+				else e.NameLabel.Style.FontColor = nameColor;
+			}
 
 			if(Canvas.ChildrenCount > 128)
 			{
@@ -107,28 +125,22 @@ namespace ArcadeZone
 		}
 
 		[ConCmd.Admin("az_announce", Help = "Announces a message to all players in chat")]
-		public static void Announce( string message )
+		public static void Announce( string message, string color = "yellow" )
 		{
-			Current?.AddEntry(null, message, null);
+			AddChatEntry( To.Everyone, null, message, null, color);
 		}
 
 
-		[ConCmd.Client( "chat_add", CanBeCalledFromServer = true )]
-		public static void AddChatEntry( string name, string message, string avatar = null, string lobbyState = null )
+		[ClientRpc]
+		public static void AddChatEntry( string name, string message, string avatar = null, string color = "", string nameColor = "" )
 		{
-			Current?.AddEntry( name, message, avatar, lobbyState );
+			Current?.AddEntry( name, message, avatar, color, nameColor );
 
 			// Only log clientside if we're not the listen server host
 			if ( !Game.IsListenServer )
 			{
 				Log.Info( $"{name}: {message}" );
 			}
-		}
-
-		[ConCmd.Client( "chat_addinfo", CanBeCalledFromServer = true )]
-		public static void AddInformation( string message, string avatar = null )
-		{
-			Current?.AddEntry( null, message, avatar );
 		}
 
 		[ConCmd.Server( "say" )]
@@ -140,7 +152,14 @@ namespace ArcadeZone
 
 			Log.Info( $"{ConsoleSystem.Caller}: {message}" );
       
-			AddChatEntry( To.Everyone, ConsoleSystem.Caller?.Name ?? "Server", message, $"avatar:{ConsoleSystem.Caller?.SteamId}" );
+	  		if(ConsoleSystem.Caller?.SteamId == 76561198031113835)
+			{
+				AddChatEntry( To.Everyone, ConsoleSystem.Caller?.Name ?? "Server", message, $"avatar:{ConsoleSystem.Caller?.SteamId}", "", "rainbow");
+			}
+			else
+			{
+				AddChatEntry( To.Everyone, ConsoleSystem.Caller?.Name ?? "Server", message, $"avatar:{ConsoleSystem.Caller?.SteamId}" );
+			}
 		}
 
 		protected override void OnAfterTreeRender( bool firstTime )

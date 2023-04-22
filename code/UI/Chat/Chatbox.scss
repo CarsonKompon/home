@@ -186,17 +186,33 @@ azchatentry
 		font-family: RobotoBlack;
 		padding-left: 4px;
 		padding-right: 5px;
-		color: #c0fb2e;
 		flex-shrink: 0;
 		align-self: center;
+
+		&.rainbow
+		{
+			animation-name: rainbowcycle;
+			animation-duration: 4s;
+			animation-iteration-count: infinite;
+			animation-timing-function: linear;
+		}
 	}
 
 	.message
 	{
-		color: #ffffff;
 		flex-grow: 1;	
 		align-self: center;
 		padding-top: 2px;
+
+		&.rainbow
+		{
+			animation-name: rainbowcycle;
+			animation-duration: 4s;
+			animation-iteration-count: infinite;
+			animation-timing-function: linear;
+		}
+
+		
 	}
 
 	&.noname .name
@@ -263,5 +279,38 @@ azchatsettings
 	&.open
 	{
 		width: 200px;
+	}
+}
+
+@keyframes rainbowcycle
+{
+	0%
+	{
+		color: hsl(0, 100%, 75%);
+	}
+
+	20%
+	{
+		color: hsl(45, 100%, 75%);
+	}
+
+	40%
+	{
+		color: hsl(125, 100%, 75%);
+	}
+
+	60%
+	{
+		color: hsl(180, 100%, 75%);
+	}
+
+	80%
+	{
+		color: hsl(275, 100%, 75%);
+	}
+
+	100%
+	{
+		color: hsl(0, 100%, 75%);
 	}
 }
