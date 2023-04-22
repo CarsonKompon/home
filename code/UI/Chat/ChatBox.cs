@@ -1,6 +1,7 @@
 using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
+using System;
 
 namespace ArcadeZone
 {
@@ -16,6 +17,8 @@ namespace ArcadeZone
 		public Button BtnSettings { get; protected set; }
 
 		public AZChatSettings Settings { get; protected set; }
+
+		private int MessageCount = 0;
 
 		public AZChatBox()
 		{
@@ -95,6 +98,10 @@ namespace ArcadeZone
 			{
 				Canvas.GetChild(Canvas.ChildrenCount - 1).Delete();
 			}
+
+			Audio.Play( "ui.chat.message" + ((MessageCount  % 2) + 1).ToString());
+
+			MessageCount++;
 		}
 
 

@@ -54,12 +54,13 @@
 		.btn-settings
 		{
 			opacity: 0;
+			top: -2px;
 			left: 4px;
 			text-align: center;
 			justify-content: center;
 			align-items: center;
 			font-size: 24px;
-			transition: all 1s ease-out;
+			transition: transform 0.5s ease-out;
 
 			&:hover
 			{
@@ -70,8 +71,8 @@
 
 			&:active
 			{
-				transition: all 0s ease-out;
-				transform: rotate(-360deg);
+				transition: transform 0s ease-out;
+				transform: scale( 0.9 );
 			}
 		}
 	}
