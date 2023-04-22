@@ -38,6 +38,8 @@ partial class AZPlayer : AnimatedEntity
 
     private DamageInfo lastDamage;
 
+	[Net, Predicted] public bool ThirdPersonCamera { get; set; }
+
     /// <summary>
     /// The clothing container is what dresses the citizen
     /// </summary>
@@ -91,14 +93,150 @@ partial class AZPlayer : AnimatedEntity
 		
 		var controller = GetActiveController();
 		controller?.Simulate( cl, this );
+
+		if(LifeState != LifeState.Alive) return;
+
+		if(controller != null)
+		{
+			EnableSolidCollisions = !controller.HasTag( "noclip" );
+			SimulateAnimation(controller);
+		}
+
+		TickPlayerUse();
+		SimulateActiveChild(cl, ActiveChild);
+
+		if(Input.Pressed("view"))
+		{
+			ThirdPersonCamera = !ThirdPersonCamera;
+		}
+	}
+
+	[ConCmd.Admin("noclip")]
+	static void DoPlayerNoclip()
+	{
+		if(ConsoleSystem.Caller.Pawn is AZPlayer player)
+		{
+			if(player.DevController is AZNoclipController)
+			{
+				player.DevController = null;
+			}
+			else
+			{
+				player.DevController = new AZNoclipController();
+			}
+		}
+	}
+
+	[ConCmd.Admin("kill")]
+	static void DoPlayerSuicide()
+	{
+		if(ConsoleSystem.Caller.Pawn is AZPlayer player)
+		{
+			player.TakeDamage(new DamageInfo {Damage = player.Health * 99 });
+		}
+	}
+
+	void SimulateAnimation(AZPawnController controller)
+	{
+		if(controller == null) return;
+
+		// Where should we be rotated to
+		var turnSpeed = 0.02f;
+
+		Rotation rotation;
+
+		// If we're a bot, spin us around 180 degrees
+		if ( Client.IsBot )
+			rotation = ViewAngles.WithYaw( ViewAngles.yaw + 180f ).ToRotation();
+		else
+			rotation = ViewAngles.ToRotation();
+
+		var idealRotation = Rotation.LookAt( rotation.Forward.WithZ( 0 ), Vector3.Up );
+		Rotation = Rotation.Slerp( Rotation, idealRotation, controller.WishVelocity.Length * Time.Delta * turnSpeed );
+		Rotation = Rotation.Clamp( idealRotation, 45.0f, out var shuffle ); // lock facing to within 45 degrees of look direction
+
+		CitizenAnimationHelper animHelper = new CitizenAnimationHelper( this );
+
+		animHelper.WithWishVelocity(controller.WishVelocity);
+		animHelper.WithVelocity(controller.Velocity);
+		animHelper.WithLookAt( EyePosition + EyeRotation.Forward * 100.0f, 1.0f, 1.0f, 0.5f );
+		animHelper.AimAngle = rotation;
+		animHelper.FootShuffle = shuffle;
+		animHelper.DuckLevel = MathX.Lerp( animHelper.DuckLevel, controller.HasTag( "ducked" ) ? 1 : 0, Time.Delta * 10.0f );
+		animHelper.VoiceLevel = ( Game.IsClient && Client.IsValid() ) ? Client.Voice.LastHeard < 0.5f ? Client.Voice.CurrentLevel : 0.0f : 0.0f;
+		animHelper.IsGrounded = GroundEntity != null;
+		animHelper.IsSitting = controller.HasTag( "sitting" );
+		animHelper.IsNoclipping = controller.HasTag( "noclip" );
+		animHelper.IsClimbing = controller.HasTag( "climbing" );
+		animHelper.IsSwimming = this.GetWaterLevel() >= 0.5f;
+		animHelper.IsWeaponLowered = false;
+		animHelper.MoveStyle = Input.Down( "run" ) ? CitizenAnimationHelper.MoveStyles.Run : CitizenAnimationHelper.MoveStyles.Walk;
+
+		if ( controller.HasEvent( "jump" ) ) animHelper.TriggerJump();
+		// if ( ActiveChild != lastWeapon ) animHelper.TriggerDeploy();
+
+		if ( ActiveChild is AZBaseCarriable carry )
+		{
+			carry.SimulateAnimator( animHelper );
+		}
+		else
+		{
+			animHelper.HoldType = CitizenAnimationHelper.HoldTypes.None;
+			animHelper.AimBodyWeight = 0.5f;
+		}
+
+		// lastWeapon = ActiveChild;
 	}
 
     public override void FrameSimulate( IClient cl )
 	{
 		Camera.Rotation = ViewAngles.ToRotation();
-		Camera.Position = EyePosition;
 		Camera.FieldOfView = Screen.CreateVerticalFieldOfView( Game.Preferences.FieldOfView );
-		Camera.FirstPersonViewer = this;
+
+		if ( ThirdPersonCamera )
+		{
+			Camera.FirstPersonViewer = null;
+
+			Vector3 targetPos;
+			var center = Position + Vector3.Up * 64;
+
+			var pos = center;
+			var rot = Camera.Rotation * Rotation.FromAxis( Vector3.Up, -16 );
+
+			float distance = 130.0f * Scale;
+			targetPos = pos + rot.Right * ((CollisionBounds.Mins.x + 32) * Scale);
+			targetPos += rot.Forward * -distance;
+
+			var tr = Trace.Ray( pos, targetPos )
+				.WithAnyTags( "solid" )
+				.Ignore( this )
+				.Radius( 8 )
+				.Run();
+
+			Camera.Position = tr.EndPosition;
+		}
+		else if ( LifeState != LifeState.Alive && Corpse.IsValid() )
+		{
+			Corpse.EnableDrawing = true;
+
+			var pos = Corpse.GetBoneTransform( 0 ).Position + Vector3.Up * 10;
+			var targetPos = pos + Camera.Rotation.Backward * 100;
+
+			var tr = Trace.Ray( pos, targetPos )
+				.WithAnyTags( "solid" )
+				.Ignore( this )
+				.Radius( 8 )
+				.Run();
+
+			Camera.Position = tr.EndPosition;
+			Camera.FirstPersonViewer = null;
+		}
+		else
+		{
+			Camera.Position = EyePosition;
+			Camera.FirstPersonViewer = this;
+			Camera.Main.SetViewModelCamera( 90f );
+		}
 	}
 
     /// <summary>
@@ -130,7 +268,7 @@ partial class AZPlayer : AnimatedEntity
             DefaultSpeed = 180f
         };
 
-        if(DevController is NoclipController)
+        if(DevController is AZNoclipController)
         {
             DevController = null;
         }
@@ -266,7 +404,7 @@ partial class AZPlayer : AnimatedEntity
 	/// <returns>The new footstep volume, where 1 is full volume.</returns>
 	public virtual float FootstepVolume()
 	{
-		return Velocity.WithZ( 0 ).Length.LerpInverse( 0.0f, 200.0f ) * 0.2f;
+		return Velocity.WithZ( 0 ).Length.LerpInverse( 0.0f, 200.0f ) * 5.0f;
 	}
 
     public override void StartTouch( Entity other )
