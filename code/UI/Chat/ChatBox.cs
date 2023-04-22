@@ -19,6 +19,7 @@ namespace ArcadeZone
 		public AZChatSettings Settings { get; protected set; }
 
 		private int MessageCount = 0;
+		public bool MessageSounds = true;
 
 		public AZChatBox()
 		{
@@ -99,7 +100,10 @@ namespace ArcadeZone
 				Canvas.GetChild(Canvas.ChildrenCount - 1).Delete();
 			}
 
-			Audio.Play( "ui.chat.message" + ((MessageCount  % 2) + 1).ToString());
+			if(MessageSounds)
+			{
+				Audio.Play( "ui.chat.message" + ((MessageCount  % 2) + 1).ToString());
+			}
 
 			MessageCount++;
 		}

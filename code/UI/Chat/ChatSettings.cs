@@ -11,6 +11,7 @@ namespace ArcadeZone
 	{
         public AZChatSettingsEntry SettingAvatars { get; internal set; }
         public AZChatSettingsEntry SettingFontSize { get; internal set; }
+        public AZChatSettingsEntry SettingChatSounds { get; internal set; }
 
 		public AZChatSettings()
 		{
@@ -33,6 +34,14 @@ namespace ArcadeZone
             AddChild(SettingFontSize);
             onSliderFontSize();
 
+            // CHAT SOUNDS
+            Switch toggleChatSounds = new Switch();
+            toggleChatSounds.Value = !Cookie.Get<bool>("arcadezone.chat.mute", false);
+            SettingChatSounds = new AZChatSettingsEntry( "Chat Blip SFX", toggleChatSounds );
+            SettingChatSounds.Control.AddEventListener( "onchange", onSwitchChatSounds );
+            AddChild(SettingChatSounds);
+            onSwitchChatSounds();
+
 		}
 
         private void onSwitchAvatars()
@@ -54,6 +63,21 @@ namespace ArcadeZone
             Slider slider = SettingFontSize.Control as Slider;
             AZChatBox.Current.Style.FontSize = slider.Value;
             Cookie.Set( "arcadezone.chat.font-size", slider.Value );
+        }
+
+        private void onSwitchChatSounds()
+        {
+            Switch toggle = SettingChatSounds.Control as Switch;
+            if ( !toggle.Value )
+            {
+                AZChatBox.Current.AddClass( "mute" );
+            }
+            else
+            {
+                AZChatBox.Current.RemoveClass( "mute" );
+            }
+            Cookie.Set( "arcadezone.chat.mute", !toggle.Value );
+            AZChatBox.Current.MessageSounds = toggle.Value;
         }
 
 	}
