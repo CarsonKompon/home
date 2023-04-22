@@ -150,6 +150,13 @@ namespace ArcadeZone
 			if ( message.Contains( '\n' ) || message.Contains( '\r' ) )
 				return;
 
+			// Check for command
+			if( message.StartsWith( "/" ) )
+			{
+				ChatCommandAttribute.Parse( ConsoleSystem.Caller, message );
+				return;
+			}
+
 			Log.Info( $"{ConsoleSystem.Caller}: {message}" );
       
 	  		if(ConsoleSystem.Caller?.SteamId == 76561198031113835)
