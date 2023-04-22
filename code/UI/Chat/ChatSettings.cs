@@ -41,7 +41,6 @@ namespace ArcadeZone
             SettingChatSounds.Control.AddEventListener( "onchange", onSwitchChatSounds );
             AddChild(SettingChatSounds);
             onSwitchChatSounds();
-
 		}
 
         private void onSwitchAvatars()

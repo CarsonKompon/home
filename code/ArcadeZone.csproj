@@ -3,8 +3,8 @@
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<AssemblyName>ArcadeZone</AssemblyName>
-		<PackageId>ArcadeZone</PackageId>
+		<AssemblyName>arcadezone</AssemblyName>
+		<PackageId>arcadezone</PackageId>
 		<LangVersion>11</LangVersion>
 		<NoWarn>1701;1702;1591;</NoWarn>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -30,7 +30,7 @@
 
   <PropertyGroup>
 	<OutputPath>C:\SteamLibrary\steamapps\common\sbox/.vs/output/</OutputPath>
-	<DocumentationFile>C:\SteamLibrary\steamapps\common\sbox/.vs/output/ArcadeZone.xml</DocumentationFile>
+	<DocumentationFile>C:\SteamLibrary\steamapps\common\sbox/.vs/output/arcadezone.xml</DocumentationFile>
 	<RootNamespace>Sandbox</RootNamespace>
 	<Nullable>disable</Nullable>
   </PropertyGroup>

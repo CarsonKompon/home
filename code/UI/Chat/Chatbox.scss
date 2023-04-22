@@ -153,6 +153,7 @@ azchatentry
 	transform: scale( 1 );
 
 	align-items: center;
+	text-shadow: 0 0 4px black;
 
 	&:intro
 	{
@@ -176,6 +177,8 @@ azchatentry
 		width: 32px;
 		min-width: 32px;
 		border-radius: 100%;
+		text-shadow: 0 0 4px black;
+		
 	}
 
 	.name
@@ -185,15 +188,15 @@ azchatentry
 		padding-right: 5px;
 		color: #c0fb2e;
 		flex-shrink: 0;
-		text-shadow: 0 0 1px rgba( black, 0.5 );
 		align-self: center;
 	}
 
 	.message
 	{
 		color: #ffffff;
-		flex-grow: 1;
-		text-shadow: 0 0 1px rgba( black, 0.5 );	
+		flex-grow: 1;	
+		align-self: center;
+		padding-top: 2px;
 	}
 
 	&.noname .name

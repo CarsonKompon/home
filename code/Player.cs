@@ -38,7 +38,8 @@ partial class AZPlayer : AnimatedEntity
 
     private DamageInfo lastDamage;
 
-	[Net, Predicted] public bool ThirdPersonCamera { get; set; }
+	public float ThirdPersonZoom { get; set; } = 0;
+	public Rotation ThirdPersonRotation { get; set; }
 
     /// <summary>
     /// The clothing container is what dresses the citizen
@@ -107,7 +108,8 @@ partial class AZPlayer : AnimatedEntity
 
 		if(Input.Pressed("view"))
 		{
-			ThirdPersonCamera = !ThirdPersonCamera;
+			if(ThirdPersonZoom > 0f) ThirdPersonZoom = 0f;
+			else ThirdPersonZoom = 130f;
 		}
 	}
 
@@ -170,7 +172,7 @@ partial class AZPlayer : AnimatedEntity
 		animHelper.IsClimbing = controller.HasTag( "climbing" );
 		animHelper.IsSwimming = this.GetWaterLevel() >= 0.5f;
 		animHelper.IsWeaponLowered = false;
-		animHelper.MoveStyle = Input.Down( "run" ) ? CitizenAnimationHelper.MoveStyles.Run : CitizenAnimationHelper.MoveStyles.Walk;
+		animHelper.MoveStyle = Input.Down( "walk" ) ? CitizenAnimationHelper.MoveStyles.Walk : CitizenAnimationHelper.MoveStyles.Run;
 
 		if ( controller.HasEvent( "jump" ) ) animHelper.TriggerJump();
 		// if ( ActiveChild != lastWeapon ) animHelper.TriggerDeploy();
@@ -193,29 +195,21 @@ partial class AZPlayer : AnimatedEntity
 		Camera.Rotation = ViewAngles.ToRotation();
 		Camera.FieldOfView = Screen.CreateVerticalFieldOfView( Game.Preferences.FieldOfView );
 
-		if ( ThirdPersonCamera )
+		if(Input.MouseWheel != 0)
 		{
-			Camera.FirstPersonViewer = null;
-
-			Vector3 targetPos;
-			var center = Position + Vector3.Up * 64;
-
-			var pos = center;
-			var rot = Camera.Rotation * Rotation.FromAxis( Vector3.Up, -16 );
-
-			float distance = 130.0f * Scale;
-			targetPos = pos + rot.Right * ((CollisionBounds.Mins.x + 32) * Scale);
-			targetPos += rot.Forward * -distance;
-
-			var tr = Trace.Ray( pos, targetPos )
-				.WithAnyTags( "solid" )
-				.Ignore( this )
-				.Radius( 8 )
-				.Run();
-
-			Camera.Position = tr.EndPosition;
+			float previousZoom = ThirdPersonZoom;
+			ThirdPersonZoom = MathX.Clamp(ThirdPersonZoom - Input.MouseWheel * 10, 32, 400);
+			if(Input.MouseWheel > 0f && ThirdPersonZoom <= 32f)
+			{
+				ThirdPersonZoom = 0f;
+			}
+			else if(Input.MouseWheel < 0f && ThirdPersonZoom < 32f)
+			{
+				ThirdPersonZoom = 32f;
+			}
 		}
-		else if ( LifeState != LifeState.Alive && Corpse.IsValid() )
+
+		if ( LifeState != LifeState.Alive && Corpse.IsValid() )
 		{
 			Corpse.EnableDrawing = true;
 
@@ -230,6 +224,36 @@ partial class AZPlayer : AnimatedEntity
 
 			Camera.Position = tr.EndPosition;
 			Camera.FirstPersonViewer = null;
+		}
+		else if ( ThirdPersonZoom > 0f )
+		{
+			Camera.FirstPersonViewer = null;
+
+			// Vector3 targetPos;
+			// var center = Position + Vector3.Up * 64;
+
+			// var pos = center;
+			// var rot = Camera.Rotation * Rotation.FromAxis( Vector3.Up, -16 );
+
+			// float distance = ThirdPersonZoom * Scale;
+			// targetPos = pos + rot.Right * ((CollisionBounds.Mins.x + 16) * Scale);
+			// targetPos += rot.Forward * -distance;
+
+			var pos = Position + Vector3.Up * 64;
+			var targetPos = pos + Camera.Rotation.Backward * ThirdPersonZoom;
+
+			if(Input.Down("attack2"))
+			{
+				
+			}
+
+			var tr = Trace.Ray( pos, targetPos )
+				.WithAnyTags( "solid" )
+				.Ignore( this )
+				.Radius( 8 )
+				.Run();
+
+			Camera.Position = tr.EndPosition;
 		}
 		else
 		{
@@ -295,7 +319,13 @@ partial class AZPlayer : AnimatedEntity
 
 	public override void OnKilled()
 	{
-		base.OnKilled();
+		AZGame.Current?.OnKilled(this);
+
+		timeSinceDied = 0;
+		LifeState = LifeState.Dead;
+		StopUsing();
+
+		Client?.AddInt("deaths", 1);
 
         BecomeRagdollOnClient( Velocity, lastDamage.Position, lastDamage.Force, lastDamage.BoneIndex, lastDamage.HasTag( "bullet" ), lastDamage.HasTag( "blast" ) );
 
@@ -456,12 +486,12 @@ partial class AZPlayer : AnimatedEntity
 	/// </summary>
 	public virtual void OnActiveChildChanged( Entity previous, Entity next )
 	{
-		if ( previous is BaseCarriable previousBc )
+		if ( previous is AZBaseCarriable previousBc )
 		{
 			previousBc?.ActiveEnd( this, previousBc.Owner != this );
 		}
 
-		if ( next is BaseCarriable nextBc )
+		if ( next is AZBaseCarriable nextBc )
 		{
 			nextBc?.ActiveStart( this );
 		}

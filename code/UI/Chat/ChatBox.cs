@@ -78,7 +78,7 @@ namespace ArcadeZone
 			Say( msg );
 		}
 
-		public void AddEntry( string name, string message, string avatar, string lobbyState = null )
+		public void AddEntry( string name, string message, string avatar, Color color = default)
 		{
 			var e = Canvas.AddChild<AZChatEntry>();
 			Canvas.SetChildIndex(e, 0);
@@ -90,10 +90,8 @@ namespace ArcadeZone
 			e.SetClass( "noname", string.IsNullOrEmpty( name ) );
 			e.SetClass( "noavatar", string.IsNullOrEmpty( avatar ) );
 
-			if ( lobbyState == "ready" || lobbyState == "staging" )
-			{
-				e.SetClass( "is-lobby", true );
-			}
+			if(color == default) color = Color.White;
+			e.Message.Style.FontColor = color;
 
 			if(Canvas.ChildrenCount > 128)
 			{
@@ -106,6 +104,12 @@ namespace ArcadeZone
 			}
 
 			MessageCount++;
+		}
+
+		[ConCmd.Admin("az_announce", Help = "Announces a message to all players in chat")]
+		public static void Announce( string message )
+		{
+			Current?.AddEntry(null, message, null);
 		}
 
 
