@@ -183,7 +183,6 @@ azchatentry
 
 	.name
 	{
-		font-family: RobotoBlack;
 		padding-left: 4px;
 		padding-right: 5px;
 		flex-shrink: 0;
@@ -202,7 +201,6 @@ azchatentry
 	{
 		flex-grow: 1;	
 		align-self: center;
-		padding-top: 2px;
 
 		&.rainbow
 		{
@@ -215,9 +213,17 @@ azchatentry
 		
 	}
 
-	&.noname .name
+	&.noname
 	{
-		display: none;
+		.name
+		{
+			display: none;
+		}
+
+		.message
+		{
+			padding-left: 4px;
+		}
 	}
 
 	&.noavatar image
