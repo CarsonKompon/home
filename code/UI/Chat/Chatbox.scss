@@ -5,8 +5,9 @@
 	left: 100px;
 	z-index: 100;
 	flex-direction: column;
+	justify-content: space-between;
 	width: 500px;
-	font-family: RobotoBlack;
+	font-family: Roboto;
 	font-weight: 900;
 	font-size: 14px;
 	padding: 10px;
@@ -17,7 +18,8 @@
 	{
 		flex-direction: column-reverse;
 		align-items: flex-start;
-		height: 100%;
+		flex-grow: 1;
+		height: 100px;
 
 		overflow: scroll;
 
@@ -32,46 +34,44 @@
 
 	.input_canvas
 	{
-		display: flex;
 		flex-direction: row;
-		min-height: 40px;
-		height: 40px;
-		margin-top: 8px;
+		margin-top: 10px;
 
 		textentry
 		{
 			background-color: black;
 			opacity: 0;
 			color: white;
-			padding: 15px;
 			background-color: rgba( black, 0.5 );
 			font-size: 14px;
-			flex-shrink: 0;
-			flex-grow: 0;
+			// flex-shrink: 0;
+			// flex-grow: 1;
 			width: 450px;
-			padding-top: 12px;
+			font-family: Roboto;
+			padding: 12px;
 		}
 
 		.btn-settings
 		{
 			opacity: 0;
-			height: 100%;
-			width: 100%;
-			padding-left: 8px;
+			left: 4px;
 			text-align: center;
 			justify-content: center;
 			align-items: center;
 			font-size: 24px;
-			transition: all 0.1s ease-out;
+			transition: all 1s ease-out;
 
 			&:hover
 			{
+				background-color: rgba(0, 0, 0, 0);
 				text-shadow: 0 0 8px rgba(white, 0.8);
+				sound-in: ui.button.over;
 			}
 
 			&:active
 			{
-				transform: scale(0.9);
+				transition: all 0s ease-out;
+				transform: rotate(-360deg);
 			}
 		}
 	}
@@ -100,9 +100,12 @@
 			}
 		}
 
-		.btn-settings
+		.input_canvas
 		{
-			opacity: 1;
+			.btn-settings
+			{
+				opacity: 1;
+			}
 		}
 
 		azchatsettings
@@ -223,6 +226,8 @@ azchatsettings
 	background-color: rgba(black, 0.5);
 	transition: width 0.4s ease-out;
 	flex-direction: column;
+	padding-top: 12px;
+
 
 	azchatsettingsentry
 	{
@@ -240,6 +245,12 @@ azchatsettings
 			justify-content: center;
 			align-items: center;
 			padding-right: 12px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.button.popupbutton.dropdown
+		{
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}

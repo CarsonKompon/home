@@ -90,6 +90,11 @@ namespace ArcadeZone
 			{
 				e.SetClass( "is-lobby", true );
 			}
+
+			if(Canvas.ChildrenCount > 128)
+			{
+				Canvas.GetChild(Canvas.ChildrenCount - 1).Delete();
+			}
 		}
 
 
@@ -136,6 +141,14 @@ namespace ArcadeZone
 		void OnBtnSettings()
 		{
 			Settings.SetClass( "open", !Settings.HasClass( "open" ) );
+			if(Settings.HasClass( "open" ))
+			{
+				Audio.Play("ui.navigate.forward");
+			}
+			else
+			{
+				Audio.Play("ui.navigate.back");
+			}
 		}
 	}
 }

@@ -6,6 +6,7 @@ using Sandbox.UI.Construct;
 
 namespace ArcadeZone
 {
+
 	public partial class AZChatSettings : Panel
 	{
         public AZChatSettingsEntry SettingAvatars { get; internal set; }
@@ -31,6 +32,7 @@ namespace ArcadeZone
             SettingFontSize.Control.AddEventListener( "onchange", onSliderFontSize );
             AddChild(SettingFontSize);
             onSliderFontSize();
+
 		}
 
         private void onSwitchAvatars()

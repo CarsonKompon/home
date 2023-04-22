@@ -41,10 +41,12 @@ $form-control-height: 24px !default;
 	&:active
 	{
 		color: $primary-alt;
+		sound-in: ui.button.press;
 	}
 
 	&:hover
 	{
 		color: $primary-alt;
+		sound-in: ui.button.over;
 	}
 }

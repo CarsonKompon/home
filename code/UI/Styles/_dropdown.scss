@@ -1,0 +1,50 @@
+$primary: #3273eb;
+$primary-alt: white !default;
+
+$switch-padding: 6px !default;
+
+.button.popupbutton.dropdown
+{
+	cursor: pointer;
+	transition: all .1s ease-out;
+    background-color: rgba( $primary, 0.2 );
+    //border: 3px solid rgba( $primary, 0.4 );
+    border-radius: 16px;
+    flex-grow: 1;
+    padding: 5px 10px;
+    min-height: 32px;
+
+    .button-label
+    {
+        position: absolute;
+        right: 0px;
+        width: 100%;
+        text-align: center;
+        align-self: center;
+    }
+
+	> .dropdown_indicator
+	{
+		position: absolute;
+		right: 8px;
+        font-family: MaterialIcons;
+        align-self: center;
+	}
+
+	&.open
+	{
+		border-bottom-left-radius: 1px;
+		border-bottom-right-radius: 1px;
+		transition: border-radius 0.2s ease-out;
+	}
+}
+
+select
+{
+	min-height: 40px;
+
+	> option
+	{
+		display: none;
+	}
+}

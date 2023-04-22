@@ -24,6 +24,7 @@ $switch-padding: 6px !default;
 		&:hover
 		{
 			background-color: $primary-alt;
+			sound-in: ui.button.over;
 		}
 	}
 
