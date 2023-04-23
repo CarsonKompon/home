@@ -15,5 +15,7 @@ public partial class AZHud : HudEntity<RootPanel>
         RootPanel.AddChild<AZChatBox>();
         RootPanel.AddChild<AZVoiceList>();
         RootPanel.AddChild<AZVoiceSpeaker>();
+
+        RootPanel.AddChild<NotificationPanel>();
     }
 }

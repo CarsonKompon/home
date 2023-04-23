@@ -1,0 +1,43 @@
+label
+{
+    &.rainbow
+    {
+        animation-name: rainbowcycle;
+        animation-duration: 4s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
+}
+
+@keyframes rainbowcycle
+{
+	0%
+	{
+		color: hsl(0, 100%, 75%);
+	}
+
+	20%
+	{
+		color: hsl(45, 100%, 75%);
+	}
+
+	40%
+	{
+		color: hsl(125, 100%, 75%);
+	}
+
+	60%
+	{
+		color: hsl(180, 100%, 75%);
+	}
+
+	80%
+	{
+		color: hsl(275, 100%, 75%);
+	}
+
+	100%
+	{
+		color: hsl(0, 100%, 75%);
+	}
+}

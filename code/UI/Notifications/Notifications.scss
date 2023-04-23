@@ -1,0 +1,105 @@
+notificationpanel
+{
+    position: absolute;
+    right: 0px;
+    width: 30%;
+    height: 100%;
+    align-items: flex-end;
+    flex-direction: column-reverse;
+    padding-right: 42px;
+    padding-bottom: 64px;
+    font-size: 18px;
+    font-weight: 600;
+
+    notificationpanelentry
+    {
+        position: relative;
+        background-color: rgba(black, 0.4);
+        flex-direction: row;
+        padding: 8px;
+        margin: 4px;
+        align-items: center;
+        justify-content: space-between;
+        animation-name: bounce-in-overstep;
+        animation-duration: 0.5s;
+        animation-timing-function: ease-out;
+        animation-iteration-count: 0.99;
+        transition: opacity 0.5s ease-out;
+        min-width: 400px;
+        width: auto;
+        text-shadow: 0 0 4px black;
+
+        &:intro
+        {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        &:outro
+        {
+            opacity: 0;
+            transform: translateX(100%);
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+            animation-name: none;
+        }
+
+        label
+        {
+            padding-bottom: 2px;
+        }
+
+        .progress-bar
+        {
+            position: absolute;
+            left: 0px;
+            bottom: 0px;
+            width: 100%;
+            height: 2px;
+            background-color: rgba(white, 0.2);
+            position: absolute;
+            z-index: 1;
+        }
+    }
+}
+
+@keyframes bounce-in-overstep
+{
+    0%
+    {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    80%
+    {
+        transform: translateX(-10%);
+        opacity: 1;
+    }
+
+    100%
+    {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+}
+
+@keyframes bounce-out-overstep
+{
+    0%
+    {
+        transform: translateX(100%);
+        opacity: 1;
+    }
+
+    20%
+    {
+        transform: translateX(-10%);
+        opacity: 1;
+    }
+
+    100%
+    {
+        transform: translateX(0%);
+        opacity: 0;
+    }
+}
