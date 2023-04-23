@@ -14,6 +14,7 @@ namespace ArcadeZone
 		public Panel InputCanvas { get; protected set; }
 
 		public TextEntry Input { get; protected set; }
+		public AZChatCommandPanel CommandPanel { get; protected set; }
 
 		public Button BtnSettings { get; protected set; }
 
@@ -29,6 +30,8 @@ namespace ArcadeZone
 			StyleSheet.Load( "/ui/chat/ChatBox.scss" );
 
 			Canvas = Add.Panel( "chat_canvas" );
+
+			CommandPanel = AddChild<AZChatCommandPanel>();
 
 			InputCanvas = Add.Panel( "input_canvas" );
 
@@ -63,6 +66,11 @@ namespace ArcadeZone
 			if ( Sandbox.Input.Pressed( "chat" ) )
 			{
 				Open();
+			}
+
+			if(HasClass("open"))
+			{
+				CommandPanel.Update(Input.Text);
 			}
 		}
 

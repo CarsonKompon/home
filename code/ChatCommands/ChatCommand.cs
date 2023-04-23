@@ -79,13 +79,6 @@ public class ChatCommandAttribute : LibraryAttribute
         // Split the command into its parts
         string[] parts = command.Split(" ");
 
-        Log.Info(parts[0]);
-        Log.Info("---");
-        foreach(ChatCommandAttribute cmd in AZGame.Current.ChatCommands)
-        {
-            Log.Info(cmd.Name);
-        }
-
         // Find the command
         ChatCommandAttribute chatCommand = null;
         foreach(ChatCommandAttribute cmd in AZGame.Current.ChatCommands)

@@ -14,7 +14,7 @@ namespace ArcadeZone
 
 		public AZChatCommandPanelEntry(ChatCommandAttribute command)
 		{
-			Command = Add.Label( command.Name, "command" );
+			Command = Add.Label( "/" + command.Name.ToLower(), "command" );
 			Arguments = Add.Label( command.GetArgumentTemplate(), "arguments" );
 		}
 

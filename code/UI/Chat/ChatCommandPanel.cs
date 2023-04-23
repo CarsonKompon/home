@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
@@ -7,17 +8,47 @@ using Sandbox.UI.Construct;
 
 namespace ArcadeZone
 {
-	public partial class AZChatCommands : Panel
+	public partial class AZChatCommandPanel : Panel
 	{
-		public Label Name { get; internal set; }
-		public Panel Control { get; internal set; }
 
-		public AZChatCommands(string name, Panel control)
+		public AZChatCommandPanel()
         {
-            Name = Add.Label( name, "name" );
-            Control = control;
-            AddChild(Control);
         }
+
+		private void Show()
+		{
+			SetClass("open", true);
+		}
+
+		private void Hide()
+		{
+			SetClass("open", false);
+			DeleteChildren();
+		}
+
+		public void Update(string text)
+		{
+			if(text.StartsWith("/"))
+			{
+				Show();
+				DeleteChildren();
+
+				string[] words = text.Substring(1).Split(' ');
+
+				foreach (var command in AZGame.Current.ChatCommands)
+				{
+					if(command.Name.ToLower().StartsWith(words[0].ToLower()))
+					{
+						AZChatCommandPanelEntry entry = new AZChatCommandPanelEntry(command);
+						AddChild(entry);
+					}
+				}
+			}
+			else if(HasClass("open"))
+			{
+				Hide();
+			}
+		}
 
 	}
 }

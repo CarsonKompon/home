@@ -77,6 +77,14 @@
 		}
 	}
 
+	azchatcommandpanel
+	{
+		opacity: 0;
+		color: lightgrey;
+		text-align: left;
+		margin-top: 10px;
+	}
+
 	&.open
 	{
 		background-color: rgba( black, 0.5);
@@ -107,6 +115,11 @@
 			{
 				opacity: 1;
 			}
+		}
+
+		azchatcommandpanel
+		{
+			opacity: 1;
 		}
 
 		azchatsettings
