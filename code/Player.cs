@@ -41,6 +41,8 @@ partial class AZPlayer : AnimatedEntity
 	public float ThirdPersonZoom { get; set; } = 0;
 	public Angles ThirdPersonRotation { get; set; }
 
+	public RealTimeSince TimeSinceSpawned { get; set; }
+
     /// <summary>
     /// The clothing container is what dresses the citizen
     /// </summary>
@@ -131,10 +133,11 @@ partial class AZPlayer : AnimatedEntity
 		}
 	}
 
+	// "kill" command that kills the player who called it
 	[ConCmd.Admin("kill")]
 	static void DoPlayerSuicide()
 	{
-		if(ConsoleSystem.Caller.Pawn is AZPlayer player)
+		if(ConsoleSystem.Caller.Pawn is AZPlayer player && player.TimeSinceSpawned > 2f)
 		{
 			player.TakeDamage(new DamageInfo {Damage = player.Health * 99 });
 		}
@@ -290,6 +293,8 @@ partial class AZPlayer : AnimatedEntity
 	public virtual void Respawn()
 	{
         SetModel("models/citizen/citizen.vmdl");
+
+		TimeSinceSpawned = 0;
 
         Controller = new AZWalkController
         {
