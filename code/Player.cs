@@ -383,7 +383,7 @@ partial class AZPlayer : AnimatedEntity
 
 		Angles look = Input.AnalogLook;
 		
-		if(Input.Down("attack2"))
+		if(Input.Down("attack2") && ThirdPersonZoom > 0f)
 		{
 			ThirdPersonRotation += look.WithYaw(look.yaw * 1f);
 			look = default;
