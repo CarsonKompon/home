@@ -153,7 +153,7 @@ public class AvatarHud : ScenePanel
         AvatarModel.Update(RealTime.Delta);
 
         Angles angles = new(2, 180, 0);
-        Vector3 pos = AvatarModel.GetBoneWorldTransform("head").Position + angles.Forward * -30 + Vector3.Up * 5;
+        Vector3 pos = AvatarModel.GetBoneWorldTransform("head").Position + angles.Forward * -50 + Vector3.Up * 5;
 
         Camera.Position = pos;
         Camera.Rotation = Rotation.From(angles);
