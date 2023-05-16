@@ -6,23 +6,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace ArcadeZone;
+namespace Home;
 
 
-public partial class AZGame : GameManager
+public partial class HomeGame : GameManager
 {
-	public static new AZGame Current;
+	public static new HomeGame Current;
 
 	public List<ChatCommandAttribute> ChatCommands { get; set; }
 
-	public AZGame()
+	public HomeGame()
 	{
 		Current = this;
 		
 		if (Game.IsServer)
 		{
 			// Create the HUD
-			_ = new AZHud();
+			_ = new HomeHud();
 		}
 
 		// Load the game's different libraries
@@ -32,7 +32,7 @@ public partial class AZGame : GameManager
 	public override void ClientJoined( IClient client )
 	{
 		base.ClientJoined( client );
-		var player = new AZPlayer(client);
+		var player = new HomePlayer(client);
 		player.Respawn();
 
 		client.Pawn = player;

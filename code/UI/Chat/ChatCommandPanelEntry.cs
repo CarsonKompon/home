@@ -5,14 +5,14 @@ using Sandbox.UI.Construct;
 
 
 
-namespace ArcadeZone
+namespace Home
 {
-	public partial class AZChatCommandPanelEntry : Panel
+	public partial class HomeChatCommandPanelEntry : Panel
 	{
 		public Label Command { get; internal set; }
 		public Label Arguments { get; internal set; }
 
-		public AZChatCommandPanelEntry(ChatCommandAttribute command)
+		public HomeChatCommandPanelEntry(ChatCommandAttribute command)
 		{
 			Command = Add.Label( "/" + command.Name.ToLower(), "command" );
 			Arguments = Add.Label( command.GetArgumentTemplate(), "arguments" );

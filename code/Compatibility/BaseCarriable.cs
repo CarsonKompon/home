@@ -1,12 +1,12 @@
 using Sandbox;
 
-namespace ArcadeZone
+namespace Home
 {
 	/// <summary>
 	/// An entity that can be carried in the player's inventory and hands.
 	/// </summary>
 	[Title( "Carriable" ), Icon( "luggage" )]
-	public class AZBaseCarriable : AnimatedEntity
+	public class HomeBaseCarriable : AnimatedEntity
 	{
 		public virtual string ViewModelPath => null;
 		public BaseViewModel ViewModelEntity { get; protected set; }

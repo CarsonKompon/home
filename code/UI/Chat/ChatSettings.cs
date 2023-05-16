@@ -4,21 +4,21 @@ using Sandbox.UI.Construct;
 
 
 
-namespace ArcadeZone
+namespace Home
 {
 
-	public partial class AZChatSettings : Panel
+	public partial class HomeChatSettings : Panel
 	{
-        public AZChatSettingsEntry SettingAvatars { get; internal set; }
-        public AZChatSettingsEntry SettingFontSize { get; internal set; }
-        public AZChatSettingsEntry SettingChatSounds { get; internal set; }
+        public HomeChatSettingsEntry SettingAvatars { get; internal set; }
+        public HomeChatSettingsEntry SettingFontSize { get; internal set; }
+        public HomeChatSettingsEntry SettingChatSounds { get; internal set; }
 
-		public AZChatSettings()
+		public HomeChatSettings()
 		{
             // AVATARS
             Switch toggleAvatars = new Switch();
-            toggleAvatars.Value = !Cookie.Get<bool>("arcadezone.chat.hide-avatars", false);
-            SettingAvatars = new AZChatSettingsEntry( "Avatars", toggleAvatars );
+            toggleAvatars.Value = !Cookie.Get<bool>("home.chat.hide-avatars", false);
+            SettingAvatars = new HomeChatSettingsEntry( "Avatars", toggleAvatars );
             SettingAvatars.Control.AddEventListener( "onchange", onSwitchAvatars );
             AddChild(SettingAvatars);
             onSwitchAvatars();
@@ -28,16 +28,16 @@ namespace ArcadeZone
             sliderFontSize.MinValue = 10;
             sliderFontSize.MaxValue = 24;
             sliderFontSize.Step = 1;
-            sliderFontSize.Value = Cookie.Get<float>("arcadezone.chat.font-size", 14);
-            SettingFontSize = new AZChatSettingsEntry( "Font Size", sliderFontSize );
+            sliderFontSize.Value = Cookie.Get<float>("home.chat.font-size", 14);
+            SettingFontSize = new HomeChatSettingsEntry( "Font Size", sliderFontSize );
             SettingFontSize.Control.AddEventListener( "onchange", onSliderFontSize );
             AddChild(SettingFontSize);
             onSliderFontSize();
 
             // CHAT SOUNDS
             Switch toggleChatSounds = new Switch();
-            toggleChatSounds.Value = !Cookie.Get<bool>("arcadezone.chat.mute", false);
-            SettingChatSounds = new AZChatSettingsEntry( "Chat Blip SFX", toggleChatSounds );
+            toggleChatSounds.Value = !Cookie.Get<bool>("home.chat.mute", false);
+            SettingChatSounds = new HomeChatSettingsEntry( "Chat Blip SFX", toggleChatSounds );
             SettingChatSounds.Control.AddEventListener( "onchange", onSwitchChatSounds );
             AddChild(SettingChatSounds);
             onSwitchChatSounds();
@@ -48,20 +48,20 @@ namespace ArcadeZone
             Switch toggle = SettingAvatars.Control as Switch;
             if ( !toggle.Value )
             {
-                AZChatBox.Current.AddClass( "hide-avatars" );
+                HomeChatBox.Current.AddClass( "hide-avatars" );
             }
             else
             {
-                AZChatBox.Current.RemoveClass( "hide-avatars" );
+                HomeChatBox.Current.RemoveClass( "hide-avatars" );
             }
-            Cookie.Set( "arcadezone.chat.hide-avatars", !toggle.Value );
+            Cookie.Set( "home.chat.hide-avatars", !toggle.Value );
         }
 
         private void onSliderFontSize()
         {
             Slider slider = SettingFontSize.Control as Slider;
-            AZChatBox.Current.Style.FontSize = slider.Value;
-            Cookie.Set( "arcadezone.chat.font-size", slider.Value );
+            HomeChatBox.Current.Style.FontSize = slider.Value;
+            Cookie.Set( "home.chat.font-size", slider.Value );
         }
 
         private void onSwitchChatSounds()
@@ -69,14 +69,14 @@ namespace ArcadeZone
             Switch toggle = SettingChatSounds.Control as Switch;
             if ( !toggle.Value )
             {
-                AZChatBox.Current.AddClass( "mute" );
+                HomeChatBox.Current.AddClass( "mute" );
             }
             else
             {
-                AZChatBox.Current.RemoveClass( "mute" );
+                HomeChatBox.Current.RemoveClass( "mute" );
             }
-            Cookie.Set( "arcadezone.chat.mute", !toggle.Value );
-            AZChatBox.Current.MessageSounds = toggle.Value;
+            Cookie.Set( "home.chat.mute", !toggle.Value );
+            HomeChatBox.Current.MessageSounds = toggle.Value;
         }
 
 	}

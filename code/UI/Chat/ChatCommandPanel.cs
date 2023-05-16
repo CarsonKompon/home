@@ -6,12 +6,12 @@ using Sandbox.UI.Construct;
 
 
 
-namespace ArcadeZone
+namespace Home
 {
-	public partial class AZChatCommandPanel : Panel
+	public partial class HomeChatCommandPanel : Panel
 	{
 
-		public AZChatCommandPanel()
+		public HomeChatCommandPanel()
         {
         }
 
@@ -35,11 +35,11 @@ namespace ArcadeZone
 
 				string[] words = text.Substring(1).Split(' ');
 
-				foreach (var command in AZGame.Current.ChatCommands)
+				foreach (var command in HomeGame.Current.ChatCommands)
 				{
 					if(command.Name.ToLower().StartsWith(words[0].ToLower()))
 					{
-						AZChatCommandPanelEntry entry = new AZChatCommandPanelEntry(command);
+						HomeChatCommandPanelEntry entry = new HomeChatCommandPanelEntry(command);
 						AddChild(entry);
 					}
 				}

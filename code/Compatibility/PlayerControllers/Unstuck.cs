@@ -1,16 +1,16 @@
 using Sandbox;
 
-namespace ArcadeZone
+namespace Home
 {
-	public class AZUnstuck
+	public class HomeUnstuck
 	{
-		public AZBasePlayerController Controller;
+		public HomeBasePlayerController Controller;
 
 		public bool IsActive; // replicate
 
 		internal int StuckTries = 0;
 
-		public AZUnstuck( AZBasePlayerController controller )
+		public HomeUnstuck( HomeBasePlayerController controller )
 		{
 			Controller = controller;
 		}
@@ -28,7 +28,7 @@ namespace ArcadeZone
 
 			if ( result.StartedSolid )
 			{
-				if ( AZBasePlayerController.Debug )
+				if ( HomeBasePlayerController.Debug )
 				{
 					DebugOverlay.Text( $"[stuck in {result.Entity}]", Controller.Position, Color.Red );
 					DebugOverlay.Box( result.Entity, Color.Red );
@@ -58,7 +58,7 @@ namespace ArcadeZone
 
 				if ( !result.StartedSolid )
 				{
-					if ( AZBasePlayerController.Debug )
+					if ( HomeBasePlayerController.Debug )
 					{
 						DebugOverlay.Text( $"unstuck after {StuckTries} tries ({StuckTries* AttemptsPerTick} tests)", Controller.Position, Color.Green, 5.0f );
 						DebugOverlay.Line( pos, Controller.Position, Color.Green, 5.0f, false );
@@ -69,7 +69,7 @@ namespace ArcadeZone
 				}
 				else
 				{
-					if ( AZBasePlayerController.Debug )
+					if ( HomeBasePlayerController.Debug )
 					{
 						DebugOverlay.Line( pos, Controller.Position, Color.Yellow, 0.5f, false );
 					}

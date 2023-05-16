@@ -4,26 +4,26 @@ using Sandbox.UI;
 using Sandbox.UI.Construct;
 using System;
 
-namespace ArcadeZone
+namespace Home
 {
-	public partial class AZChatBox : Panel
+	public partial class HomeChatBox : Panel
 	{
-		public static AZChatBox Current;
+		public static HomeChatBox Current;
 
 		public Panel Canvas { get; protected set; }
 		public Panel InputCanvas { get; protected set; }
 
 		public TextEntry Input { get; protected set; }
-		public AZChatCommandPanel CommandPanel { get; protected set; }
+		public HomeChatCommandPanel CommandPanel { get; protected set; }
 
 		public Button BtnSettings { get; protected set; }
 
-		public AZChatSettings Settings { get; protected set; }
+		public HomeChatSettings Settings { get; protected set; }
 
 		private int MessageCount = 0;
 		public bool MessageSounds = true;
 
-		public AZChatBox()
+		public HomeChatBox()
 		{
 			Current = this;
 
@@ -31,7 +31,7 @@ namespace ArcadeZone
 
 			Canvas = Add.Panel( "chat_canvas" );
 
-			CommandPanel = AddChild<AZChatCommandPanel>();
+			CommandPanel = AddChild<HomeChatCommandPanel>();
 
 			InputCanvas = Add.Panel( "input_canvas" );
 
@@ -44,7 +44,7 @@ namespace ArcadeZone
 			BtnSettings = InputCanvas.Add.Button( "⚙️", "btn-settings");
 			BtnSettings.AddEventListener( "onclick", OnBtnSettings );
 
-			Settings = AddChild<AZChatSettings>();
+			Settings = AddChild<HomeChatSettings>();
 		}
 
 		void Open()
@@ -89,7 +89,7 @@ namespace ArcadeZone
 
 		public void AddEntry( string name, string message, string avatar, string color = "", string nameColor = "")
 		{
-			var e = Canvas.AddChild<AZChatEntry>();
+			var e = Canvas.AddChild<HomeChatEntry>();
 			Canvas.SetChildIndex(e, 0);
 
 			e.Message.Text = message;
@@ -132,7 +132,7 @@ namespace ArcadeZone
 			MessageCount++;
 		}
 
-		[ConCmd.Admin("az_announce", Help = "Announces a message to all players in chat")]
+		[ConCmd.Admin("home_announce", Help = "Announces a message to all players in chat")]
 		public static void Announce( string message, string color = "yellow" )
 		{
 			AddChatEntry( To.Everyone, null, message, null, color);
@@ -154,6 +154,8 @@ namespace ArcadeZone
 		[ConCmd.Server( "say" )]
 		public static void Say( string message )
 		{
+			Log.Info("ayo");
+
 			// todo - reject more stuff
 			if ( message.Contains( '\n' ) || message.Contains( '\r' ) )
 				return;

@@ -1,10 +1,10 @@
 ﻿namespace Sandbox.UI;
 
-public class AZVoiceSpeaker : Label
+public class HomeVoiceSpeaker : Label
 {
 	private float VoiceLevel = 0.0f;
 
-	public AZVoiceSpeaker()
+	public HomeVoiceSpeaker()
 	{
 		StyleSheet.Load( "/UI/VoiceChat/VoiceSpeaker.scss" );
 		Text = "mic";

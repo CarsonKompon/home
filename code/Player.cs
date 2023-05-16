@@ -2,9 +2,9 @@ using Sandbox;
 using Sandbox.Component;
 using System.ComponentModel;
 
-namespace ArcadeZone;
+namespace Home;
 
-partial class AZPlayer : AnimatedEntity
+partial class HomePlayer : AnimatedEntity
 {
     /// <summary>
 	/// The PlayerController takes player input and moves the player. This needs
@@ -17,13 +17,15 @@ partial class AZPlayer : AnimatedEntity
 	/// on the client.
 	/// </summary>
 	[Net, Predicted]
-	public AZPawnController Controller { get; set; }
+	public HomePawnController Controller { get; set; }
+
+	public static HomePlayer Local => Game.LocalPawn as HomePlayer;
 
     /// <summary>
 	/// This is used for noclip mode
 	/// </summary>
 	[Net, Predicted]
-	public AZPawnController DevController { get; set; }
+	public HomePawnController DevController { get; set; }
 
     [Net, Predicted] public Entity ActiveChild { get; set; }
 	[ClientInput] public Vector3 InputDirection { get; protected set; }
@@ -47,18 +49,24 @@ partial class AZPlayer : AnimatedEntity
     /// The clothing container is what dresses the citizen
     /// </summary>
     public ClothingContainer Clothing = new();
+	[Net] public string ClothingString { get; set; } = "";
+
+	[Net] public string Location { get; set; } = "Loading...";
+
+	[Net] public int Money { get; set; } = 0;
 
     TimeSince timeSinceDied;
 
-    public AZPlayer()
+    public HomePlayer()
     {
         Inventory = new Inventory( this );
     }
 
-    public AZPlayer(IClient client) : this()
+    public HomePlayer(IClient client) : this()
     {
         // Load clothing from client data
         Clothing.LoadFromClient(client);
+		ClothingString = Clothing.Serialize();
     }
 
     /// <summary>
@@ -66,7 +74,7 @@ partial class AZPlayer : AnimatedEntity
 	/// on both client and server. This is called as an accessor every tick.. so maybe
 	/// avoid creating new classes here or you're gonna be making a ton of garbage!
 	/// </summary>
-	public virtual AZPawnController GetActiveController()
+	public virtual HomePawnController GetActiveController()
 	{
 		if ( DevController != null ) return DevController;
 
@@ -120,15 +128,15 @@ partial class AZPlayer : AnimatedEntity
 	[ConCmd.Admin("noclip")]
 	static void DoPlayerNoclip()
 	{
-		if(ConsoleSystem.Caller.Pawn is AZPlayer player)
+		if(ConsoleSystem.Caller.Pawn is HomePlayer player)
 		{
-			if(player.DevController is AZNoclipController)
+			if(player.DevController is HomeNoclipController)
 			{
 				player.DevController = null;
 			}
 			else
 			{
-				player.DevController = new AZNoclipController();
+				player.DevController = new HomeNoclipController();
 			}
 		}
 	}
@@ -137,13 +145,13 @@ partial class AZPlayer : AnimatedEntity
 	[ConCmd.Admin("kill")]
 	static void DoPlayerSuicide()
 	{
-		if(ConsoleSystem.Caller.Pawn is AZPlayer player && player.TimeSinceSpawned > 2f)
+		if(ConsoleSystem.Caller.Pawn is HomePlayer player && player.TimeSinceSpawned > 2f)
 		{
 			player.TakeDamage(new DamageInfo {Damage = player.Health * 99 });
 		}
 	}
 
-	void SimulateAnimation(AZPawnController controller)
+	void SimulateAnimation(HomePawnController controller)
 	{
 		if(controller == null) return;
 
@@ -182,7 +190,7 @@ partial class AZPlayer : AnimatedEntity
 		if ( controller.HasEvent( "jump" ) ) animHelper.TriggerJump();
 		// if ( ActiveChild != lastWeapon ) animHelper.TriggerDeploy();
 
-		if ( ActiveChild is AZBaseCarriable carry )
+		if ( ActiveChild is HomeBaseCarriable carry )
 		{
 			carry.SimulateAnimator( animHelper );
 		}
@@ -296,13 +304,13 @@ partial class AZPlayer : AnimatedEntity
 
 		TimeSinceSpawned = 0;
 
-        Controller = new AZWalkController
+        Controller = new HomeWalkController
         {
             WalkSpeed = 60f,
             DefaultSpeed = 180f
         };
 
-        if(DevController is AZNoclipController)
+        if(DevController is HomeNoclipController)
         {
             DevController = null;
         }
@@ -329,7 +337,7 @@ partial class AZPlayer : AnimatedEntity
 
 	public override void OnKilled()
 	{
-		AZGame.Current?.OnKilled(this);
+		HomeGame.Current?.OnKilled(this);
 
 		timeSinceDied = 0;
 		LifeState = LifeState.Dead;
@@ -506,12 +514,12 @@ partial class AZPlayer : AnimatedEntity
 	/// </summary>
 	public virtual void OnActiveChildChanged( Entity previous, Entity next )
 	{
-		if ( previous is AZBaseCarriable previousBc )
+		if ( previous is HomeBaseCarriable previousBc )
 		{
 			previousBc?.ActiveEnd( this, previousBc.Owner != this );
 		}
 
-		if ( next is AZBaseCarriable nextBc )
+		if ( next is HomeBaseCarriable nextBc )
 		{
 			nextBc?.ActiveStart( this );
 		}

@@ -2,10 +2,10 @@
 using System;
 using Sandbox;
 
-namespace ArcadeZone
+namespace Home
 {
     [Library]
-	public partial class AZWalkController : AZBasePlayerController
+	public partial class HomeWalkController : HomeBasePlayerController
     {
         [Net] public float SprintSpeed { get; set; } = 320.0f;
         [Net] public float WalkSpeed { get; set; } = 150.0f;
@@ -30,14 +30,14 @@ namespace ArcadeZone
         public bool Swimming { get; set; } = false;
         [Net] public bool AutoJump { get; set; } = false;
 
-        public AZDuck Duck;
-        public AZUnstuck Unstuck;
+        public HomeDuck Duck;
+        public HomeUnstuck Unstuck;
 
 
-        public AZWalkController()
+        public HomeWalkController()
         {
-            Duck = new AZDuck(this);
-            Unstuck = new AZUnstuck(this);
+            Duck = new HomeDuck(this);
+            Unstuck = new HomeUnstuck(this);
         }
 
         /// <summary>
@@ -91,13 +91,13 @@ namespace ArcadeZone
         {
             base.FrameSimulate();
 
-			var pl = Pawn as AZPlayer;
+			var pl = Pawn as HomePlayer;
 			EyeRotation = pl.ViewAngles.ToRotation();
 		}
 
         public override void Simulate()
         {
-			var pl = Pawn as AZPlayer;
+			var pl = Pawn as HomePlayer;
 
 			EyeLocalPosition = Vector3.Up * (EyeHeight * Pawn.Scale);
 			UpdateBBox();
@@ -542,7 +542,7 @@ namespace ArcadeZone
 
         public virtual void CheckLadder()
         {
-			var pl = Pawn as AZPlayer;
+			var pl = Pawn as HomePlayer;
 
             var wishvel = new Vector3( pl.InputDirection.x.Clamp( -1f, 1f ), pl.InputDirection.y.Clamp( -1f, 1f ), 0);
             wishvel *= pl.ViewAngles.WithPitch(0).ToRotation();

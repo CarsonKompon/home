@@ -1,0 +1,26 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/generic.shader_c"
+
+	//---- Translucent ----
+	F_TRANSLUCENT 1
+
+	//---- Color ----
+	g_vColorTint "[1.000000 1.000000 1.000000 0.000000]"
+	TextureColor "materials/tools/toolsroom.png"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- Normal ----
+	TextureNormal "materials/default/default_normal.tga"
+
+	//---- Normal Map ----
+	g_flBumpStrength "10.000"
+
+	//---- Translucent ----
+	g_flOpacityScale "0.470"
+	TextureTranslucency "materials/default/default_trans.tga"
+}

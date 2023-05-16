@@ -4,9 +4,9 @@ using Sandbox.UI.Construct;
 using System;
 using System.Collections.Generic;
 
-namespace ArcadeZone;
+namespace Home;
 
-public class AZVoiceEntry : Panel
+public class HomeVoiceEntry : Panel
 {
 	public Friend Friend;
 
@@ -20,7 +20,7 @@ public class AZVoiceEntry : Panel
 
 	RealTimeSince timeSincePlayed;
 
-	public AZVoiceEntry( Panel parent, long steamId )
+	public HomeVoiceEntry( Panel parent, long steamId )
 	{
 		Parent = parent;
 

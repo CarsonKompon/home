@@ -4,9 +4,9 @@ using Sandbox.UI.Construct;
 
 
 
-namespace ArcadeZone
+namespace Home
 {
-	public partial class AZChatEntry : Panel
+	public partial class HomeChatEntry : Panel
 	{
 		public Label NameLabel { get; internal set; }
 		public Label Message { get; internal set; }
@@ -14,7 +14,7 @@ namespace ArcadeZone
 
 		public RealTimeSince TimeSinceBorn = 0;
 
-		public AZChatEntry()
+		public HomeChatEntry()
 		{
 			Avatar = Add.Image();
 			NameLabel = Add.Label( "Name", "name" );

@@ -1,15 +1,15 @@
 using Sandbox;
 
-namespace ArcadeZone
+namespace Home
 {
 	[Library]
-	public class AZDuck : BaseNetworkable
+	public class HomeDuck : BaseNetworkable
 	{
-		public AZBasePlayerController Controller;
+		public HomeBasePlayerController Controller;
 
 		public bool IsActive; // replicate
 
-		public AZDuck( AZBasePlayerController controller )
+		public HomeDuck( HomeBasePlayerController controller )
 		{
 			Controller = controller;
 		}

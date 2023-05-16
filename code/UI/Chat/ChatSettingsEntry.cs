@@ -5,14 +5,14 @@ using Sandbox.UI.Construct;
 
 
 
-namespace ArcadeZone
+namespace Home
 {
-	public partial class AZChatSettingsEntry : Panel
+	public partial class HomeChatSettingsEntry : Panel
 	{
 		public Label Name { get; internal set; }
 		public Panel Control { get; internal set; }
 
-		public AZChatSettingsEntry(string name, Panel control)
+		public HomeChatSettingsEntry(string name, Panel control)
         {
             Name = Add.Label( name, "name" );
             Control = control;

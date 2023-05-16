@@ -6,7 +6,7 @@ using Sandbox.UI.Construct;
 
 
 
-namespace ArcadeZone
+namespace Home
 {
 	public partial class NotificationPanelEntry : Panel
 	{

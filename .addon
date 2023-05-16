@@ -1,9 +1,9 @@
 {
-  "Title": "ArcadeZone",
+  "Title": "Home",
   "Type": "game",
   "Org": "carsonk",
-  "Ident": "arcadezone",
-  "Tags": null,
+  "Ident": "home",
+  "Tags": "hangout plaza tower suite house build",
   "Schema": 1,
   "HasAssets": true,
   "AssetsPath": "",
@@ -203,6 +203,13 @@
         }
       ]
     },
-    "HttpAllowList": null
+    "HttpAllowList": null,
+    "PackageSettings": [
+      {
+        "Choices": [],
+        "ConVarName": "",
+        "DisplayName": "New Setting..."
+      }
+    ]
   }
 }

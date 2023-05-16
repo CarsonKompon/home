@@ -1,9 +1,9 @@
 using Sandbox;
 
-namespace ArcadeZone
+namespace Home
 {
 	[Library]
-	public abstract class AZBasePlayerController : AZPawnController
+	public abstract class HomeBasePlayerController : HomePawnController
 	{
 		[ConVar.Replicated( "debug_playercontroller" )]
 		public static bool Debug { get; set; } = false;
@@ -59,7 +59,7 @@ namespace ArcadeZone
 		{
 			base.FrameSimulate();
 
-			var pl = Pawn as AZPlayer;
+			var pl = Pawn as HomePlayer;
 			EyeRotation = pl.ViewAngles.ToRotation();
 		}
 	}

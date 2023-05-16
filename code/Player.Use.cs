@@ -1,8 +1,8 @@
 using Sandbox;
 
-namespace ArcadeZone;
+namespace Home;
 
-partial class AZPlayer
+partial class HomePlayer
 {
     /// <summary>
 	/// Entity the player is currently using via their interaction key.

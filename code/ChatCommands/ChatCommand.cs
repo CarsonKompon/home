@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Sandbox;
 
 
-namespace ArcadeZone;
+namespace Home;
 
 public class ChatArgument
 {
@@ -56,12 +56,12 @@ public class ChatCommandAttribute : LibraryAttribute
     {
         string commandString = "Chat Commands:";
 
-        foreach (ChatCommandAttribute command in AZGame.Current.ChatCommands)
+        foreach (ChatCommandAttribute command in HomeGame.Current.ChatCommands)
         {
             commandString += "\n/" + command.Name.ToLower() + " - " + command.Description;
         }
 
-        AZChatBox.AddChatEntry(To.Single(client), null, commandString);
+        HomeChatBox.AddChatEntry(To.Single(client), null, commandString);
     }
 
     public virtual void Run(IClient client, string[] arguments)
@@ -81,7 +81,7 @@ public class ChatCommandAttribute : LibraryAttribute
 
         // Find the command
         ChatCommandAttribute chatCommand = null;
-        foreach(ChatCommandAttribute cmd in AZGame.Current.ChatCommands)
+        foreach(ChatCommandAttribute cmd in HomeGame.Current.ChatCommands)
         {
             if(cmd != null && cmd.Name.ToLower() == parts[0].ToLower())
             {

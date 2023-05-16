@@ -1,14 +1,14 @@
 using Sandbox;
 using Editor;
 
-namespace ArcadeZone;
+namespace Home;
 
 /// <summary>
 /// This is a teleporter that allows you to teleport around the lobby
 /// </summary>
-[Library("az_arcadecab_tetris"), HammerEntity]
-[EditorModel("models/az_dev_arcadecab01.vmdl")]
-[Title("Tetris Arcade Cabinet"), Category("Arcade Zone"), Icon("gamepad")]
+[Library("home_arcadecab_tetris"), HammerEntity]
+[EditorModel("models/home_dev_arcadecab01.vmdl")]
+[Title("Tetris Arcade Cabinet"), Category("Home"), Icon("gamepad")]
 public class ArcadeCabinetTetris : Entity
 {
     // [Property(Title = "Current Destination" )]

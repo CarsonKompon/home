@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Sandbox;
 
 
-namespace ArcadeZone;
+namespace Home;
 
 [ChatCommand]
 public class PingChatCommand : ChatCommandAttribute
@@ -17,6 +17,6 @@ public class PingChatCommand : ChatCommandAttribute
 
     public override void Run(IClient client)
     {
-        AZChatBox.AddChatEntry(To.Single(client), null, "Pong! Your current ping is " + client.Ping + "ms");
+        HomeChatBox.AddChatEntry(To.Single(client), null, "Pong! Your current ping is " + client.Ping + "ms");
     }
 }

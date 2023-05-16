@@ -1,7 +1,7 @@
 using Sandbox;
 using System.Collections.Generic;
 
-namespace ArcadeZone;
+namespace Home;
 
 partial class Inventory
 {
@@ -11,12 +11,12 @@ partial class Inventory
     {
         get
         {
-            return (Owner as AZPlayer)?.ActiveChild;
+            return (Owner as HomePlayer)?.ActiveChild;
         }
 
         set
         {
-            if(Owner is AZPlayer player)
+            if(Owner is HomePlayer player)
             {
                 player.ActiveChild = value;
             }

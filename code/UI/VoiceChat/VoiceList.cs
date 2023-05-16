@@ -2,13 +2,13 @@ using Sandbox;
 using Sandbox.UI;
 using System.Linq;
 
-namespace ArcadeZone;
+namespace Home;
 
-public class AZVoiceList : Panel
+public class HomeVoiceList : Panel
 {
-	public static AZVoiceList Current { get; internal set; }
+	public static HomeVoiceList Current { get; internal set; }
 
-	public AZVoiceList()
+	public HomeVoiceList()
 	{
 		Current = this;
 		StyleSheet.Load( "/UI/VoiceChat/VoiceList.scss" );
@@ -18,8 +18,8 @@ public class AZVoiceList : Panel
 	{
         if(Voice.IsRecording)
         {
-            var entry = ChildrenOfType<AZVoiceEntry>().FirstOrDefault( x => x.Friend.Id == Game.LocalClient.SteamId );
-            if ( entry == null ) entry = new AZVoiceEntry( this, Game.LocalClient.SteamId );
+            var entry = ChildrenOfType<HomeVoiceEntry>().FirstOrDefault( x => x.Friend.Id == Game.LocalClient.SteamId );
+            if ( entry == null ) entry = new HomeVoiceEntry( this, Game.LocalClient.SteamId );
 
             entry.Update( Voice.Level );
         }
@@ -27,8 +27,8 @@ public class AZVoiceList : Panel
 
 	public void OnVoicePlayed( long steamId, float level )
 	{
-		var entry = ChildrenOfType<AZVoiceEntry>().FirstOrDefault( x => x.Friend.Id == steamId );
-		if ( entry == null ) entry = new AZVoiceEntry( this, steamId );
+		var entry = ChildrenOfType<HomeVoiceEntry>().FirstOrDefault( x => x.Friend.Id == steamId );
+		if ( entry == null ) entry = new HomeVoiceEntry( this, steamId );
 
 		entry.Update( level );
 	}

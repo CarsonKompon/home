@@ -1,9 +1,9 @@
 using Sandbox;
 using System.Collections.Generic;
 
-namespace ArcadeZone
+namespace Home
 {
-	public class AZPawnController : BaseNetworkable
+	public class HomePawnController : BaseNetworkable
 	{
 		internal HashSet<string> Events;
 		internal HashSet<string> Tags;
@@ -27,7 +27,7 @@ namespace ArcadeZone
 			Rotation = entity.Rotation;
 			Velocity = entity.Velocity;
 
-			if ( entity is AZPlayer player )
+			if ( entity is HomePlayer player )
 			{
 				EyeRotation = player.EyeRotation;
 				EyeLocalPosition = player.EyeLocalPosition;
@@ -38,7 +38,7 @@ namespace ArcadeZone
 			WishVelocity = entity.Velocity;
 		}
 
-		public void UpdateFromController( AZPawnController controller )
+		public void UpdateFromController( HomePawnController controller )
 		{
 			Pawn = controller.Pawn;
 			Client = controller.Client;
@@ -65,7 +65,7 @@ namespace ArcadeZone
 			target.GroundEntity = GroundEntity;
 			target.BaseVelocity = BaseVelocity;
 
-			if ( target is AZPlayer player )
+			if ( target is HomePlayer player )
 			{
 				player.EyeLocalPosition = EyeLocalPosition;
 				player.EyeRotation = EyeRotation;
@@ -91,7 +91,7 @@ namespace ArcadeZone
 		/// <summary>
 		/// Call OnEvent for each event
 		/// </summary>
-		public virtual void RunEvents( AZPawnController additionalController )
+		public virtual void RunEvents( HomePawnController additionalController )
 		{
 			if ( Events == null ) return;
 

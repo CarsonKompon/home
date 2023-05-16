@@ -1,13 +1,13 @@
 using Sandbox;
 
-namespace ArcadeZone
+namespace Home
 {
 	[Library]
-    class AZNoclipController : AZBasePlayerController
+    class HomeNoclipController : HomeBasePlayerController
 	{
 		public override void Simulate()
 		{
-			var pl = Pawn as AZPlayer;
+			var pl = Pawn as HomePlayer;
 
 			var fwd = pl.InputDirection.x.Clamp( -1f, 1f );
 			var left = pl.InputDirection.y.Clamp( -1f, 1f );
