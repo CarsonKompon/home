@@ -19,15 +19,36 @@ public partial class RoomFrontDoor : DoorEntity
     [Property( Title = "Room ID" )]
     [Net] public int RoomId { get; set; } = 1;
 
+    public Transform StartTransform;
     public RoomFrontDoorNumber Number;
 
     public override void Spawn()
     {
         base.Spawn();
 
+        StartTransform = Transform;
+
         if(Game.IsServer)
         {
             SetState(RoomState.Vacant);
+
+            bool roomExists = false;
+			for(int i=0; i<RoomController.All.Count; i++)
+			{
+				if(RoomController.All[i].Id == RoomId)
+				{
+					RoomController.All[i].FrontDoor = this;
+					roomExists = true;
+					break;
+				}
+			}
+
+			// If the room does not exist, make a new one
+			if(!roomExists)
+			{
+				RoomController room = new RoomController(RoomId);
+				room.FrontDoor = this;
+			}
         }
     }
 
@@ -37,17 +58,9 @@ public partial class RoomFrontDoor : DoorEntity
 
         Number = new RoomFrontDoorNumber();
         Number.NumberLabel.Text = RoomId.ToString();
+        Number.Position = Position + Rotation.Backward * 2.125f + Rotation.Right * 24f + Rotation.Up * 4f;
+        Number.Rotation = Rotation * Rotation.From( new Angles( 0, 180, 0 ) );
         SetNumberState(RoomState.Vacant);
-    }
-
-    [GameEvent.Client.Frame]
-    void Tick()
-    {
-        if ( Number != null )
-        {
-            Number.Position = Position + Rotation.Backward * 2.125f + Rotation.Right * 25f;
-            Number.Rotation = Rotation * Rotation.From( new Angles( 0, 180, 0 ) );
-        }
     }
 
     public void SetState(RoomState state)
@@ -55,12 +68,14 @@ public partial class RoomFrontDoor : DoorEntity
         switch ( state )
         {
             case RoomState.Vacant:
+                Close();
                 Lock();
                 break;
             case RoomState.Open:
                 Unlock();
                 break;
             case RoomState.Locked:
+                Close();
                 Lock();
                 break;
             case RoomState.FriendsOnly:

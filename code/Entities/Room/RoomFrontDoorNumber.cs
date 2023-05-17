@@ -13,6 +13,8 @@ public class RoomFrontDoorNumber : WorldPanel
     {
         StyleSheet.Load("/Entities/Room/RoomFrontDoorNumber.scss");
         NumberLabel = Add.Label("1", "title");
+
+        PanelBounds = new Rect( -475, -1000, 950, 2200 );
     }
 
     public void SetState(RoomState state)

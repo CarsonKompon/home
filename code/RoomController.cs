@@ -35,12 +35,22 @@ public class RoomController
     public RoomController(int id) : this()
     {
         Id = id;
+
+        Log.Info("Initializing room #" + Id.ToString());
     }
 
     public static RoomController GetOpenRoom()
     {
         if(!HasVacancies) return null;
 
+        Random random = new Random();
+
+        for(int i=All.Count - 1; i>1; i--)
+        {
+            
+        }
+
+        // Return a random room from the list
         return All.Find(room => room.State == RoomState.Vacant);
     }
 

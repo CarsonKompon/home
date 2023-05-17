@@ -19,10 +19,7 @@ public partial class RoomBuildingZone : TriggerMultiple
     public int RoomId { get; set; } = 1;
 
 
-    public HomePlayer OwningPlayer { get; set; } = null;
-
-    public DoorEntity FrontDoor = null;
-    public bool IsOwned => OwningPlayer != null;
+    public RoomController Room { get; set; } = null;
 
     public override void Spawn()
     {
@@ -33,9 +30,11 @@ public partial class RoomBuildingZone : TriggerMultiple
             bool roomExists = false;
 			for(int i=0; i<RoomController.All.Count; i++)
 			{
-				if(RoomController.All[i].Id == RoomId)
+                RoomController room = RoomController.All[i];
+				if(room.Id == RoomId)
 				{
-					RoomController.All[i].BuildingZones.Add(this);
+					room.BuildingZones.Add(this);
+                    Room = room;
 					roomExists = true;
 					break;
 				}
@@ -44,17 +43,8 @@ public partial class RoomBuildingZone : TriggerMultiple
 			// If the room does not exist, make a new one
 			if(!roomExists)
 			{
-				RoomController room = new RoomController();
-				room.Id = RoomId;
-				room.BuildingZones.Add(this);
-
-				// Find the front door for the room
-				Entity.All.OfType<RoomFrontDoor>().ToList().ForEach(frontDoor => {
-					if(frontDoor.RoomId == room.Id)
-					{
-						room.FrontDoor = frontDoor;
-					}
-				});
+				Room = new RoomController(RoomId);
+				Room.BuildingZones.Add(this);
 			}
         }
     }
@@ -65,7 +55,14 @@ public partial class RoomBuildingZone : TriggerMultiple
 
         if ( other is HomePlayer player )
         {
-            player.Location = "Room #" + RoomId.ToString();
+            if(Room != null && Room.State == RoomState.Vacant)
+            {
+                player.Position = Room.FrontDoor.StartTransform.Position + Room.FrontDoor.StartTransform.Rotation.Backward * 64f + Vector3.Down * 24f;
+            }
+            else
+            {
+                player.Location = "Room #" + RoomId.ToString();
+            }
         }
 	}
 

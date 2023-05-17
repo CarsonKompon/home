@@ -1,27 +1,32 @@
 roomfrontdoornumber {
     justify-content: center;
     align-items: center;
-}
 
-label {
-    font-family: Poppins;
-    font-size: 420px;
-    font-weight: bolder;
-    color: rgba(white, 0.5);
-
-    .vacant {
+    label {
+        font-family: Poppins;
+        font-size: 420px;
+        font-weight: bolder;
         color: rgba(white, 0.5);
     }
 
-    .open {
-        color: rgba(lime, 0.5);
+    &.open {
+        background-color: rgba(lime, 0.2);
+        label {
+            color: rgba(white, 0.9);
+        }
     }
 
-    .locked {
-        color: rgba(red, 0.5);
+    &.locked {
+        background-color: rgba(red, 0.5);
+        label {
+            color: rgba(white, 0.9);
+        }
     }
 
-    .friends-only {
-        color: rgba(blue, 0.5);
+    &.friends-only {
+        background-color: rgba(blue, 0.5);
+        label {
+            color: rgba(white, 0.9);
+        }
     }
 }
