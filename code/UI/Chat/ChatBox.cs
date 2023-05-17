@@ -143,7 +143,6 @@ namespace Home
 		[ClientRpc]
 		public static void AddChatEntry( string name, string message, string avatar = null, string color = "", string nameColor = "" )
 		{
-			Log.Info("breo");
 			Current?.AddEntry( name, message, avatar, color, nameColor );
 
 			// Only log clientside if we're not the listen server host
@@ -156,8 +155,6 @@ namespace Home
 		[ConCmd.Server]
 		public static void SayMessage( string message )
 		{
-			Log.Info("WAGHTA");
-
 			Assert.NotNull( ConsoleSystem.Caller );
 
 			// todo - reject more stuff
