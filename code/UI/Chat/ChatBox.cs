@@ -1,5 +1,6 @@
 using System.Drawing;
 using Sandbox;
+using Sandbox.Diagnostics;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
 using System;
@@ -84,7 +85,7 @@ namespace Home
 			if ( string.IsNullOrWhiteSpace( msg ) )
 				return;
 
-			Say( msg );
+			SayMessage( msg );
 		}
 
 		public void AddEntry( string name, string message, string avatar, string color = "", string nameColor = "")
@@ -142,6 +143,7 @@ namespace Home
 		[ClientRpc]
 		public static void AddChatEntry( string name, string message, string avatar = null, string color = "", string nameColor = "" )
 		{
+			Log.Info("breo");
 			Current?.AddEntry( name, message, avatar, color, nameColor );
 
 			// Only log clientside if we're not the listen server host
@@ -151,10 +153,12 @@ namespace Home
 			}
 		}
 
-		[ConCmd.Server( "say" )]
-		public static void Say( string message )
+		[ConCmd.Server]
+		public static void SayMessage( string message )
 		{
-			Log.Info("ayo");
+			Log.Info("WAGHTA");
+
+			Assert.NotNull( ConsoleSystem.Caller );
 
 			// todo - reject more stuff
 			if ( message.Contains( '\n' ) || message.Contains( '\r' ) )
@@ -166,8 +170,6 @@ namespace Home
 				ChatCommandAttribute.Parse( ConsoleSystem.Caller, message );
 				return;
 			}
-
-			Log.Info( $"{ConsoleSystem.Caller}: {message}" );
       
 	  		if(ConsoleSystem.Caller?.SteamId == 76561198031113835)
 			{
