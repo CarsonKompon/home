@@ -114,7 +114,11 @@ public class AvatarHud : ScenePanel
 
         if(LocalAvatar != null)
         {
-            var Velocity = LocalAvatar.Controller.Velocity;
+            var Velocity = Vector3.Zero;
+            if(LocalAvatar.Controller != null)
+            {
+                Velocity = LocalAvatar.Controller.Velocity;
+            }
             var dir = Velocity;
             var forward = AvatarModel.Rotation.Forward.Dot( dir );
             var sideward = AvatarModel.Rotation.Right.Dot( dir );

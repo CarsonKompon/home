@@ -4,11 +4,11 @@ using Editor;
 namespace Home;
 
 /// <summary>
-/// This entity defines the spawn point of the player in first person shooter gamemodes.
+/// A brush that defines a location in the map that can be given a name to display in-game.
 /// </summary>
 [AutoApplyMaterial( "materials/tools/toolslocation.vmat" )]
 [Library( "home_location" ), HammerEntity, Solid]
-[Title( "Home Location Area" ), Category( "Home" ), Icon( "house" )]
+[Title( "Location Area" ), Category( "Tools" ), Icon( "place" )]
 public class LocationBrush : TriggerMultiple
 {
     /// <summary>

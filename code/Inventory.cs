@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Home;
 
-partial class Inventory
+public partial class Inventory
 {
     public Entity Owner {get; init; }
     public List<Entity> List = new List<Entity>();

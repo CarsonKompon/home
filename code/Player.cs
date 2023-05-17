@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace Home;
 
-partial class HomePlayer : AnimatedEntity
+public partial class HomePlayer : AnimatedEntity
 {
     /// <summary>
 	/// The PlayerController takes player input and moves the player. This needs
@@ -54,6 +54,8 @@ partial class HomePlayer : AnimatedEntity
 	[Net] public string Location { get; set; } = "Loading...";
 
 	[Net] public int Money { get; set; } = 0;
+
+	public RoomController Room { get; set;} = null;
 
     TimeSince timeSinceDied;
 
