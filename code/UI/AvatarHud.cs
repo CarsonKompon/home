@@ -42,7 +42,6 @@ public class AvatarHud : ScenePanel
 
 		Camera.Position = pos;
 		Camera.Rotation = Rotation.From( angles );
-		Camera.FieldOfView = 23;
 		//Camera.AmbientLightColor = Color.Gray * 0.1f;
 		Camera.Name = "Home Avatar";
     }
@@ -144,8 +143,8 @@ public class AvatarHud : ScenePanel
             AvatarModel.SetAnimParameter( "move_direction", LocalAvatar.GetAnimParameterFloat("move_direction") );
             AvatarModel.SetAnimParameter( "move_speed", LocalAvatar.GetAnimParameterFloat("move_speed") );
             AvatarModel.SetAnimParameter( "move_groundspeed", LocalAvatar.GetAnimParameterFloat("move_groundspeed") );
-            AvatarModel.SetAnimParameter( "move_y", LocalAvatar.GetAnimParameterFloat("move_y")/2.0f );
-            AvatarModel.SetAnimParameter( "move_x", LocalAvatar.GetAnimParameterFloat("move_x")/2.0f );
+            AvatarModel.SetAnimParameter( "move_y", LocalAvatar.GetAnimParameterFloat("move_y") );
+            AvatarModel.SetAnimParameter( "move_x", LocalAvatar.GetAnimParameterFloat("move_x") );
             AvatarModel.SetAnimParameter( "move_z", LocalAvatar.GetAnimParameterFloat("move_z") );
         }else{
             AvatarModel.SetAnimParameter("aim_head", headPos);
@@ -157,13 +156,12 @@ public class AvatarHud : ScenePanel
         AvatarModel.Update(RealTime.Delta);
 
         Angles angles = new(2, 180, 0);
-        Vector3 pos = AvatarModel.GetBoneWorldTransform("head").Position + angles.Forward * -50 + Vector3.Up * 5;
+        Vector3 pos = AvatarModel.GetBoneWorldTransform("head").Position + angles.Forward * -80 + Vector3.Up * 5;
 
         Camera.Position = pos;
         Camera.Rotation = Rotation.From(angles);
-        Camera.Ortho = true;
-        Camera.OrthoWidth = 32;
-        Camera.OrthoHeight = 32;
+        Camera.Ortho = false;
+        Camera.FieldOfView = 20;
 
         foreach(var clothingObject in ClothingObjects)
         {

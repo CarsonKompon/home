@@ -57,6 +57,15 @@ public partial class HomePlayer : AnimatedEntity
 
 	public RoomController Room { get; set;} = null;
 
+	public InventoryDbObject PlayerData { 
+		get => _playerData;
+		set {
+			_playerData = value;
+			Money = (int)value.Money;
+		}
+	}
+	private InventoryDbObject _playerData;
+
     TimeSince timeSinceDied;
 
     public HomePlayer()

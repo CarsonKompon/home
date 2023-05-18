@@ -59,7 +59,7 @@ public partial class RoomBuildingZone : TriggerMultiple
             {
                 player.Position = Room.FrontDoor.StartTransform.Position + Room.FrontDoor.StartTransform.Rotation.Backward * 64f + Vector3.Down * 24f;
             }
-            else
+            else if(Game.IsServer)
             {
                 player.Location = "Room #" + RoomId.ToString();
             }

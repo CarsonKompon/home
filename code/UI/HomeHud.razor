@@ -1,0 +1,32 @@
+@using Sandbox;
+@using Sandbox.UI;
+
+@inherits RootPanel;
+@attribute [StyleSheet("/UI/Styles/_styles.scss")]
+
+@namespace Home
+
+<root>
+    <HomeGUI />
+    <TabMenu />
+
+    <HomeChatBox />
+    <HomeVoiceList />
+    <HomeVoiceSpeaker />
+
+    <NotificationPanel />
+</root>
+
+@code
+{
+    internal HomeHud()
+    {
+        Game.RootPanel = this;
+    }
+
+    [ConCmd.Client("home_toggle_hud")]
+    public static void ToggleHud()
+    {
+        Game.RootPanel.SetClass("hidden", !Game.RootPanel.HasClass("hidden"));
+    }
+}

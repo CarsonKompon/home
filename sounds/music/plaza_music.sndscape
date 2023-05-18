@@ -1,0 +1,14 @@
+{
+  "MasterVolume": "1.00,1.00,0",
+  "LoopedSounds": [
+    {
+      "SoundFile": "sounds/music/plaza_music.vsnd",
+      "Volume": "0.26,0.26,0"
+    },
+    {
+      "SoundFile": "sounds/ambient/ambient_plaza.vsnd",
+      "Volume": "0.08,0.08,0"
+    }
+  ],
+  "StingSounds": []
+}

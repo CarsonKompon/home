@@ -1,0 +1,10 @@
+{
+  "MasterVolume": "0.01,0.01,0",
+  "LoopedSounds": [
+    {
+      "SoundFile": "sounds/ambient/ambient_open_airy.vsnd",
+      "Volume": "1.00,1.00,0"
+    }
+  ],
+  "StingSounds": []
+}

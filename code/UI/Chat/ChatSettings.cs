@@ -18,7 +18,7 @@ namespace Home
             // AVATARS
             Switch toggleAvatars = new Switch();
             toggleAvatars.Value = !Cookie.Get<bool>("home.chat.hide-avatars", false);
-            SettingAvatars = new HomeChatSettingsEntry( "Avatars", toggleAvatars );
+            SettingAvatars = new HomeChatSettingsEntry( "#chat.settings.avatars", toggleAvatars );
             SettingAvatars.Control.AddEventListener( "onchange", onSwitchAvatars );
             AddChild(SettingAvatars);
             onSwitchAvatars();
@@ -29,7 +29,7 @@ namespace Home
             sliderFontSize.MaxValue = 24;
             sliderFontSize.Step = 1;
             sliderFontSize.Value = Cookie.Get<float>("home.chat.font-size", 14);
-            SettingFontSize = new HomeChatSettingsEntry( "Font Size", sliderFontSize );
+            SettingFontSize = new HomeChatSettingsEntry( "#chat.settings.fontsize", sliderFontSize );
             SettingFontSize.Control.AddEventListener( "onchange", onSliderFontSize );
             AddChild(SettingFontSize);
             onSliderFontSize();
@@ -37,7 +37,7 @@ namespace Home
             // CHAT SOUNDS
             Switch toggleChatSounds = new Switch();
             toggleChatSounds.Value = !Cookie.Get<bool>("home.chat.mute", false);
-            SettingChatSounds = new HomeChatSettingsEntry( "Chat Blip SFX", toggleChatSounds );
+            SettingChatSounds = new HomeChatSettingsEntry( "#chat.settings.chatsfx", toggleChatSounds );
             SettingChatSounds.Control.AddEventListener( "onchange", onSwitchChatSounds );
             AddChild(SettingChatSounds);
             onSwitchChatSounds();

@@ -21,6 +21,8 @@ public class LocationBrush : TriggerMultiple
 	{
 		base.OnTriggered( other );
 
+        if(!Game.IsServer) return;
+
         if ( other is HomePlayer player )
         {
             player.Location = LocationName;

@@ -1,0 +1,49 @@
+@using Sandbox;
+@using Sandbox.UI;
+
+@namespace Home
+
+@inherits NavigatorPanel
+
+<root class="tab-menu">
+    <panel class="navbar">
+        <panel class="container">
+            <navlink href="/">Players</navlink>
+            <navlink href="/outfit">Outfit</navlink>
+            <navlink href="/settings">Settings</navlink>
+            <navlink href="/about">About</navlink>
+        </panel>
+    </panel>
+    <panel class="content" @ref="NavigatorCanvas"></panel>
+</root>
+
+@code
+{
+    protected override void OnAfterTreeRender(bool firstTime)
+    {
+        base.OnAfterTreeRender(firstTime);
+
+        if(firstTime)
+        {
+            Navigate("/");
+        }
+    }
+
+    [GameEvent.Client.BuildInput]
+    public void OnBuildInput()
+    {
+        if(Input.Pressed("score"))
+        {
+            AddClass("open");
+        }
+        else if(Input.Released("score"))
+        {
+            RemoveClass("open");
+        }
+    }
+
+    void Close()
+    {
+        RemoveClass("open");
+    }
+}

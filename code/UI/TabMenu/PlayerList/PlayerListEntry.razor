@@ -1,0 +1,47 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@using System;
+@using System.Collections.Generic;
+
+@namespace Home
+
+<root>
+    @if(!Client.IsValid())
+    {
+        return;
+    }
+
+    <div class="player-container">
+        <image class="avatar" texture=@AvatarTexture() />
+
+        <div class="name-container">
+            <label class="name" text=@Client.Name />
+            <label class="location" text=@Player.Location />
+        </div>
+    </div>
+
+    <div class="ping-container">
+        <label class="ping" text=@Client.Ping />
+        <label>ms</label>
+    </div>
+</root>
+
+@code
+{
+    public IClient Client { get; set; }
+
+    HomePlayer Player
+    {
+        get
+        {
+            if(!Client.IsValid() || !Client.Pawn.IsValid()) return null;
+            return Client.Pawn as HomePlayer;
+        }
+    }
+
+    string AvatarTexture()
+    {
+        return $"avatar:{Client.SteamId}";
+    }
+}
