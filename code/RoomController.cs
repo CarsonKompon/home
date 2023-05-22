@@ -20,6 +20,7 @@ public class RoomController
     public int Id { get; set; } = 0;
 
     public List<RoomBuildingZone> BuildingZones { get; set; } = null;
+    public List<RoomEditableMaterial> EditableMaterials { get; set; } = null;
     public RoomFrontDoor FrontDoor { get; set; } = null;
     public RoomState State { get; set; } = RoomState.Vacant;
 
@@ -28,6 +29,7 @@ public class RoomController
     public RoomController()
     {
         BuildingZones = new List<RoomBuildingZone>();
+        EditableMaterials = new List<RoomEditableMaterial>();
 
         All.Add(this);
     }
