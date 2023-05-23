@@ -22,32 +22,31 @@
 
 @code
 {
-    public static HomeGUI Current;
 
     public AvatarHud AvatarHud;
     public Label MoneyLabel;
     public Label LocationLabel;
 
-    public HomeGUI()
+    string GetMoney()
     {
-        Current = this;
-    }
-
-    public string GetMoney()
-    {
-        if (HomePlayer.Local != null)
+        if (Game.LocalPawn is HomePlayer player)
         {
-            return $"${HomePlayer.Local.Money}";
+            return $"${player.Money}";
         }
         return "$0";
     }
 
-    public string GetLocation()
+    string GetLocation()
     {
-        if (HomePlayer.Local != null)
+        if (Game.LocalPawn is HomePlayer player)
         {
-            return HomePlayer.Local.Location;
+            return player.Location;
         }
         return "Main Plaza";
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(GetMoney(), GetLocation());
     }
 }

@@ -18,7 +18,7 @@
     "GameNetworkType": "Multiplayer",
     "MapSelect": "Unrestricted",
     "MapList": [
-      "facepunch.flatgrass"
+      "carsonk.home_a02"
     ],
     "RankType": "None",
     "PerMapRanking": false,
@@ -206,9 +206,13 @@
     "HttpAllowList": null,
     "PackageSettings": [
       {
+        "DisplayType": "Boolean",
         "Choices": [],
-        "ConVarName": "",
-        "DisplayName": "New Setting..."
+        "ConVarName": "home_sv_offline",
+        "DisplayName": "Offline Mode",
+        "DefaultValue": "false",
+        "Description": "If this is enabled, the game will grab data from local session storage instead of the servers.\nYou can still play online with others when this is enabled.",
+        "Group": ""
       }
     ]
   }

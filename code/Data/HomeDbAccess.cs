@@ -113,8 +113,6 @@ public class RemoteDb
 
 		var commandResponse = await SendMessageAndAwaitResponse( value );
 		
-		Log.Info(commandResponse);
-
 		var updateResponse = JsonSerializer.Deserialize<T>( commandResponse );
 
 		return updateResponse;
@@ -132,8 +130,6 @@ public class RemoteDb
 		};
 		
 		var commandResponse = await SendMessageAndAwaitResponse(value);
-		
-		Log.Info(commandResponse);
 
 		var queryResponse = JsonSerializer.Deserialize<QueryResponse<T>>( commandResponse );
 		if ( queryResponse.Error != null )
@@ -146,6 +142,8 @@ public class RemoteDb
 
 	private async Task<string> SendMessageAndAwaitResponse(object value)
 	{
+		Log.Info( value );
+
 		var msg = JsonSerializer.Serialize(value);
 		_response = null;
 		await _socket.Send(msg);

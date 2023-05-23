@@ -14,10 +14,15 @@
     display: none;
 }
 
+rootpanel {
+    width: 100%;
+    height: 100%;
+}
+
 homegui {
     position: absolute;
-    width: 20vw;
-    height: 10vw;
+    aspect-ratio: 2;
+    height: 20%;
     left: 48px;
     bottom: 48px;
 
@@ -46,29 +51,28 @@ homegui {
 
     .canvas {
         position: absolute;
+        flex-direction: column;
         width: 100%;
         height: 60%;
         left: 45%;
-        bottom: 15%;
+        bottom: 0%;
         text-shadow: 4px 4px 4px rgba(black, 0.5);
     }
 
     .money {
-        position: absolute;
         font-family: Poppins;
-        font-size: 30%;
+        font-size: 64px;
         font-weight: bolder;
         color: white;
-        bottom: 0px;
+        margin-top: 1%;
     }
 
     .location {
-        position: absolute;
         font-family: Poppins;
-        font-size: 10%;
+        font-size: 24px;
         font-weight: bolder;
         color: white;
-        bottom: -10%;
+        margin-bottom: 5%;
     }
 
     .roof {

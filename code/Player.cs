@@ -1,6 +1,7 @@
 using Sandbox;
 using Sandbox.Component;
 using System.ComponentModel;
+using System.Text.Json;
 
 namespace Home;
 
@@ -53,18 +54,12 @@ public partial class HomePlayer : AnimatedEntity
 
 	[Net] public string Location { get; set; } = "Loading...";
 
-	[Net] public int Money { get; set; } = 0;
+	[Net] public long Money { get; set; } = 0;
 
+	[ConVar.ClientData] public string ClientDataUpload { get; set; } = "";
+
+	[Net] public string PlayerDataString { get; set; } = "";
 	public RoomController Room { get; set;} = null;
-
-	public InventoryDbObject PlayerData { 
-		get => _playerData;
-		set {
-			_playerData = value;
-			Money = (int)value.Money;
-		}
-	}
-	private InventoryDbObject _playerData;
 
     TimeSince timeSinceDied;
 
@@ -608,5 +603,5 @@ public partial class HomePlayer : AnimatedEntity
 	/// Override the aim ray to use the player's eye position and rotation.
 	/// </summary>
 	public override Ray AimRay => new Ray( EyePosition, EyeRotation.Forward );
-	
+
 }

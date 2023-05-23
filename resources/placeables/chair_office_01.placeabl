@@ -1,0 +1,8 @@
+{
+  "Id": "chair_office_01",
+  "Name": "Office Chair",
+  "Cost": 0,
+  "Model": "models/sbox_props/office_chair/office_chair.vmdl",
+  "PlaceSound": null,
+  "StashSound": null
+}

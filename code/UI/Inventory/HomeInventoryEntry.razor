@@ -1,0 +1,51 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@using System;
+@using System.Collections.Generic;
+
+@namespace Home
+
+<root>
+    <RotatingModelScenePanel Model=@GetModel() />
+
+    <label class="inventory-count" text=@GetCount() />
+</root>
+
+@code
+{
+    
+    public HomeDataInventoryEntry Entry
+    {
+        get { return _entry; }
+        set
+        {
+            _entry = value;
+            if(_entry == null) Placeable = null;
+            else Placeable = HomePlaceable.Find(_entry.Id);
+        }
+    }
+    private HomeDataInventoryEntry _entry;
+    private HomePlaceable Placeable;
+
+    private string GetModel()
+    {
+        if(Entry == null)
+        {
+            return "dev/error.vmdl_c";
+        }
+        return Placeable.Model;
+    }
+
+    private string GetCount()
+    {
+        if(Entry == null) return "";
+        if(Entry.Amount <= 1) return "";
+        return Entry.Amount.ToString();
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(GetCount());
+    }
+}

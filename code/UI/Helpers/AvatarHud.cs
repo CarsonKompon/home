@@ -77,7 +77,6 @@ public class AvatarHud : ScenePanel
         clothing.Deserialize((Game.LocalPawn as HomePlayer)?.ClothingString ?? "");
         if(clothing != null)
         {
-            Log.Info("UI:");
             Log.Info(clothing.Serialize());
             ClothingObjects = clothing.DressSceneObject(AvatarModel);
         }
