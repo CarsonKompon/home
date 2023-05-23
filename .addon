@@ -206,13 +206,9 @@
     "HttpAllowList": null,
     "PackageSettings": [
       {
-        "DisplayType": "Boolean",
         "Choices": [],
-        "ConVarName": "home_sv_offline",
-        "DisplayName": "Offline Mode",
-        "DefaultValue": "false",
-        "Description": "If this is enabled, the game will grab data from local session storage instead of the servers.\nYou can still play online with others when this is enabled.",
-        "Group": ""
+        "ConVarName": "",
+        "DisplayName": "New Setting..."
       }
     ]
   }

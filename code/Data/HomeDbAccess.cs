@@ -84,13 +84,7 @@ public class RemoteDb
 		public string Oid { get; set; }
 	}
 
-	public abstract class DbObject
-	{
-		[JsonPropertyName("_id")]
-		public ObjectId Id { get; set; }
-	}
-
-	private class QueryResponse<T> where T: DbObject
+	private class QueryResponse<T> where T: HomeData
 	{
 		[JsonPropertyName("Error")]
 		public string Error { get; set; }
@@ -99,7 +93,7 @@ public class RemoteDb
 		public List<T> Result { get; set; }
 	}
 	
-	public async Task<T> Upsert<T>(T @object) where T: DbObject
+	public async Task<T> Upsert<T>(T @object) where T: HomeData
 	{
 		if(!Connected) return null;
 
@@ -118,7 +112,7 @@ public class RemoteDb
 		return updateResponse;
 	}
 	
-	public async Task<List<T>> Query<T>( string query ) where T: DbObject
+	public async Task<List<T>> Query<T>( string query ) where T: HomeData
 	{
 		if(!Connected) return null;
 		

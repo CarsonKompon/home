@@ -25,9 +25,9 @@ namespace Home
 		{
 			base.Tick();
 
-			if ( TimeSinceBorn > 10 && !HasClass("hidden"))
+			if ( TimeSinceBorn > 10 && !HasClass("fade") )
 			{
-				AddClass("hidden");
+				AddClass("fade");
 			}
 		}
 	}

@@ -7,45 +7,36 @@
 @namespace Home
 
 <root>
-    <RotatingModelScenePanel Model=@GetModel() />
+    <RotatingModelScenePanel Model="@GetModel()" />
 
-    <label class="inventory-count" text=@GetCount() />
+    <label class="inventory-count" text=@GetAmount() />
 </root>
 
 @code
 {
     
-    public HomeDataInventoryEntry Entry
-    {
-        get { return _entry; }
-        set
-        {
-            _entry = value;
-            if(_entry == null) Placeable = null;
-            else Placeable = HomePlaceable.Find(_entry.Id);
-        }
-    }
-    private HomeDataInventoryEntry _entry;
-    private HomePlaceable Placeable;
+    public HomeDataInventoryEntry Entry;
 
     private string GetModel()
     {
-        if(Entry == null)
-        {
-            return "dev/error.vmdl_c";
-        }
-        return Placeable.Model;
+        HomePlaceable placeable = HomePlaceable.Find(Entry.Id);
+        return placeable.Model;
     }
 
-    private string GetCount()
+    private string GetName()
     {
-        if(Entry == null) return "";
-        if(Entry.Amount <= 1) return "";
+        HomePlaceable placeable = HomePlaceable.Find(Entry.Id);
+        if(placeable == null) return "N/A";
+        return placeable.Name;
+    }
+
+    private string GetAmount()
+    {
         return Entry.Amount.ToString();
     }
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(GetCount());
+        return HashCode.Combine(GetAmount());
     }
 }

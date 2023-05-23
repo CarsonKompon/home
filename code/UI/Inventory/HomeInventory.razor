@@ -7,16 +7,40 @@
 @namespace Home
 
 <root>
-
+    <div class="inventory-container">
+        @foreach (HomeDataInventoryEntry item in GetData().Inventory)
+        {
+            <HomeInventoryEntry Entry="@item" />
+        }
+    </div>
 </root>
 
 @code
 {
 
-    
+    HomeData GetData()
+    {
+        if(HomeGame.Current.PlayerData.ContainsKey(Game.LocalClient.SteamId))
+        {
+            return HomeGame.Current.PlayerData[Game.LocalClient.SteamId];
+        }
+        return new HomeData(Game.LocalClient.SteamId);
+    }
+
+    string GetName(HomeDataInventoryEntry item)
+    {
+        HomePlaceable placeable = HomePlaceable.Find(item.Id);
+        if(placeable == null) return "N/A";
+        return placeable.Name;
+    }
+
+    int GetAmount(HomeDataInventoryEntry item)
+    {
+        return item.Amount;
+    }
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(1);
+        return HashCode.Combine(GetData().Inventory.Count);
     }
 }

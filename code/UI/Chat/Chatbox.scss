@@ -1,7 +1,7 @@
 ﻿homechatbox
 {
 	position: absolute;
-	bottom: 212px;
+	bottom: 30%;
 	left: 48px;
 	z-index: 100;
 	flex-direction: column;
@@ -25,7 +25,7 @@
 
 		homechatentry
 		{
-			&.hidden
+			&.fade
 			{
 				opacity: 0;
 			}
@@ -102,7 +102,7 @@
 
 			homechatentry
 			{
-				&.hidden
+				&.fade
 				{
 					opacity: 1;
 				}

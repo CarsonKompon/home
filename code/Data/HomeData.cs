@@ -5,8 +5,10 @@ using System.Text.Json.Serialization;
 
 namespace Home;
 
-public class HomeData : RemoteDb.DbObject
+public class HomeData : BaseNetworkable
 {
+    [JsonPropertyName("_id")]
+	public RemoteDb.ObjectId Id { get; set; }
     public NumberLong SteamId { get; set; }
     public NumberLong TimesPlayed { get; set; }
     public NumberLong Money { get; set; }
@@ -25,19 +27,12 @@ public class HomeData : RemoteDb.DbObject
     }
 
 
-    [JsonIgnore] public HomePlayer Player { get; protected set; }
+    [JsonIgnore] public HomePlayer Player { get; set; }
 
 
     public bool Save()
     {
         if(!Game.IsServer) return false;
-
-        if(HomeGame.OfflineMode)
-        {
-            Player.PlayerDataString = JsonSerializer.Serialize(this);
-            HomeGame.SaveOfflineDataClientRpc(To.Single(Player.Client));
-            return true;
-        }
         
         return HomeGame.UploadPlayerData(this) == null;
     }
