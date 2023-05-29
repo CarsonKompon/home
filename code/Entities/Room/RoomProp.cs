@@ -9,6 +9,7 @@ public partial class RoomProp : Prop
 {
     [Net] public long OwnerId { get; set; }
     [Net] public string PlaceableId { get; set; }
+    [Net] public float LocalAngle { get; set; } = 0f;
 
     public RoomProp()
     {

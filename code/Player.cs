@@ -417,6 +417,7 @@ public partial class HomePlayer : AnimatedEntity
 				if(Input.MouseWheel != 0)
 				{
 					PlacingAngle += Input.MouseWheel * 15f;
+					PlacingAngle = MathF.Round(PlacingAngle / 15f) * 15f;
 				}
 			}
 			else
@@ -433,6 +434,8 @@ public partial class HomePlayer : AnimatedEntity
 						SetPlacing(prop);
 						var dragging = Game.RootPanel.AddChild<HomeInventoryDragging>();
 			            dragging.Placeable = HomePlaceable.Find(prop.PlaceableId);
+
+						PlacingAngle = prop.LocalAngle;
 					}
 				}
 			}

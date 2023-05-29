@@ -26,6 +26,7 @@
         if(Game.LocalPawn is HomePlayer player)
         {
             player.PlacingAngle += value * 15f;
+			player.PlacingAngle = MathF.Round(player.PlacingAngle / 15f) * 15f;
         }
     }
 		

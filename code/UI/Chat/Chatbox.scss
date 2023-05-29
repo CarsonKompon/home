@@ -13,6 +13,7 @@
 	padding: 10px;
 	max-height: 400px;
 	height: 400px;
+	pointer-events: none;
 
 	.chat_canvas
 	{
@@ -133,7 +134,7 @@
 	{
 		.chat_canvas
 		{
-		homechatentry
+			homechatentry
 			{
 				padding: 4px;
 

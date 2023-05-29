@@ -81,19 +81,19 @@ public partial class HomeGame : GameManager
 			RoomProp prop = player.MovingEntity as RoomProp;
 			prop.Position = player.PlacingPosition;
 			prop.Rotation = player.PlacingRotation;
+			prop.LocalAngle = player.PlacingAngle;
 		}
 		else
 		{
 			// Check the player's inventory
 			if(!player.UsePlaceable(placeable.Id)) return;
 
-			Log.Info(player.Stash.FirstOrDefault(x => x.Id == placeable.Id).Used.ToString());
-
 			// Create the prop
 			RoomProp prop = new RoomProp(placeable, ConsoleSystem.Caller.SteamId)
 			{
 				Position = player.PlacingPosition,
-				Rotation = player.PlacingRotation
+				Rotation = player.PlacingRotation,
+				LocalAngle = player.PlacingAngle
 			};
 
 			// Add the prop to the room
@@ -106,18 +106,15 @@ public partial class HomeGame : GameManager
 	[ConCmd.Server("home_try_pickup")]
 	public static void TryPickup()
 	{
-		Log.Info("Trying to pickup on server");
 		// Check the player and their variables
 		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
 		if(player.MovingEntity == null) return;
 
-		Log.Info("Trying to check the prop on server");
 		//Check the prop
 		if(player.MovingEntity is not RoomProp prop) return;
 		if(!player.CanUsePlaceable(prop.PlaceableId)) return;
 		player.UnusePlaceable(prop.PlaceableId);
 
-		Log.Info("Goodbye prop on server");
 		// Remove the prop from the room
 		prop.Delete();
 
