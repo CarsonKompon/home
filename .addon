@@ -203,7 +203,7 @@
         }
       ]
     },
-    "HttpAllowList": null,
+    "HttpAllowList": [],
     "PackageSettings": [
       {
         "Choices": [],

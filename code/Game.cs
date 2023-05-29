@@ -16,17 +16,12 @@ namespace Home;
 public partial class HomeGame : GameManager
 {
 	public static new HomeGame Current;
-	[Net] public IDictionary<long, HomeData> PlayerData { get; set; }
 
 	public List<ChatCommandAttribute> ChatCommands { get; set; }
-
-	private RemoteDb _db;
 
 	public HomeGame()
 	{
 		Current = this;
-
-		_db = new RemoteDb( "ws://localhost:8443/ws", null );
 
 		// Load the game's different libraries
 		LoadLibraries();
@@ -47,8 +42,7 @@ public partial class HomeGame : GameManager
 
 		client.Pawn = player;
 
-		// Load the player's data
-		LoadPlayerData(client);
+		player.LoadPlayerDataClientRpc(To.Single(client));
 	}
 
 	[Event.Hotload]
@@ -63,40 +57,36 @@ public partial class HomeGame : GameManager
 		}
 	}
 
-	private void LoadPlayerData(IClient client)
+	[ConCmd.Server("home_try_place")]
+	public static void TryPlace()
 	{
-		if(!Game.IsServer) return;
+		// Check the player and their variables
+		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+		if(player.Placing == "") return;
+		if(player.RoomNumber == -1) return;
 
-		var query = _db.Query<HomeData>($"SteamId = {client.SteamId}").Result;
-		HomeData data = query?.FirstOrDefault(null as HomeData);
+		// Check the placeable
+		HomePlaceable placeable = HomePlaceable.Find(player.Placing);
+		if(placeable == null) return;
 
-		// If none exists, create a new one
-		if(data == null)
+		// Check placing in the room
+		RoomController room = RoomController.All.Find(room => room.Id == player.RoomNumber);
+		if(room == null) return;
+		if(room.PointInside(player.PlacingPosition) == false) return;
+
+		// Check the player's inventory
+		if(!player.HasPlaceable(placeable.Id)) return;
+		player.TakePlaceable(placeable.Id);
+
+		// Create the prop
+		RoomPropStatic prop = new RoomPropStatic(placeable.Model)
 		{
-			data = new HomeData(client.SteamId);
-			data.Save();
-		}
+			Position = player.PlacingPosition,
+			Rotation = Rotation.From(0, player.PlacingRotation, 0)
+		};
 
-		// Set the player
-		data.SetPlayer(client.Pawn as HomePlayer);
-		
-		OnPlayerDataLoad(client.SteamId, data);
-
-		PlayerData.Add(client.SteamId, data);
-	}
-
-	public static HomeData UploadPlayerData(HomeData data)
-	{
-		return Current._db.Upsert(data).Result; // Result is necessary to ensure it's been updated server-side
-	}
-
-	private void OnPlayerDataLoad(long steamId, HomeData data)
-	{
-		data.TimesPlayed += 1L;
-		data.GiveMoney(50L);
-		data.GivePlaceable(HomePlaceable.Find("chair_office_01"));
-
-		data.Save();
+		// Add the prop to the room
+		room.Props.Add(prop);
 	}
 
 }

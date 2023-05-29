@@ -6,26 +6,34 @@
 
 @namespace Home
 
-<root>
-    <RotatingModelScenePanel Model="@GetModel()" />
-
+<root ref=@Panel>
     <label class="inventory-count" text=@GetAmount() />
 </root>
 
 @code
-{
-    
-    public HomeDataInventoryEntry Entry;
+{    
+    public StashEntry Entry;
+
+    private Panel Panel;
+    private Vector2 DragOffset;
+    private HomeInventoryDragging Dragging = null;
+		 
+
+    protected virtual void OnAfterTreeRender( bool firstTime )
+    {
+        Panel.Style.BackgroundImage = Texture.Load( FileSystem.Mounted, $"/models/{GetModel()}_c.png", false);
+    }
 
     private string GetModel()
     {
-        HomePlaceable placeable = HomePlaceable.Find(Entry.Id);
+        HomePlaceable placeable = Entry.GetPlaceable();
+        if(placeable == null) return "";
         return placeable.Model;
     }
 
     private string GetName()
     {
-        HomePlaceable placeable = HomePlaceable.Find(Entry.Id);
+        HomePlaceable placeable = Entry.GetPlaceable();
         if(placeable == null) return "N/A";
         return placeable.Name;
     }
@@ -34,6 +42,49 @@
     {
         return Entry.Amount.ToString();
     }
+
+    protected override void OnMouseDown(MousePanelEvent e)
+    {
+        base.OnMouseDown(e);
+        if(!HasClass("dragging"))
+        {
+            AddClass("dragging");
+            Dragging = Game.RootPanel.AddChild<HomeInventoryDragging>();
+            Dragging.Model = GetModel();
+            Dragging.Style.BackgroundImage = Texture.Load( FileSystem.Mounted, $"/models/{Dragging.Model}_c.png", false);
+            Dragging.DragOffset = MousePosition;
+
+            if(Game.LocalPawn is HomePlayer player)
+            {
+                player.PlacingModel = GetModel();
+                player.Placing = Entry.Id;
+                player.CanPlace = true;
+            }
+        }
+    }
+
+    protected override void OnMouseUp( MousePanelEvent e )
+    {
+        base.OnMouseUp( e );
+        if(HasClass("dragging"))
+        {
+            RemoveClass("dragging");
+        }
+        if(Dragging != null)
+        {
+            Dragging.Delete();
+            Dragging = null;
+            
+            if(Game.LocalPawn is HomePlayer player)
+            {
+                player.TryPlace();
+                player.PlacingModel = "";
+                player.CanPlace = false;
+            }
+        }
+    }
+
+		
 
     protected override int BuildHash()
     {

@@ -2,6 +2,7 @@ using Sandbox;
 using Sandbox.Component;
 using System.ComponentModel;
 using System.Text.Json;
+using System.Collections.Generic;
 
 namespace Home;
 
@@ -52,14 +53,8 @@ public partial class HomePlayer : AnimatedEntity
     public ClothingContainer Clothing = new();
 	[Net] public string ClothingString { get; set; } = "";
 
-	[Net] public string Location { get; set; } = "Loading...";
-
-	[Net] public long Money { get; set; } = 0;
-
-	[ConVar.ClientData] public string ClientDataUpload { get; set; } = "";
-
-	[Net] public string PlayerDataString { get; set; } = "";
-	public RoomController Room { get; set;} = null;
+	[Net] public string Location { get; set; } = "N/A";
+	[Net] public int RoomNumber { get; set;} = -1;
 
     TimeSince timeSinceDied;
 
@@ -222,8 +217,10 @@ public partial class HomePlayer : AnimatedEntity
 		}
 		Camera.FieldOfView = Screen.CreateVerticalFieldOfView( Game.Preferences.FieldOfView );
 
-		if(Input.MouseWheel != 0) // ZOOM CAMERA IN/OUT
+		if(Input.MouseWheel != 0)
 		{
+
+			// ZOOM CAMERA IN/OUT
 			float previousZoom = ThirdPersonZoom;
 			ThirdPersonZoom = MathX.Clamp(ThirdPersonZoom - Input.MouseWheel * 10, 10, 400);
 			if(Input.MouseWheel > 0f && ThirdPersonZoom <= 10)
@@ -233,6 +230,13 @@ public partial class HomePlayer : AnimatedEntity
 			else if(Input.MouseWheel < 0f && ThirdPersonZoom < 10)
 			{
 				ThirdPersonZoom = 10;
+			}
+
+			// ROTATE PLACEABLE
+			if(PlacingModel != "")
+			{
+				PlacingRotation += Input.MouseWheel * 15f;
+				Log.Info(PlacingRotation);
 			}
 		}
 
@@ -302,6 +306,11 @@ public partial class HomePlayer : AnimatedEntity
 		Tags.Add( "player" );
 
 		base.Spawn();
+
+		if(Game.IsClient)
+		{
+			_ = new PlacingGuide();
+		}
 	}
 
 	public virtual void Respawn()

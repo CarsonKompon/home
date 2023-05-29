@@ -8,8 +8,9 @@
 
 <root>
     <div class="inventory-container">
-        @foreach (HomeDataInventoryEntry item in GetData().Inventory)
+        @foreach (StashEntry item in GetInventory())
         {
+            @if(item.Amount == 0) continue;
             <HomeInventoryEntry Entry="@item" />
         }
     </div>
@@ -18,29 +19,41 @@
 @code
 {
 
-    HomeData GetData()
+    IList<StashEntry> GetInventory()
     {
-        if(HomeGame.Current.PlayerData.ContainsKey(Game.LocalClient.SteamId))
-        {
-            return HomeGame.Current.PlayerData[Game.LocalClient.SteamId];
-        }
-        return new HomeData(Game.LocalClient.SteamId);
+        if(Game.LocalPawn is HomePlayer player) return player.Stash;
+        return new List<StashEntry>();
     }
 
-    string GetName(HomeDataInventoryEntry item)
+    string GetName(StashEntry item)
     {
         HomePlaceable placeable = HomePlaceable.Find(item.Id);
         if(placeable == null) return "N/A";
         return placeable.Name;
     }
 
-    int GetAmount(HomeDataInventoryEntry item)
+    int GetAmount(StashEntry item)
     {
         return item.Amount;
     }
 
+    [GameEvent.Client.BuildInput]
+    public void OnBuildInput()
+    {
+        if(Input.Pressed("menu"))
+        {
+            AddClass("open");
+        }
+        else if(Input.Released("menu"))
+        {
+            RemoveClass("open");
+        }
+    }
+
+		
+
     protected override int BuildHash()
     {
-        return HashCode.Combine(GetData().Inventory.Count);
+        return HashCode.Combine(GetInventory().Count);
     }
 }

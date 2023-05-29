@@ -1,0 +1,49 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@using System;
+@using System.Collections.Generic;
+
+@namespace Home
+
+<root>
+</root>
+
+@code
+{
+    public string Model { get; set; }
+    public Vector2 DragOffset { get; set; }
+
+    public override void OnMouseWheel( float value )
+    {
+        base.OnMouseWheel( value );
+        if(Game.LocalPawn is HomePlayer player)
+        {
+            player.PlacingRotation += value * 15f;
+        }
+    }
+
+		
+
+    public override void Tick()
+    {
+        base.Tick();
+
+        Vector2 mousePosition = Mouse.Position;
+        Style.Left = (mousePosition.x - DragOffset.x) * ScaleFromScreen;
+        Style.Top = (mousePosition.y - DragOffset.y) * ScaleFromScreen;
+
+        if(Game.LocalPawn is HomePlayer player)
+        {
+            if(player.PlacingModel == "" && player.CanPlace)
+            {
+                player.PlacingModel = Model;
+            }
+            else if(player.PlacingModel != "" && !player.CanPlace)
+            {
+                player.PlacingModel = "";
+            }
+            SetClass("placing", player.PlacingModel != "");
+        }
+    }
+}

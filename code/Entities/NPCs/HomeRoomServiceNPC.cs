@@ -24,13 +24,20 @@ public partial class RoomServiceNPC : BaseNPC
 
     public override bool OnUse(Entity user)
     {
+        if(!Game.IsServer) return false;
+
         if (user is HomePlayer player)
         {
-            if(player.Room != null)
+            if(player.RoomNumber > -1)
             {
                 // Check out of room
-                HomeChatBox.AddChatEntry(To.Single(user), "", "You have checked out of room #" + player.Room.Id.ToString(), null, "yellow");
-                player.Room.RemoveOwner();
+                HomeChatBox.AddChatEntry(To.Single(user), "", "You have checked out of room #" + player.RoomNumber.ToString(), null, "yellow");
+                RoomController room = RoomController.All.Find(room => room.Id == player.RoomNumber);
+                if(room != null)
+                {
+                    room.RemoveOwner();
+                }
+
                 return false;
             }
 
@@ -39,12 +46,13 @@ public partial class RoomServiceNPC : BaseNPC
                 // Check into a room
                 RoomController room = RoomController.GetOpenRoom();
                 room.SetOwner(player);
-                HomeChatBox.AddChatEntry(To.Single(user), "", "You have checked in to room #" + player.Room.Id.ToString(), null, "yellow");
+                HomeChatBox.AddChatEntry(To.Single(user), "", "You have checked in to room #" + player.RoomNumber.ToString(), null, "yellow");
             }
             else
             {
                 HomeChatBox.AddChatEntry(To.Single(user), "", "Room Service is currently unavailable.", null, "yellow");
             }
+            
             // TODO: Open Room Service Menu
             //player.OpenRoomServiceMenu();
             

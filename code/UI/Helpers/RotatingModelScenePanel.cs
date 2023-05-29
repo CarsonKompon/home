@@ -12,8 +12,9 @@ namespace Home;
 public class RotatingModelScenePanel : ScenePanel
 {
     public int DistanceToObject = 20;
-    public int HeightOffset = 10;
-    public string Model = "models/citizen/citizen.vmdl";
+    public int HeightOffset = 5;
+    public string Model { get; set; } = "models/citizen/citizen.vmdl";
+    public bool DoesRotate { get; set; } = true;
 
     private SceneModel WorldModel;
 
@@ -29,7 +30,7 @@ public class RotatingModelScenePanel : ScenePanel
 
         // Create
         World = new SceneWorld();
-        WorldModel = new SceneModel(World, "models/citizen/citizen.vmdl", Transform.Zero);
+        WorldModel = new SceneModel(World, Model, Transform.Zero);
 
         LightWarm = new SceneSpotLight(World);
         LightWarm.Radius = 280;
@@ -61,10 +62,24 @@ public class RotatingModelScenePanel : ScenePanel
     {
         base.Tick();
 
+        if(WorldModel != null && WorldModel.Model.ResourcePath != Model)
+        {
+            WorldModel.Delete();
+            WorldModel = new SceneModel(World, Model, Transform.Zero.WithScale(0.25f));
+        }
+
+        if(!DoesRotate) return;
+
         if(Hovering)
         {
-            RotationAngle += 4f * Time.Delta;
+            RotationAngle += 20f * Time.Delta;
         }
+
+        Angles angles = new( 5, RotationAngle, 0 );
+		Vector3 pos = Vector3.Up * HeightOffset + angles.Forward * -DistanceToObject;
+
+		Camera.Position = pos;
+		Camera.Rotation = Rotation.From( angles );
     }
 
     protected override void OnMouseOver( MousePanelEvent e )
