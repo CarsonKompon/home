@@ -2,26 +2,27 @@
 @using Sandbox.UI;
 @using Sandbox.UI.Construct;
 @using System;
+@using System.Linq;
+@using System.Threading.Tasks;
 @using System.Collections.Generic;
 
 @namespace Home
 
-<root ref=@Panel>
+<root>
+    <div class="icon" style="background-image: url( @GetTexture() ); )"></div>
     <label class="inventory-count" text=@GetAmount() />
 </root>
 
 @code
 {    
     public StashEntry Entry;
-
-    private Panel Panel;
     private Vector2 DragOffset;
     private HomeInventoryDragging Dragging = null;
 		 
 
-    protected virtual void OnAfterTreeRender( bool firstTime )
+    protected override void OnAfterTreeRender( bool firstTime )
     {
-        Panel.Style.BackgroundImage = Texture.Load( FileSystem.Mounted, $"/models/{GetModel()}_c.png", false);
+        Tooltip = GetName();
     }
 
     private string GetModel()
@@ -40,7 +41,13 @@
 
     private string GetAmount()
     {
-        return Entry.Amount.ToString();
+        return (Entry.Amount - Entry.Used).ToString() + "/" + Entry.Amount.ToString();
+    }
+
+    private string GetTexture()
+    {
+        HomePlaceable placeable = Entry.GetPlaceable();
+        return placeable.GetThumbnail();
     }
 
     protected override void OnMouseDown(MousePanelEvent e)
@@ -50,15 +57,12 @@
         {
             AddClass("dragging");
             Dragging = Game.RootPanel.AddChild<HomeInventoryDragging>();
-            Dragging.Model = GetModel();
-            Dragging.Style.BackgroundImage = Texture.Load( FileSystem.Mounted, $"/models/{Dragging.Model}_c.png", false);
+            Dragging.Placeable = Entry.GetPlaceable();
             Dragging.DragOffset = MousePosition;
 
             if(Game.LocalPawn is HomePlayer player)
             {
-                player.PlacingModel = GetModel();
-                player.Placing = Entry.Id;
-                player.CanPlace = true;
+                player.SetPlacing(Dragging.Placeable);
             }
         }
     }
@@ -78,8 +82,6 @@
             if(Game.LocalPawn is HomePlayer player)
             {
                 player.TryPlace();
-                player.PlacingModel = "";
-                player.CanPlace = false;
             }
         }
     }

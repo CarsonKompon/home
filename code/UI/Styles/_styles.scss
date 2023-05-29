@@ -25,6 +25,7 @@ homegui {
     height: 20%;
     left: 48px;
     bottom: 48px;
+    z-index: -100;
 
     .bottom-line {
         position: absolute;
@@ -119,9 +120,10 @@ HomeInventoryEntry {
     border-radius: 16px;
     margin: 4px;
 
-    RotatingModelScenePanel {
+    .icon {
         width: 100%;
         height: 100%;
+        background-size: cover;
     }
 
     .inventory-count {
@@ -139,7 +141,7 @@ HomeInventoryEntry {
         pointer-events: none;
         background-color: white;
 
-        RotatingModelScenePanel {
+        .icon {
             display: none;
         }
 
@@ -155,13 +157,14 @@ HomeInventoryDragging {
     width: 100px;
     height: 100px;
     border-radius: 16px;
-    pointer-events: all;
+    pointer-events: none;
     opacity: 0.5;
-    z-index: 100;
+    z-index: 10;
 
-    RotatingModelScenePanel {
+    .icon {
         width: 100%;
         height: 100%;
+        pointer-events: none;
     }
 
     .inventory-count {

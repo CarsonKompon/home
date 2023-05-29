@@ -1,5 +1,6 @@
 @using System;
 @using System.Collections.Generic;
+@using System.Linq;
 @using Sandbox;
 @using Sandbox.UI;
 @using Sandbox.UI.Construct;
@@ -10,7 +11,7 @@
     <div class="inventory-container">
         @foreach (StashEntry item in GetInventory())
         {
-            @if(item.Amount == 0) continue;
+            @if(item == null || item.Amount == 0) continue;
             <HomeInventoryEntry Entry="@item" />
         }
     </div>
@@ -18,6 +19,12 @@
 
 @code
 {
+    private static HomeInventory Instance;
+
+    public HomeInventory()
+    {
+        Instance = this;
+    }
 
     IList<StashEntry> GetInventory()
     {
@@ -37,6 +44,22 @@
         return item.Amount;
     }
 
+    protected override void OnMouseUp( MousePanelEvent e )
+    {
+        if(Game.LocalPawn is HomePlayer player)
+        {
+            Log.Info(e.Target);
+            player.TryPickup();
+        }
+    }
+
+    [GameEvent.Tick.Client]
+    public void OnTick()
+    {
+        if(Game.LocalPawn is not HomePlayer player) return;
+        player.CanPlace = !IsHovering();
+    }
+
     [GameEvent.Client.BuildInput]
     public void OnBuildInput()
     {
@@ -50,7 +73,12 @@
         }
     }
 
-		
+    public static bool IsHovering()
+    {
+        if(Instance == null) return false;
+        if(!Instance.Box.RectOuter.IsInside(Mouse.Position)) return false;
+        return true;
+    }
 
     protected override int BuildHash()
     {

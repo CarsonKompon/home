@@ -27,13 +27,14 @@ public class PlayerData
 	public void Save()
 	{
 		Game.AssertClient();
-		Log.Info("Saving player data...");
+		Log.Info("🏠: Saving player data...");
 		string steamId = Game.LocalClient.SteamId.ToString();
 		if(!FileSystem.Data.DirectoryExists(steamId))
 		{
 			FileSystem.Data.CreateDirectory(steamId);
 		}
 		FileSystem.Data.WriteJson(steamId + "/player.json", this);
+		Log.Info("🏠: Player data saved!");
 	}	
 }
 
@@ -80,16 +81,20 @@ public partial class HomePlayer
 		PlayerData data = JsonSerializer.Deserialize<PlayerData>(client.GetClientData<string>("HomeUploadData"));
 		if(client.Pawn is HomePlayer player)
 		{
-			for(int i = 0; i < player.Stash.Count; i++)
+			for(int i = 0; i < data.Stash.Count; i++)
 			{
-				if(player.Stash[i].Amount <= 0)
+				if(data.Stash[i].Amount <= 0 || data.Stash[i].GetPlaceable() == null)
 				{
-					player.Stash.RemoveAt(i);
+					data.Stash.RemoveAt(i);
 					i--;
+				}
+				else
+				{
+					data.Stash[i].Used = 0;
 				}
 			}
 
-			Log.Info("we updated!");
+			Log.Info("🏠: Player data loaded!");
 			player.Money = data.Money;
 			player.Stash = data.Stash;
 
@@ -124,6 +129,11 @@ public partial class HomePlayer
 		return Stash.Any(s => s.Id == id && s.Amount >= amount);
 	}
 
+	public bool CanUsePlaceable(string id, int amount = 1)
+	{
+		return Stash.Any(s => s.Id == id && s.Amount - s.Used >= amount);
+	}
+
 	public void GivePlaceable(string id, long amount = 1)
 	{
 		if(Stash.Any(s => s.Id == id))
@@ -132,7 +142,7 @@ public partial class HomePlayer
 		}
 		else
 		{
-			Stash.Add(new StashEntry(id, (int)amount));
+			Stash.Add(new StashEntry(this.Client.SteamId, id, (int)amount));
 		}
 		SavePlayerDataClientRpc(To.Single(this.Client));
 	}
@@ -146,19 +156,41 @@ public partial class HomePlayer
 		return true;
 	}
 
+	public bool UsePlaceable(string id, int amount = 1)
+	{
+		if(!CanUsePlaceable(id, amount))
+			return false;
+		Stash.First(s => s.Id == id).Used += amount;
+		return true;
+	}
+
+	[ClientRpc]
+	public void UnusePlaceable(string id, int amount = 1)
+	{
+		if(!Stash.Any(s => s.Id == id && s.Used >= amount)) return;
+		Stash.First(s => s.Id == id).Used -= amount;
+	}
+
 }
 
 public partial class StashEntry : BaseNetworkable
 {
+	[Net] public long OwnerId { get; set; }
 	[Net] public string Id { get; set; }
 	[Net] public int Amount { get; set; }
 
+	[Net] public int Used { get; set; }
+
 	public StashEntry()
 	{
+		Id = "";
+		Amount = 0;
+		Used = 0;
 	}
 
-	public StashEntry(string id, int amount)
+	public StashEntry(long owner, string id, int amount) : this()
 	{
+		OwnerId = owner;
 		Id = id;
 		Amount = amount;
 	}

@@ -7,22 +7,27 @@
 @namespace Home
 
 <root>
+    <div class="icon" style="background-image: url( @GetTexture() ); )"></div>
 </root>
 
 @code
 {
-    public string Model { get; set; }
-    public Vector2 DragOffset { get; set; }
+    public HomePlaceable Placeable { get; set; }
+    public Vector2 DragOffset { get; set; } = new Vector2(25, 25);
+
+    private string GetTexture()
+    {
+        return Placeable.GetThumbnail();
+    }
 
     public override void OnMouseWheel( float value )
     {
         base.OnMouseWheel( value );
         if(Game.LocalPawn is HomePlayer player)
         {
-            player.PlacingRotation += value * 15f;
+            player.PlacingAngle += value * 15f;
         }
     }
-
 		
 
     public override void Tick()
@@ -35,15 +40,14 @@
 
         if(Game.LocalPawn is HomePlayer player)
         {
-            if(player.PlacingModel == "" && player.CanPlace)
-            {
-                player.PlacingModel = Model;
-            }
-            else if(player.PlacingModel != "" && !player.CanPlace)
-            {
-                player.PlacingModel = "";
-            }
-            SetClass("placing", player.PlacingModel != "");
+            SetClass("placing", player.CanPlace);
+            
+            if(player.PlacingModel == "") Delete();
         }
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(GetTexture());
     }
 }

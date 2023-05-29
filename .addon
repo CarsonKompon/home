@@ -200,6 +200,11 @@
           "Name": "Chat",
           "KeyboardCode": "enter",
           "GroupName": "Other"
+        },
+        {
+          "Name": "Zoom",
+          "KeyboardCode": "MOUSE3",
+          "GroupName": "Other"
         }
       ]
     },

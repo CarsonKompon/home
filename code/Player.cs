@@ -1,3 +1,4 @@
+using System;
 using Sandbox;
 using Sandbox.Component;
 using System.ComponentModel;
@@ -42,6 +43,7 @@ public partial class HomePlayer : AnimatedEntity
 
     private DamageInfo lastDamage;
 
+	public float FieldOfView { get; set; } = 90;
 	public float ThirdPersonZoom { get; set; } = 0;
 	public Angles ThirdPersonRotation { get; set; }
 
@@ -215,7 +217,9 @@ public partial class HomePlayer : AnimatedEntity
 			Camera.Rotation = ViewAngles.ToRotation();
 			ThirdPersonRotation = default;
 		}
-		Camera.FieldOfView = Screen.CreateVerticalFieldOfView( Game.Preferences.FieldOfView );
+		var targetFOV = Game.Preferences.FieldOfView - (Input.Down("Zoom") ? 40 : 0);
+		FieldOfView = MathX.LerpTo( FieldOfView, targetFOV, Time.Delta * 10f );
+		Camera.FieldOfView = Screen.CreateVerticalFieldOfView( FieldOfView );
 
 		if(Input.MouseWheel != 0)
 		{
@@ -230,13 +234,6 @@ public partial class HomePlayer : AnimatedEntity
 			else if(Input.MouseWheel < 0f && ThirdPersonZoom < 10)
 			{
 				ThirdPersonZoom = 10;
-			}
-
-			// ROTATE PLACEABLE
-			if(PlacingModel != "")
-			{
-				PlacingRotation += Input.MouseWheel * 15f;
-				Log.Info(PlacingRotation);
 			}
 		}
 
@@ -405,6 +402,41 @@ public partial class HomePlayer : AnimatedEntity
 			return;
 
 		Angles look = Input.AnalogLook;
+
+		// Room interactions
+		if(RoomNumber != -1)
+		{
+			if(IsPlacing)
+			{
+				if(Input.Released("attack1"))
+				{
+					if(CanPlace) TryPlace();
+					else TryPickup();
+				}
+
+				if(Input.MouseWheel != 0)
+				{
+					PlacingAngle += Input.MouseWheel * 15f;
+				}
+			}
+			else
+			{
+				if(Input.Pressed("attack1"))
+				{
+					// Cast a ray to see if we clicked on a HomePlaceable
+					var tr = Trace.Ray(new Ray(Camera.Position, Screen.GetDirection(Mouse.Position)), 1000f)
+						.Ignore(this)
+						.Run();
+
+					if(tr.Entity is RoomProp prop)
+					{
+						SetPlacing(prop);
+						var dragging = Game.RootPanel.AddChild<HomeInventoryDragging>();
+			            dragging.Placeable = HomePlaceable.Find(prop.PlaceableId);
+					}
+				}
+			}
+		}
 		
 		if(Input.Down("attack2") && ThirdPersonZoom > 0f)
 		{
@@ -564,6 +596,12 @@ public partial class HomePlayer : AnimatedEntity
 		{
 			Deafen( To.Single( Client ), info.Damage.LerpInverse( 0, 60 ) );
 		}
+	}
+	
+	public RoomController GetRoom()
+	{
+		if(RoomNumber == -1) return null;
+		return RoomController.All.Find(x => x.Id == RoomNumber);
 	}
 
 	// public override void OnChildAdded( Entity child )

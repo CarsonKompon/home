@@ -102,7 +102,7 @@ public class ChatCommandAttribute : LibraryAttribute
         // If the command has arguments, check if the number of arguments is correct
         if(parts.Length - 1 != chatCommand.Arguments.Count)
         {
-            Log.Info("Incorrect number of arguments");
+            Log.Info("🏠: Incorrect number of arguments");
             return;
         }
 

@@ -40,7 +40,7 @@ public partial class RoomController
     {
         Id = id;
 
-        Log.Info("Initializing room #" + Id.ToString());
+        Log.Info("🏠: Initializing room #" + Id.ToString());
     }
 
     public static RoomController GetOpenRoom()

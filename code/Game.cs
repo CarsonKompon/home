@@ -74,19 +74,68 @@ public partial class HomeGame : GameManager
 		if(room == null) return;
 		if(room.PointInside(player.PlacingPosition) == false) return;
 
-		// Check the player's inventory
-		if(!player.HasPlaceable(placeable.Id)) return;
-		player.TakePlaceable(placeable.Id);
-
-		// Create the prop
-		RoomPropStatic prop = new RoomPropStatic(placeable.Model)
+		// Check if we are moving a prop or placing a new one
+		if(player.MovingEntity != null)
 		{
-			Position = player.PlacingPosition,
-			Rotation = Rotation.From(0, player.PlacingRotation, 0)
-		};
+			// Move the prop
+			RoomProp prop = player.MovingEntity as RoomProp;
+			prop.Position = player.PlacingPosition;
+			prop.Rotation = player.PlacingRotation;
+		}
+		else
+		{
+			// Check the player's inventory
+			if(!player.UsePlaceable(placeable.Id)) return;
 
-		// Add the prop to the room
-		room.Props.Add(prop);
+			Log.Info(player.Stash.FirstOrDefault(x => x.Id == placeable.Id).Used.ToString());
+
+			// Create the prop
+			RoomProp prop = new RoomProp(placeable, ConsoleSystem.Caller.SteamId)
+			{
+				Position = player.PlacingPosition,
+				Rotation = player.PlacingRotation
+			};
+
+			// Add the prop to the room
+			room.Props.Add(prop);
+		}
+
+		player.FinishPlacing();
+	}
+
+	[ConCmd.Server("home_try_pickup")]
+	public static void TryPickup()
+	{
+		Log.Info("Trying to pickup on server");
+		// Check the player and their variables
+		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+		if(player.MovingEntity == null) return;
+
+		Log.Info("Trying to check the prop on server");
+		//Check the prop
+		if(player.MovingEntity is not RoomProp prop) return;
+		if(!player.CanUsePlaceable(prop.PlaceableId)) return;
+		player.UnusePlaceable(prop.PlaceableId);
+
+		Log.Info("Goodbye prop on server");
+		// Remove the prop from the room
+		prop.Delete();
+
+		player.FinishPlacing();
+	}
+
+	[ConCmd.Admin("home_give_placeable", Help = "Gives a placeable to a player")]
+	public static void GivePlaceable(string id)
+	{
+		// Check the player and their variables
+		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+
+		// Check the placeable
+		HomePlaceable placeable = HomePlaceable.Find(id);
+		if(placeable == null) return;
+
+		// Give the placeable to the player
+		player.GivePlaceable(placeable.Id);
 	}
 
 }

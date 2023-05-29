@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System;
+using System.Threading.Tasks;
 using Sandbox;
 
 
@@ -14,6 +15,10 @@ public partial class HomePlaceable : GameResource
     [ResourceType("vmdl")]
     public string Model { get; set; }
 
+    public string PackageIdent { get; set; } = "";
+    [ResourceType("png")]
+    public string ThumbnailOverride { get; set; } = "";
+
     [Category("Sounds")]
     [ResourceType("vsnd")]
     public string PlaceSound { get; set; }
@@ -22,6 +27,13 @@ public partial class HomePlaceable : GameResource
     [ResourceType("vsnd")]
     public string StashSound { get; set; }
 
+
+    private Package LoadedPackage;
+    public string GetThumbnail() {
+        if(ThumbnailOverride != "") return ThumbnailOverride;
+        if(PackageIdent == "") return ThumbnailOverride;
+        return LoadedPackage.Thumb;
+    }
 
 
     public static IReadOnlyList<HomePlaceable> All => _all;
@@ -33,6 +45,13 @@ public partial class HomePlaceable : GameResource
 
         if(!_all.Contains(this))
             _all.Add(this);
+
+        if(PackageIdent != "")
+        {
+            Package.Fetch(PackageIdent, false).ContinueWith((task) => {
+                LoadedPackage = task.Result;
+            });
+        }
 	}
 
     public static HomePlaceable Find(string id)
