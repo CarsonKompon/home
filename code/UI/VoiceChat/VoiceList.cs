@@ -14,16 +14,17 @@ public class HomeVoiceList : Panel
 		StyleSheet.Load( "/UI/VoiceChat/VoiceList.scss" );
 	}
 
-    public override void Tick()
-	{
-        if(Voice.IsRecording)
-        {
-            var entry = ChildrenOfType<HomeVoiceEntry>().FirstOrDefault( x => x.Friend.Id == Game.LocalClient.SteamId );
-            if ( entry == null ) entry = new HomeVoiceEntry( this, Game.LocalClient.SteamId );
+	// Show a voice list entry locally
+    // public override void Tick()
+	// {
+    //     if(Voice.IsRecording)
+    //     {
+    //         var entry = ChildrenOfType<HomeVoiceEntry>().FirstOrDefault( x => x.Friend.Id == Game.LocalClient.SteamId );
+    //         if ( entry == null ) entry = new HomeVoiceEntry( this, Game.LocalClient.SteamId );
 
-            entry.Update( Voice.Level );
-        }
-	}
+    //         entry.Update( Voice.Level );
+    //     }
+	// }
 
 	public void OnVoicePlayed( long steamId, float level )
 	{

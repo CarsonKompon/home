@@ -20,7 +20,6 @@ public partial class HomePlayer
 
 	public void TryPlace()
 	{
-		Log.Info("TRYING TO PALCE");
 		if(Placing == "") return;
 		if(!CanPlace)
 		{
@@ -34,8 +33,11 @@ public partial class HomePlayer
 
 	public void TryPickup()
 	{
-		if(MovingEntity == null) return;
-		Log.Info("TRYING TO PICKUP");
+		if(MovingEntity == null)
+		{
+			FinishPlacing();
+			return;
+		}
 		
 		ConsoleSystem.Run("home_try_pickup");
 	}

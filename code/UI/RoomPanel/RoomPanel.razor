@@ -1,0 +1,63 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+
+@namespace Home
+
+<root>
+    <div class="layout-header">
+        <div class="spacer" />
+        <label text=@GetRoomName() />
+        <img src="ui/GUI/ui_edit.png" />
+    </div>
+
+    <div class="layout-list">
+        @foreach (RoomLayout layout in HomeGame.LocalLayouts)
+        {
+            <RoomLayoutButton Layout="@layout" />
+        }
+    </div>
+
+    <div class="layout-buttons">
+        <button class="button" onclick="HomePlayer.JoinRoom()">Save Layout</button>
+        <button class="button" onclick="HomePlayer.CreateRoom()">Load Layout</button>
+    </div>
+</root>
+
+@code
+{
+    public string GetRoomName()
+    {
+        if(Game.LocalPawn is not HomePlayer player) return "N/A";
+        if(player.Room == null) return "Roomm";
+        return player.Room.Name;
+    }
+
+    [GameEvent.Client.BuildInput]
+    public void OnBuildInput()
+    {
+        if(Input.Pressed("menu"))
+        {
+            AddClass("open");
+        }
+        else if(Input.Released("menu"))
+        {
+            RemoveClass("open");
+        }
+    }
+
+    [GameEvent.Tick.Client]
+    public void OnTick()
+    {
+        if(Game.LocalPawn is not HomePlayer player) return;
+        SetClass("can-show", player.Room != null);
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(GetRoomName());
+    }
+}

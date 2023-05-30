@@ -56,7 +56,7 @@ public partial class HomePlayer : AnimatedEntity
 	[Net] public string ClothingString { get; set; } = "";
 
 	[Net] public string Location { get; set; } = "N/A";
-	[Net] public int RoomNumber { get; set;} = -1;
+	[Net] public RoomController Room { get; set; } = null;
 
     TimeSince timeSinceDied;
 
@@ -404,7 +404,7 @@ public partial class HomePlayer : AnimatedEntity
 		Angles look = Input.AnalogLook;
 
 		// Room interactions
-		if(RoomNumber != -1)
+		if(Room != null)
 		{
 			if(IsPlacing)
 			{
@@ -429,7 +429,7 @@ public partial class HomePlayer : AnimatedEntity
 						.Ignore(this)
 						.Run();
 
-					if(tr.Entity is RoomProp prop)
+					if(tr.Entity is RoomProp prop && prop.OwnerId == Game.LocalClient.SteamId)
 					{
 						SetPlacing(prop);
 						var dragging = Game.RootPanel.AddChild<HomeInventoryDragging>();
@@ -599,12 +599,6 @@ public partial class HomePlayer : AnimatedEntity
 		{
 			Deafen( To.Single( Client ), info.Damage.LerpInverse( 0, 60 ) );
 		}
-	}
-	
-	public RoomController GetRoom()
-	{
-		if(RoomNumber == -1) return null;
-		return RoomController.All.Find(x => x.Id == RoomNumber);
 	}
 
 	// public override void OnChildAdded( Entity child )

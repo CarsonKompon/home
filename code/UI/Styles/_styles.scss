@@ -17,6 +17,11 @@
 rootpanel {
     width: 100%;
     height: 100%;
+
+    &.devcamera
+    {
+        display: none;
+    }
 }
 
 homegui {
@@ -26,6 +31,8 @@ homegui {
     left: 48px;
     bottom: 48px;
     z-index: -100;
+
+    transition: all 0.2s ease-in-out;
 
     .bottom-line {
         position: absolute;
@@ -83,6 +90,11 @@ homegui {
         bottom: 50%;
     }
 
+    &.hide {
+        opacity: 0;
+        pointer-events: none;
+    }
+
 }
 
 
@@ -94,6 +106,7 @@ HomeInventory {
     height: 30%;
     background-color: white;
     border-radius: 32px 32px 0px 0px;
+    //overflow-y: scroll;
 
     opacity: 0;
     pointer-events: none;
@@ -164,7 +177,7 @@ HomeInventoryDragging {
     .icon {
         width: 100%;
         height: 100%;
-        pointer-events: none;
+        background-size: cover;
     }
 
     .inventory-count {
@@ -181,6 +194,10 @@ HomeInventoryDragging {
     &.placing {
         background-color: rgba(white, 0);
         pointer-events: all;
+
+        .icon {
+            display: none;
+        }
     }
 }
 
@@ -306,4 +323,126 @@ HomeInventoryDragging {
 
         }
     }
+}
+
+RoomPanel {
+    width: 15%;
+    height: 40%;
+    position: absolute;
+    left: 100%;
+    top: 20%;
+    background-color: lightgray;
+    border-radius: 32px 0px 0px 32px;
+    padding: 8px;
+
+    flex-direction: column;
+    align-items: center;
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition: all 0.2s ease-in-out;
+
+    .layout-header {
+        width: 100%;
+        height: 10%;
+        justify-content: center;
+        font-family: Poppins;
+        font-size: 24px;
+        font-weight: 500;
+
+        .spacer {
+            width: 33px;
+            height: 33px;
+        }
+
+        label {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        img {
+            width: 32px;
+            height: 32px;
+            background-image-tint: rgb(88, 88, 88);
+            pointer-events: auto;
+            transition: all 0.05s ease-in-out;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    .layout-list {
+        height: 80%;
+        width: 86%;
+        overflow-y: scroll;
+        flex-direction: column;
+        background-color: white;
+        border-radius: 8px;
+        padding: 8px;
+
+        RoomLayoutButton {
+            font-family: Verdana;
+            font-size: 18px;
+
+            //background-color: #eee;
+            border-radius: 4px;
+            padding: 4px;
+            margin-bottom: 4px;
+
+            &:nth-child(odd) {
+                background-color: #fafafa;
+            }
+
+            &.selected {
+                background-color: lightblue;
+            }
+        }
+    }
+
+    .layout-buttons {
+        width: 100%;
+        height: 20%;
+        justify-content: space-evenly;
+        align-items: center;
+
+        button {
+            width: 40%;
+            height: 48px;
+            border-radius: 8px;
+            font-family: Poppins;
+            font-size: 16px;
+            font-weight: 500;
+            background-color: white;
+            transition: all 0.1s ease-in-out;
+            justify-content: center;
+            align-items: center;
+
+            &:hover {
+                background-color: lightgoldenrodyellow;
+                //color: white;
+            }
+        }
+    }
+
+    // If the room panel has the "open" and "can-show" classes
+    &.open.can-show {
+        opacity: 1;
+        left: 85%;
+        pointer-events: all;
+    }
+
+}
+
+.tooltip
+{
+    font-family: Roboto;
+    background-color: rgba( #fea, 0.95 );
+    border: 1px solid rgba( #555, 0.1 );
+    padding: 2px 5px;
+    border-radius: 3px;
+    transform: translate( -50%, 100% );
+    color: #222;
 }

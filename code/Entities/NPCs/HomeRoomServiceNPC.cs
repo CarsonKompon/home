@@ -28,15 +28,11 @@ public partial class RoomServiceNPC : BaseNPC
 
         if (user is HomePlayer player)
         {
-            if(player.RoomNumber > -1)
+            if(player.Room != null)
             {
                 // Check out of room
-                HomeChatBox.AddChatEntry(To.Single(user), "", "You have checked out of room #" + player.RoomNumber.ToString(), null, "yellow");
-                RoomController room = RoomController.All.Find(room => room.Id == player.RoomNumber);
-                if(room != null)
-                {
-                    room.RemoveOwner();
-                }
+                HomeChatBox.AddChatEntry(To.Single(user), "", "You have checked out of room #" + player.Room.Id.ToString(), null, "yellow");
+                player.Room.RemoveOwner();
 
                 return false;
             }
@@ -46,7 +42,7 @@ public partial class RoomServiceNPC : BaseNPC
                 // Check into a room
                 RoomController room = RoomController.GetOpenRoom();
                 room.SetOwner(player);
-                HomeChatBox.AddChatEntry(To.Single(user), "", "You have checked in to room #" + player.RoomNumber.ToString(), null, "yellow");
+                HomeChatBox.AddChatEntry(To.Single(user), "", "You have checked in to room #" + room.Id.ToString(), null, "yellow");
             }
             else
             {

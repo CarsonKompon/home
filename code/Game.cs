@@ -17,6 +17,7 @@ public partial class HomeGame : GameManager
 {
 	public static new HomeGame Current;
 
+	public static List<RoomLayout> LocalLayouts = new List<RoomLayout>();
 	public List<ChatCommandAttribute> ChatCommands { get; set; }
 
 	public HomeGame()
@@ -30,7 +31,23 @@ public partial class HomeGame : GameManager
 		{
 			// Initialize HUD
 			Game.RootPanel?.Delete(true);
-			Game.RootPanel = new HomeHud();	
+			Game.RootPanel = new HomeHud();
+
+			// // Load local layouts
+			// long steamId = Game.LocalClient.SteamId;
+			// if(!FileSystem.Data.DirectoryExists(steamId.ToString()))
+			// {
+			// 	FileSystem.Data.CreateDirectory(steamId.ToString());
+			// }
+			// if(!FileSystem.Data.DirectoryExists(steamId + "/layouts"))
+			// {
+			// 	FileSystem.Data.CreateDirectory(steamId + "/layouts");
+			// }
+			// foreach(string file in FileSystem.Data.FindFile(steamId + "/layouts", "*.json"))
+			// {
+			// 	RoomLayout layout = FileSystem.Data.ReadJson<RoomLayout>(file);
+			// 	LocalLayouts.Add(layout);
+			// }
 		}
 	}
 
@@ -43,6 +60,11 @@ public partial class HomeGame : GameManager
 		client.Pawn = player;
 
 		player.LoadPlayerDataClientRpc(To.Single(client));
+	}
+
+	public override void OnVoicePlayed( IClient cl )
+	{
+		HomeVoiceList.Current?.OnVoicePlayed( cl.SteamId, cl.Voice.CurrentLevel );
 	}
 
 	[Event.Hotload]
@@ -63,16 +85,14 @@ public partial class HomeGame : GameManager
 		// Check the player and their variables
 		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
 		if(player.Placing == "") return;
-		if(player.RoomNumber == -1) return;
+		if(player.Room == null) return;
 
 		// Check the placeable
 		HomePlaceable placeable = HomePlaceable.Find(player.Placing);
 		if(placeable == null) return;
 
 		// Check placing in the room
-		RoomController room = RoomController.All.Find(room => room.Id == player.RoomNumber);
-		if(room == null) return;
-		if(room.PointInside(player.PlacingPosition) == false) return;
+		if(player.Room.PointInside(player.PlacingPosition) == false) return;
 
 		// Check if we are moving a prop or placing a new one
 		if(player.MovingEntity != null)
@@ -97,7 +117,7 @@ public partial class HomeGame : GameManager
 			};
 
 			// Add the prop to the room
-			room.Props.Add(prop);
+			player.Room.Props.Add(prop);
 		}
 
 		player.FinishPlacing();

@@ -215,6 +215,9 @@
         "ConVarName": "",
         "DisplayName": "New Setting..."
       }
-    ]
+    ],
+    "Summary": "",
+    "Description": "",
+    "Public": false
   }
 }

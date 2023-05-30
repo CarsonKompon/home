@@ -12,7 +12,7 @@ public enum RoomState
     FriendsOnly
 } 
 
-public partial class RoomController
+public partial class RoomController : BaseNetworkable
 {
     public static List<RoomController> All = new List<RoomController>();
     public static bool HasVacancies => All.Find(room => room.State == RoomState.Vacant) != null;
@@ -26,12 +26,15 @@ public partial class RoomController
 
     public List<Entity> Props { get; set; } = new List<Entity>();
 
-    public HomePlayer Owner { get; set; } = null;
+    [Net] public string Name { get; set; } = "N/A";
+    [Net] public HomePlayer Owner { get; set; } = null;
+    private RealTimeSince LastUpdate = 0f;
 
     public RoomController()
     {
         BuildingZones = new List<RoomBuildingZone>();
         EditableMaterials = new List<RoomEditableMaterial>();
+        Event.Register(this);
 
         All.Add(this);
     }
@@ -43,16 +46,38 @@ public partial class RoomController
         Log.Info("🏠: Initializing room #" + Id.ToString());
     }
 
+    ~RoomController()
+    {
+        All.Remove(this);
+        Event.Unregister(this);
+    }
+
+    [GameEvent.Tick.Server]
+    public void OnTick()
+    {
+        if(LastUpdate > 2f)
+        {
+            Log.Info("🏠: Room #" + Id.ToString() + ": " + Owner);
+            // Check if the room owner still exists
+            if(State != RoomState.Vacant && Owner == null || !Owner.IsValid())
+            {
+                RemoveOwner();
+            }
+
+            LastUpdate = 0f;
+        }
+    }
+
     public static RoomController GetOpenRoom()
     {
         if(!HasVacancies) return null;
 
         Random random = new Random();
 
-        for(int i=All.Count - 1; i>1; i--)
-        {
+        // for(int i=All.Count - 1; i>1; i--)
+        // {
             
-        }
+        // }
 
         // Return a random room from the list
         return All.Find(room => room.State == RoomState.Vacant);
@@ -63,18 +88,19 @@ public partial class RoomController
         if(Owner != null) return;
 
         Owner = owner;
-        Owner.RoomNumber = Id;
+        Owner.Room = this;
 
         SetState(RoomState.Open);
+        ResetName();
 
         // TODO: Spawn the owner's props here
     }
 
     public void RemoveOwner()
     {
-        if(Owner == null) return;
 
-        Owner.RoomNumber = -1;
+        ResetName();
+        if(Owner != null) Owner.Room = null;
         Owner = null;
 
         SetState(RoomState.Vacant);
@@ -104,6 +130,11 @@ public partial class RoomController
             return true;
         }
         return false;
+    }
+
+    public void ResetName()
+    {
+        Name = "Room #" + Id.ToString();
     }
 
 }
