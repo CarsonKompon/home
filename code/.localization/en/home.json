@@ -7,5 +7,10 @@
     "location.rooms1-6": "Rooms #1-6",
     "location.rooms7-12": "Rooms #7-12",
     "location.roomservicedesk": "Room Service Desk",
-    "location.spawnarea": "Spawn Area"
+    "location.spawnarea": "Spawn Area",
+
+    "inventory.inventory": "Inventory",
+
+    "layout.save": "Save Layout",
+    "layout.load": "Load Layout"
 }

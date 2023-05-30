@@ -42,6 +42,7 @@ public partial class HomePlayer
 {
     [Net] public long Money { get; set; }
 	[Net] public IList<StashEntry> Stash { get; set; }
+	public List<RoomLayout> RoomLayouts = new List<RoomLayout>();
 
 	[ConVar.ClientData] public string HomeUploadData { get; set; } = "";
 
@@ -64,12 +65,33 @@ public partial class HomePlayer
 	[ClientRpc]
 	public void LoadPlayerDataClientRpc()
 	{
+		if(Game.LocalPawn is not HomePlayer player) return;
+
 		// Load player data from client data
 		HomeUploadData = FileSystem.Data.ReadAllText(Client.SteamId.ToString() + "/player.json");
 		if(HomeUploadData == null)
 		{
 			HomeUploadData = JsonSerializer.Serialize(new PlayerData(Client.SteamId));
 		}
+
+		// Load local layouts
+		long steamId = Game.LocalClient.SteamId;
+		if(!FileSystem.Data.DirectoryExists(steamId.ToString()))
+		{
+			FileSystem.Data.CreateDirectory(steamId.ToString());
+		}
+		if(!FileSystem.Data.DirectoryExists(steamId + "/layouts"))
+		{
+			FileSystem.Data.CreateDirectory(steamId + "/layouts");
+		}
+		foreach(string file in FileSystem.Data.FindFile(steamId + "/layouts", "*.json"))
+		{
+			Log.Info("FOUND FILE " + file);
+			RoomLayout layout = FileSystem.Data.ReadJson<RoomLayout>(steamId + "/layouts/" + file);
+			Log.Info(layout);
+			player.RoomLayouts.Add(layout);
+		}
+
 		ConsoleSystem.Run("home_player_data_loaded", Client.SteamId.ToString());
 	}
 

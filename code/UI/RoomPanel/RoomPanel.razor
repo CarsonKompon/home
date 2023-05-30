@@ -14,26 +14,59 @@
         <img src="ui/GUI/ui_edit.png" />
     </div>
 
-    <div class="layout-list">
-        @foreach (RoomLayout layout in HomeGame.LocalLayouts)
+    <PanelNoDragScroll class="layout-list">
+        @if(Game.LocalPawn is HomePlayer player && player.Room != null)
         {
-            <RoomLayoutButton Layout="@layout" />
+            foreach (RoomLayout layout in player.RoomLayouts)
+            {
+                <RoomLayoutButton Layout="@layout.Name" />
+            }
         }
-    </div>
+    </PanelNoDragScroll>
 
     <div class="layout-buttons">
-        <button class="button" onclick="HomePlayer.JoinRoom()">Save Layout</button>
-        <button class="button" onclick="HomePlayer.CreateRoom()">Load Layout</button>
+        <button class="button" onclick="@LoadLayout">#layout.load</button>
+        <button class="button" onclick="@SaveLayout">#layout.save</button>
     </div>
 </root>
 
 @code
 {
+    protected override bool WantsDragScrolling { get { return false; } }
+    
+    public void LoadLayout()
+    {
+        Log.Info("🏠: Loading layout...");
+        string layout = "";
+        foreach(RoomLayoutButton button in RoomLayoutButton.All)
+        {
+            if(button.HasClass("selected"))
+            {
+                layout = button.TextLabel.Text;
+                break;
+            }
+        }
+        if(layout == "") return;
+        HomeGame.LoadLayout(layout);
+    }
+
+    public void SaveLayout()
+    {
+        Log.Info("🏠: Saving layout...");
+        HomeGame.SaveLayout(GetRoomName());
+    }
+
     public string GetRoomName()
     {
         if(Game.LocalPawn is not HomePlayer player) return "N/A";
-        if(player.Room == null) return "Roomm";
+        if(player.Room == null) return "Unnamed Room";
         return player.Room.Name;
+    }
+
+    public int GetLayoutCount()
+    {
+        if(Game.LocalPawn is not HomePlayer player) return 0;
+        return player.RoomLayouts.Count;
     }
 
     [GameEvent.Client.BuildInput]
@@ -58,6 +91,6 @@
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(GetRoomName());
+        return HashCode.Combine(GetRoomName(), GetLayoutCount());
     }
 }

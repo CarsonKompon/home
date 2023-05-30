@@ -8,14 +8,15 @@
 @namespace Home
 
 <root onclick="@OnClick">
-    <label class="name" text=@GetName() />
+    <label @ref="TextLabel" class="name" text=@Layout />
 </root>
 
 @code
 {
     public static List<RoomLayoutButton> All = new List<RoomLayoutButton>();
 
-    public RoomLayout Layout { get; set; }
+    public string Layout { get; set; }
+    public Label TextLabel { get; set;}
 
     public RoomLayoutButton()
     {
@@ -25,11 +26,6 @@
     ~RoomLayoutButton()
     {
         All.Remove(this);
-    }
-
-    public string GetName()
-    {
-        return "Layout #1";
     }
 
     public void OnClick(PanelEvent e)
@@ -43,6 +39,6 @@
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(GetName());
+        return HashCode.Combine(Layout);
     }
 }

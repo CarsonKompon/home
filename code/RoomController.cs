@@ -1,6 +1,7 @@
 using Sandbox;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace Home;
 
@@ -24,7 +25,7 @@ public partial class RoomController : BaseNetworkable
     public RoomFrontDoor FrontDoor { get; set; } = null;
     public RoomState State { get; set; } = RoomState.Vacant;
 
-    public List<Entity> Props { get; set; } = new List<Entity>();
+    [Net] public IList<RoomProp> Props { get; set; } = new List<RoomProp>();
 
     [Net] public string Name { get; set; } = "N/A";
     [Net] public HomePlayer Owner { get; set; } = null;
@@ -57,7 +58,6 @@ public partial class RoomController : BaseNetworkable
     {
         if(LastUpdate > 2f)
         {
-            Log.Info("🏠: Room #" + Id.ToString() + ": " + Owner);
             // Check if the room owner still exists
             if(State != RoomState.Vacant && (Owner == null || !Owner.IsValid()))
             {
@@ -134,6 +134,58 @@ public partial class RoomController : BaseNetworkable
     public void ResetName()
     {
         Name = "Room #" + Id.ToString();
+    }
+
+    [ConCmd.Server("home_load_layout")]
+    public static void LoadLayout()
+    {
+        if(ConsoleSystem.Caller == null) return;
+        if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+        if(player.Room == null) return;
+        
+        RoomLayout layout = JsonSerializer.Deserialize<RoomLayout>(player.Client.GetClientData<string>("HomeUploadData"));
+
+        // Delete all the props
+        foreach(var prop in player.Room.Props)
+        {
+            prop.Delete();
+        }
+
+        // Create new props
+        foreach(var entry in layout.Entries)
+        {
+            if(!player.UsePlaceable(entry.Id)) continue;
+            RoomProp prop = new RoomProp(HomePlaceable.Find(entry.Id), player.Client.SteamId)
+            {
+                Position = entry.Position,
+                Rotation = entry.Rotation,
+                Scale = entry.Scale
+            };
+
+            player.Room.Props.Add(prop);
+        }
+    }
+
+    public RoomLayout SaveLayout(string name = "New Layout")
+    {
+        RoomLayout layout = new RoomLayout();
+        layout.Name = Name;
+
+        foreach(var prop in Props)
+        {
+            RoomLayoutEntry entry = new RoomLayoutEntry();
+            entry.Id = prop.PlaceableId;
+            entry.Position = prop.Position;
+            entry.Rotation = prop.Rotation;
+            entry.Scale = prop.Scale;
+
+            Log.Info("Adding entry: " + entry.Id.ToString());
+            layout.Entries.Add(entry);
+        }
+
+        Log.Info(layout);
+
+        return layout;
     }
 
 }

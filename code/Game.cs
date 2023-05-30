@@ -17,7 +17,6 @@ public partial class HomeGame : GameManager
 {
 	public static new HomeGame Current;
 
-	public static List<RoomLayout> LocalLayouts = new List<RoomLayout>();
 	public List<ChatCommandAttribute> ChatCommands { get; set; }
 
 	public HomeGame()
@@ -32,22 +31,6 @@ public partial class HomeGame : GameManager
 			// Initialize HUD
 			Game.RootPanel?.Delete(true);
 			Game.RootPanel = new HomeHud();
-
-			// // Load local layouts
-			// long steamId = Game.LocalClient.SteamId;
-			// if(!FileSystem.Data.DirectoryExists(steamId.ToString()))
-			// {
-			// 	FileSystem.Data.CreateDirectory(steamId.ToString());
-			// }
-			// if(!FileSystem.Data.DirectoryExists(steamId + "/layouts"))
-			// {
-			// 	FileSystem.Data.CreateDirectory(steamId + "/layouts");
-			// }
-			// foreach(string file in FileSystem.Data.FindFile(steamId + "/layouts", "*.json"))
-			// {
-			// 	RoomLayout layout = FileSystem.Data.ReadJson<RoomLayout>(file);
-			// 	LocalLayouts.Add(layout);
-			// }
 		}
 	}
 
@@ -153,6 +136,62 @@ public partial class HomeGame : GameManager
 
 		// Give the placeable to the player
 		player.GivePlaceable(placeable.Id);
+	}
+
+	[ClientRpc]
+	public static void LoadLayout(string name)
+	{
+		Log.Info("saving clientrpc style");
+		// Check the player and their variables
+		if(!Game.IsClient) return;
+		if(Game.LocalPawn is not HomePlayer player) return;
+		if(player.Room == null) return;
+
+		// Check the layout
+		RoomLayout layout = player.RoomLayouts.First(l => l.Name == name);
+		if(layout == null) return;
+
+		// Load the layout
+		player.HomeUploadData = Json.Serialize(layout);
+		ConsoleSystem.Run("home_load_layout");
+	}
+
+	[ClientRpc]
+	public static void SaveLayout(string name, bool addNumber = false)
+	{
+		// Check the player and their variables
+		if(!Game.IsClient) return;
+		if(Game.LocalPawn is not HomePlayer player) return;
+		if(player.Room == null) return;
+
+		// TODO: Ask if player wants to overwrite layout if exists
+
+		// Save the layout
+		RoomLayout layout = player.Room.SaveLayout(name);
+
+		// Add the layout to the local layouts
+		if(!player.RoomLayouts.Contains(layout))
+		{
+			player.RoomLayouts.Add(layout);
+		}
+		else
+		{
+			if(addNumber)
+			{
+				int number = 1;
+				while(player.RoomLayouts.Contains(layout))
+				{
+					layout.Name = name + " (" + number + ")";
+					number++;
+				}
+				player.RoomLayouts.Add(layout);
+			}else{
+				player.RoomLayouts.RemoveAt(player.RoomLayouts.FindIndex(l => l.Name == name)) = layout;
+			}
+		}
+
+		// Save the layout to a local file
+		FileSystem.Data.WriteJson(player.Client.SteamId + "/layouts/" + layout.Name + ".json", layout);
 	}
 
 }
