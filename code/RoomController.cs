@@ -59,7 +59,7 @@ public partial class RoomController : BaseNetworkable
         {
             Log.Info("🏠: Room #" + Id.ToString() + ": " + Owner);
             // Check if the room owner still exists
-            if(State != RoomState.Vacant && Owner == null || !Owner.IsValid())
+            if(State != RoomState.Vacant && (Owner == null || !Owner.IsValid()))
             {
                 RemoveOwner();
             }
@@ -98,7 +98,6 @@ public partial class RoomController : BaseNetworkable
 
     public void RemoveOwner()
     {
-
         ResetName();
         if(Owner != null) Owner.Room = null;
         Owner = null;
