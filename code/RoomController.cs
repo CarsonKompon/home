@@ -22,7 +22,7 @@ public partial class RoomController : BaseNetworkable
 
     public List<RoomBuildingZone> BuildingZones { get; set; } = null;
     public List<RoomEditableMaterial> EditableMaterials { get; set; } = null;
-    public RoomFrontDoor FrontDoor { get; set; } = null;
+    [Net] public RoomFrontDoor FrontDoor { get; set; } = null;
     public RoomState State { get; set; } = RoomState.Vacant;
 
     [Net] public IList<RoomProp> Props { get; set; } = new List<RoomProp>();
@@ -88,7 +88,7 @@ public partial class RoomController : BaseNetworkable
         if(Owner != null) return;
 
         Owner = owner;
-        Owner.Room = this;
+        Owner.Room = this; // TODO: Owner is not this
 
         SetState(RoomState.Open);
         ResetName();
@@ -136,6 +136,33 @@ public partial class RoomController : BaseNetworkable
         Name = "Room #" + Id.ToString();
     }
 
+    public RoomLayout SaveLayout(string name = "New Layout")
+    {
+        RoomLayout layout = new RoomLayout();
+        layout.Name = Name;
+
+        foreach(var prop in Props)
+        {
+            Log.Info("Adding entry for prop: " + prop);
+            if(prop == null || !prop.IsValid()) continue;
+            RoomLayoutEntry entry = new RoomLayoutEntry();
+            Transform localTransform = FrontDoor.Transform.ToLocal(prop.Transform);
+            entry.Id = prop.PlaceableId;
+            entry.Position = localTransform.Position;
+            entry.Rotation = localTransform.Rotation;
+            entry.Scale = prop.Scale;
+
+            layout.Entries.Add(entry);
+        }
+
+        Log.Info(layout);
+
+        return layout;
+    }
+
+
+
+
     [ConCmd.Server("home_load_layout")]
     public static void LoadLayout()
     {
@@ -144,6 +171,9 @@ public partial class RoomController : BaseNetworkable
         if(player.Room == null) return;
         
         RoomLayout layout = JsonSerializer.Deserialize<RoomLayout>(player.Client.GetClientData<string>("HomeUploadData"));
+
+        // Change room name
+        player.Room.Name = layout.Name;
 
         // Delete all the props
         foreach(var prop in player.Room.Props)
@@ -155,6 +185,7 @@ public partial class RoomController : BaseNetworkable
         foreach(var entry in layout.Entries)
         {
             if(!player.UsePlaceable(entry.Id)) continue;
+            Transform localTransform = player.Room.FrontDoor.Transform.ToWorld(new Transform(entry.Position, entry.Rotation));
             RoomProp prop = new RoomProp(HomePlaceable.Find(entry.Id), player.Client.SteamId)
             {
                 Position = entry.Position,
@@ -166,26 +197,14 @@ public partial class RoomController : BaseNetworkable
         }
     }
 
-    public RoomLayout SaveLayout(string name = "New Layout")
+    [ConCmd.Server("home_rename_room")]
+    public static void Rename(string newName)
     {
-        RoomLayout layout = new RoomLayout();
-        layout.Name = Name;
+        if(ConsoleSystem.Caller == null) return;
+        if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+        if(player.Room == null) return;
 
-        foreach(var prop in Props)
-        {
-            RoomLayoutEntry entry = new RoomLayoutEntry();
-            entry.Id = prop.PlaceableId;
-            entry.Position = prop.Position;
-            entry.Rotation = prop.Rotation;
-            entry.Scale = prop.Scale;
-
-            Log.Info("Adding entry: " + entry.Id.ToString());
-            layout.Entries.Add(entry);
-        }
-
-        Log.Info(layout);
-
-        return layout;
+        player.Room.Name = newName;
     }
 
 }

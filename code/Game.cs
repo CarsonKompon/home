@@ -42,7 +42,16 @@ public partial class HomeGame : GameManager
 
 		client.Pawn = player;
 
+		HomeChatBox.Announce($"{client.Name} joined the server");
+
 		player.LoadPlayerDataClientRpc(To.Single(client));
+	}
+
+	public override void ClientDisconnect( IClient client, NetworkDisconnectionReason reason )
+	{
+		base.ClientDisconnect( client, reason );
+
+		HomeChatBox.Announce($"{client.Name} left the server");
 	}
 
 	public override void OnVoicePlayed( IClient cl )
@@ -170,7 +179,7 @@ public partial class HomeGame : GameManager
 		RoomLayout layout = player.Room.SaveLayout(name);
 
 		// Add the layout to the local layouts
-		if(!player.RoomLayouts.Contains(layout))
+		if(player.RoomLayouts.Find(l => l.Name == name) == null)
 		{
 			player.RoomLayouts.Add(layout);
 		}
@@ -179,14 +188,14 @@ public partial class HomeGame : GameManager
 			if(addNumber)
 			{
 				int number = 1;
-				while(player.RoomLayouts.Contains(layout))
+				while(player.RoomLayouts.Find(l => l.Name == layout.Name) == null)
 				{
 					layout.Name = name + " (" + number + ")";
 					number++;
 				}
 				player.RoomLayouts.Add(layout);
 			}else{
-				player.RoomLayouts.RemoveAt(player.RoomLayouts.FindIndex(l => l.Name == name)) = layout;
+				player.RoomLayouts[player.RoomLayouts.FindIndex(l => l.Name == layout.Name)] = layout;
 			}
 		}
 

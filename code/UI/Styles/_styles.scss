@@ -372,6 +372,19 @@ RoomPanel {
             padding-right: 8px;
         }
 
+        TextEntry {
+            cursor: text;
+            background-color: white;
+            margin-bottom: 3px;
+            margin-left: 3px;
+            margin-right: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            flex-direction: row;
+            justify-content: center;
+            min-width: 100px;
+        }
+
         img {
             width: 32px;
             height: 32px;

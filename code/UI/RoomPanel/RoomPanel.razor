@@ -10,11 +10,19 @@
 <root>
     <div class="layout-header">
         <div class="spacer" />
-        <label text=@GetRoomName() />
-        <img src="ui/GUI/ui_edit.png" />
+        @if(Editing)
+        {
+            <TextEntry class="layout-entry" Value:bind=@RoomName />
+            <img src="ui/GUI/ui_save.png" onclick="@OnNameSave" />
+        }
+        else
+        {
+            <label class="layout-name" text=@GetRoomName() />
+            <img src="ui/GUI/ui_edit.png" onclick="@OnNameEdit" />
+        }
     </div>
 
-    <PanelNoDragScroll class="layout-list">
+    <div class="layout-list">
         @if(Game.LocalPawn is HomePlayer player && player.Room != null)
         {
             foreach (RoomLayout layout in player.RoomLayouts)
@@ -22,7 +30,7 @@
                 <RoomLayoutButton Layout="@layout.Name" />
             }
         }
-    </PanelNoDragScroll>
+    </div>
 
     <div class="layout-buttons">
         <button class="button" onclick="@LoadLayout">#layout.load</button>
@@ -34,6 +42,23 @@
 {
     protected override bool WantsDragScrolling { get { return false; } }
     
+    public bool Editing = false;
+    public string RoomName = "N/A";
+
+    public void OnNameEdit()
+    {
+        Editing = true;
+        RoomName = GetRoomName();
+    }
+    
+    public void OnNameSave()
+    {
+        Editing = false;
+        if(Game.LocalPawn is not HomePlayer player) return;
+        if(player.Room == null) return;
+        ConsoleSystem.Run("home_rename_room", RoomName);
+    }
+
     public void LoadLayout()
     {
         Log.Info("🏠: Loading layout...");
@@ -87,10 +112,12 @@
     {
         if(Game.LocalPawn is not HomePlayer player) return;
         SetClass("can-show", player.Room != null);
+
+        if(Editing) SetClass("open", true);
     }
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(GetRoomName(), GetLayoutCount());
+        return HashCode.Combine(GetRoomName(), GetLayoutCount(), Editing, RoomName );
     }
 }

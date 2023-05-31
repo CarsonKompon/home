@@ -1,3 +1,4 @@
+using System.Globalization;
 using System;
 using Sandbox;
 using Sandbox.Component;
@@ -46,6 +47,11 @@ public partial class HomePlayer : AnimatedEntity
 	public float FieldOfView { get; set; } = 90;
 	public float ThirdPersonZoom { get; set; } = 0;
 	public Angles ThirdPersonRotation { get; set; }
+	
+	[ClientInput] private bool FlashlightEnabled { get; set; } = false;
+	private SpotLightEntity ViewFlashlight;
+	private SpotLightEntity WorldFlashlight;
+
 
 	public RealTimeSince TimeSinceSpawned { get; set; }
 
@@ -120,6 +126,10 @@ public partial class HomePlayer : AnimatedEntity
 		TickPlayerUse();
 		SimulateActiveChild(cl, ActiveChild);
 
+		// Flashlight
+		if(WorldFlashlight.IsValid()) WorldFlashlight.Enabled = FlashlightEnabled;
+		if(ViewFlashlight.IsValid()) ViewFlashlight.Enabled = FlashlightEnabled;
+
 		// Third Person Toggle
 		if(Input.Pressed("view"))
 		{
@@ -145,7 +155,7 @@ public partial class HomePlayer : AnimatedEntity
 	}
 
 	// "kill" command that kills the player who called it
-	[ConCmd.Admin("kill")]
+	[ConCmd.Server("kill")]
 	static void DoPlayerSuicide()
 	{
 		if(ConsoleSystem.Caller.Pawn is HomePlayer player && player.TimeSinceSpawned > 2f)
@@ -208,6 +218,8 @@ public partial class HomePlayer : AnimatedEntity
 
     public override void FrameSimulate( IClient cl )
 	{
+		if(ViewFlashlight.IsValid()) ViewFlashlight.Transform = new Transform(Camera.Position + (Camera.Rotation.Forward * 5f), Camera.Rotation);
+
 		if(ThirdPersonZoom > 0f) // THIRD PERSON CAM
 		{
 			Camera.Rotation = ViewAngles.ToRotation() * ThirdPersonRotation.ToRotation();
@@ -304,10 +316,45 @@ public partial class HomePlayer : AnimatedEntity
 
 		base.Spawn();
 
+		WorldFlashlight = CreateFlashlight();
+		WorldFlashlight.EnableHideInFirstPerson = true;
+		WorldFlashlight.SetParent(this, "head", new Transform( Vector3.Forward * 5, Rotation.From( 0, 0, 0 ) ) );
+
 		if(Game.IsClient)
 		{
 			_ = new PlacingGuide();
 		}
+	}
+
+	public override void ClientSpawn()
+	{
+		base.ClientSpawn();
+
+		ViewFlashlight = CreateFlashlight();
+		ViewFlashlight.EnableViewmodelRendering = true;
+	}
+
+	public SpotLightEntity CreateFlashlight()
+	{
+		var light = new SpotLightEntity
+		{
+			Enabled = true,
+			DynamicShadows = true,
+			Range = 512,
+			Falloff = 1.0f,
+			LinearAttenuation = 0.0f,
+			QuadraticAttenuation = 1.0f,
+			Brightness = 2.0f,
+			Color = Color.White,
+			InnerConeAngle = 30,
+			OuterConeAngle = 50,
+			FogStrength = 1.0f,
+			LightCookie = Texture.Load( "materials/effects/lightcookie.vtex" ),
+			Transmit = TransmitType.Always,
+			
+		};
+
+		return light;
 	}
 
 	public virtual void Respawn()
@@ -402,6 +449,12 @@ public partial class HomePlayer : AnimatedEntity
 			return;
 
 		Angles look = Input.AnalogLook;
+
+		if(Input.Pressed("flashlight"))
+		{
+			FlashlightEnabled = !FlashlightEnabled;
+			PlaySound( FlashlightEnabled ? "flashlight-on" : "flashlight-off" );
+		}
 
 		// Room interactions
 		if(Room != null)
