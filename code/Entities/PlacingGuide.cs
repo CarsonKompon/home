@@ -13,8 +13,8 @@ public class PlacingGuide : Entity
         if(!player.CanPlace) return;
 
         var tr = Trace.Ray(new Ray(Camera.Position, Screen.GetDirection(Mouse.Position)), 1000)
-            .Ignore(Game.LocalPawn)
             .Ignore(player.MovingEntity)
+            .WithoutTags("player")
             .Run();
 
         if(tr.Hit)

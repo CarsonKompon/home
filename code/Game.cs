@@ -204,4 +204,22 @@ public partial class HomeGame : GameManager
 		FileSystem.Data.WriteJson(player.Client.SteamId + "/layouts/" + layout.Name + ".json", layout);
 	}
 
+	[ClientRpc]
+	public static void DeleteLayout(string name)
+	{
+		// Check the player and their variables
+		if(!Game.IsClient) return;
+		if(Game.LocalPawn is not HomePlayer player) return;
+		if(player.Room == null) return;
+
+		// Delete the layout file
+		if(FileSystem.Data.FileExists(player.Client.SteamId + "/layouts/" + name + ".json"))
+		{
+			FileSystem.Data.DeleteFile(player.Client.SteamId + "/layouts/" + name + ".json");
+		}
+
+		// Delete the layout from the local layouts
+		player.RoomLayouts.RemoveAll(l => l.Name == name);
+	}
+
 }

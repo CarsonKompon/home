@@ -9,6 +9,17 @@
 
 <root onclick="@OnClick">
     <label @ref="TextLabel" class="name" text=@Layout />
+    <div class="layout-extras">
+        @if(Deleting)
+        {
+            <img class="layout-delete delete-yes" src="ui/ui_yes.png" onclick="@DeleteLayout" />
+            <img class="layout-delete delete-no" src="ui/ui_no.png" onclick="@StopDeleting" />
+        }
+        else
+        {
+            <img class="layout-delete" src="ui/ui_delete.png" onclick="@StartDeleting" />   
+        }
+    </div>
 </root>
 
 @code
@@ -17,6 +28,7 @@
 
     public string Layout { get; set; }
     public Label TextLabel { get; set;}
+    public bool Deleting { get; set; } = false;
 
     public RoomLayoutButton()
     {
@@ -25,8 +37,18 @@
 
     ~RoomLayoutButton()
     {
-        All.Remove(this);
+        if(All.Contains(this)) All.Remove(this);
     }
+
+    protected override void OnMouseOut( MousePanelEvent e )
+    {
+        base.OnMouseOut( e );
+        
+        // Check if mouse is in bounds
+        if ( PseudoClass.HasFlag( PseudoClass.Hover ) ) return;
+
+        Deleting = false;
+    }		
 
     public void OnClick(PanelEvent e)
     {
@@ -35,6 +57,25 @@
             button.RemoveClass("selected");
         }
         AddClass("selected");
+    }
+
+    public void DeleteLayout(PanelEvent e)
+    {
+        if(Game.LocalPawn is not HomePlayer player) return;
+        HomeGame.DeleteLayout(Layout);
+
+        All.Remove(this);
+        Delete();
+    }
+
+    public void StartDeleting(PanelEvent e)
+    {
+        Deleting = true;
+    }
+
+    public void StopDeleting(PanelEvent e)
+    {
+        Deleting = false;
     }
 
     protected override int BuildHash()

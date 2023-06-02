@@ -410,11 +410,45 @@ RoomPanel {
         RoomLayoutButton {
             font-family: Verdana;
             font-size: 18px;
+            justify-content: space-between;
 
             //background-color: #eee;
             border-radius: 4px;
             padding: 4px;
             margin-bottom: 4px;
+
+            .layout-delete {
+                margin-left: 4px;
+                background-image-tint: grey;
+                opacity: 0;
+                transform: scale(0);
+                transition: all 0.2s ease-in-out;
+            
+                // if it has delete-yes or delete-no then make font arial
+                // and make it a button
+                &.delete-yes, &.delete-no {
+                    transform: scale(1);
+                    &:intro, &:outro {
+                        transform: scale(0);
+                    }
+                }
+
+                &.delete-yes:hover {
+                    background-image-tint: lime;
+                }
+
+                &.delete-no:hover {
+                    background-image-tint: red;
+                }
+            }
+
+            &:hover {
+                
+                .layout-delete {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
 
             &:nth-child(odd) {
                 background-color: #fafafa;
