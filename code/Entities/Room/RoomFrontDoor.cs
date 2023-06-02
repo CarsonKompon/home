@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Sandbox;
 using Editor;
 
@@ -27,29 +28,6 @@ public partial class RoomFrontDoor : DoorEntity
         base.Spawn();
 
         StartTransform = Transform;
-
-        if(Game.IsServer)
-        {
-            SetState(RoomState.Vacant);
-
-            bool roomExists = false;
-			for(int i=0; i<RoomController.All.Count; i++)
-			{
-				if(RoomController.All[i].Id == RoomId)
-				{
-					RoomController.All[i].FrontDoor = this;
-					roomExists = true;
-					break;
-				}
-			}
-
-			// If the room does not exist, make a new one
-			if(!roomExists)
-			{
-				RoomController room = new RoomController(RoomId);
-				room.FrontDoor = this;
-			}
-        }
     }
 
     public override void ClientSpawn()

@@ -13,12 +13,12 @@
         @if(Editing)
         {
             <TextEntry class="layout-entry" Value:bind=@RoomName />
-            <img src="ui/GUI/ui_save.png" onclick="@OnNameSave" />
+            <img src="ui/ui_save.png" onclick="@OnNameSave" />
         }
         else
         {
             <label class="layout-name" text=@GetRoomName() />
-            <img src="ui/GUI/ui_edit.png" onclick="@OnNameEdit" />
+            <img src="ui/ui_edit.png" onclick="@OnNameEdit" />
         }
     </div>
 

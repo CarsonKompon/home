@@ -150,7 +150,7 @@ public partial class HomeGame : GameManager
 	[ClientRpc]
 	public static void LoadLayout(string name)
 	{
-		Log.Info("saving clientrpc style");
+		Log.Info("loading clientrpc style");
 		// Check the player and their variables
 		if(!Game.IsClient) return;
 		if(Game.LocalPawn is not HomePlayer player) return;
@@ -161,6 +161,7 @@ public partial class HomeGame : GameManager
 		if(layout == null) return;
 
 		// Load the layout
+		Log.Info(layout);
 		player.HomeUploadData = Json.Serialize(layout);
 		ConsoleSystem.Run("home_load_layout");
 	}

@@ -1,3 +1,4 @@
+using System.Linq;
 using Sandbox;
 using System;
 using System.Collections.Generic;
@@ -13,22 +14,19 @@ public enum RoomState
     FriendsOnly
 } 
 
-public partial class RoomController : BaseNetworkable
+public partial class RoomController : Entity
 {
-    public static List<RoomController> All = new List<RoomController>();
+    public static new List<RoomController> All = new List<RoomController>();
     public static bool HasVacancies => All.Find(room => room.State == RoomState.Vacant) != null;
 
-    public int Id { get; set; } = 0;
+    [Net] public int Id { get; set; } = 0;
 
     public List<RoomBuildingZone> BuildingZones { get; set; } = null;
     public List<RoomEditableMaterial> EditableMaterials { get; set; } = null;
-    [Net] public RoomFrontDoor FrontDoor { get; set; } = null;
-    public RoomState State { get; set; } = RoomState.Vacant;
+    [Net] public RoomState State { get; set; } = RoomState.Vacant;
 
     [Net] public IList<RoomProp> Props { get; set; } = new List<RoomProp>();
-
-    [Net] public string Name { get; set; } = "N/A";
-    [Net] public HomePlayer Owner { get; set; } = null;
+    [Net] public HomePlayer RoomOwner { get; set; } = null;
     private RealTimeSince LastUpdate = 0f;
 
     public RoomController()
@@ -59,7 +57,7 @@ public partial class RoomController : BaseNetworkable
         if(LastUpdate > 2f)
         {
             // Check if the room owner still exists
-            if(State != RoomState.Vacant && (Owner == null || !Owner.IsValid()))
+            if(State != RoomState.Vacant && (RoomOwner == null || !RoomOwner.IsValid()))
             {
                 RemoveOwner();
             }
@@ -74,21 +72,24 @@ public partial class RoomController : BaseNetworkable
 
         Random random = new Random();
 
-        // for(int i=All.Count - 1; i>1; i--)
-        // {
-            
-        // }
+        var vacants = All.Where(room => room.State == RoomState.Vacant).ToList();
 
         // Return a random room from the list
-        return All.Find(room => room.State == RoomState.Vacant);
+        return vacants[random.Next(0, vacants.Count)];
+    }
+
+    public RoomFrontDoor GetFrontDoor()
+    {
+        Log.Info(Id);
+        return Entity.All.OfType<RoomFrontDoor>().FirstOrDefault(door => door.RoomId == Id);
     }
 
     public void SetOwner(HomePlayer owner)
     {
-        if(Owner != null) return;
+        if(RoomOwner != null) return;
 
-        Owner = owner;
-        Owner.Room = this; // TODO: Owner is not this
+        RoomOwner = owner;
+        RoomOwner.Room = this;
 
         SetState(RoomState.Open);
         ResetName();
@@ -99,8 +100,8 @@ public partial class RoomController : BaseNetworkable
     public void RemoveOwner()
     {
         ResetName();
-        if(Owner != null) Owner.Room = null;
-        Owner = null;
+        if(RoomOwner != null) RoomOwner.Room = null;
+        RoomOwner = null;
 
         SetState(RoomState.Vacant);
 
@@ -115,7 +116,7 @@ public partial class RoomController : BaseNetworkable
     public void SetState(RoomState state)
     {
         State = state;
-        FrontDoor?.SetState(state);
+        GetFrontDoor()?.SetState(state);
     }
 
     public bool PointInside(Vector3 position)
@@ -146,7 +147,7 @@ public partial class RoomController : BaseNetworkable
             Log.Info("Adding entry for prop: " + prop);
             if(prop == null || !prop.IsValid()) continue;
             RoomLayoutEntry entry = new RoomLayoutEntry();
-            Transform localTransform = FrontDoor.Transform.ToLocal(prop.Transform);
+            Transform localTransform = GetFrontDoor().StartTransform.ToLocal(prop.Transform);
             entry.Id = prop.PlaceableId;
             entry.Position = localTransform.Position;
             entry.Rotation = localTransform.Rotation;
@@ -185,11 +186,11 @@ public partial class RoomController : BaseNetworkable
         foreach(var entry in layout.Entries)
         {
             if(!player.UsePlaceable(entry.Id)) continue;
-            Transform localTransform = player.Room.FrontDoor.Transform.ToWorld(new Transform(entry.Position, entry.Rotation));
+            Transform localTransform = player.Room.GetFrontDoor().StartTransform.ToWorld(new Transform(entry.Position, entry.Rotation));
             RoomProp prop = new RoomProp(HomePlaceable.Find(entry.Id), player.Client.SteamId)
             {
-                Position = entry.Position,
-                Rotation = entry.Rotation,
+                Position = localTransform.Position,
+                Rotation = localTransform.Rotation,
                 Scale = entry.Scale
             };
 
