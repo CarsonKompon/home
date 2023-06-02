@@ -29,7 +29,16 @@
 			player.PlacingAngle = MathF.Round(player.PlacingAngle / 15f) * 15f;
         }
     }
-		
+
+    protected override void OnMouseUp( MousePanelEvent e )
+    {
+        base.OnMouseUp( e );
+
+        if(Game.LocalPawn is HomePlayer player)
+        {
+            player.TryPlace();
+        }
+    }		
 
     public override void Tick()
     {
