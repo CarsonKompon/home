@@ -17,7 +17,7 @@ public class ShopFurniture : ShopBase
 
     public override List<HomePlaceable> PlaceableList()
     {
-        return HomePlaceable.All.ToList();
+        return HomePlaceable.All.Where(x => x.Category == PlaceableCategory.Furniture && x.State == PlaceableState.Visible).ToList();
     }
     
 }

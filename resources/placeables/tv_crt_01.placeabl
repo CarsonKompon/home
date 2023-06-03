@@ -1,0 +1,14 @@
+{
+  "Id": "tv_crt_01",
+  "Name": "CRT Television",
+  "Cost": 200,
+  "State": "Visible",
+  "Category": "Furniture",
+  "Type": "Prop",
+  "Model": "models/sbox_props/tv/tv.vmdl",
+  "ClassName": "",
+  "PackageIdent": "facepunch.tv",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

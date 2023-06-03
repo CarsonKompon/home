@@ -1,0 +1,14 @@
+{
+  "Id": "wood_crate_01",
+  "Name": "Wooden Crate",
+  "Cost": 50,
+  "State": "Visible",
+  "Category": "Furniture",
+  "Type": "Prop",
+  "Model": "models/sbox_props/wooden_crate/wooden_crate.vmdl",
+  "ClassName": "",
+  "PackageIdent": "facepunch.wooden_crate",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

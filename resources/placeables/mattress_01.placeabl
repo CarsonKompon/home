@@ -1,0 +1,14 @@
+{
+  "Id": "mattress_01",
+  "Name": "Mattress",
+  "Cost": 80,
+  "State": "Visible",
+  "Category": "Furniture",
+  "Type": "Prop",
+  "Model": "models/sbox_props/mattress/mattress.vmdl",
+  "ClassName": "",
+  "PackageIdent": "facepunch.mattress",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

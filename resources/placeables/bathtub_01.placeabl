@@ -1,0 +1,14 @@
+{
+  "Id": "bathtub_01",
+  "Name": "Bathtub",
+  "Cost": 100,
+  "State": "Visible",
+  "Category": "Furniture",
+  "Type": "Prop",
+  "Model": "models/sbox_props/bathtub_a/bathtub_a.vmdl",
+  "ClassName": "",
+  "PackageIdent": "facepunch.bathtub",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

@@ -2,12 +2,13 @@
   "Id": "chair_office_01",
   "Name": "Office Chair",
   "Cost": 125,
+  "State": "Visible",
   "Category": "Furniture",
   "Type": "Prop",
   "Model": "models/sbox_props/office_chair/office_chair.vmdl",
-  "ClassName": "prop_physics",
+  "ClassName": "",
   "PackageIdent": "facepunch.office_chair",
-  "ThumbnailOverride": "",
+  "ThumbnailOverride": "https://files.facepunch.com/sbox/asset//facepunch.office_chair/thumb.png.db08d53349e9b657",
   "PlaceSound": null,
   "StashSound": null
 }

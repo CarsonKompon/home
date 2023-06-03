@@ -1,0 +1,14 @@
+{
+  "Id": "barrel_beer_01",
+  "Name": "Beer Keg #1",
+  "Cost": 75,
+  "State": "Visible",
+  "Category": "Furniture",
+  "Type": "Prop",
+  "Model": "models/props/beer_keg/beer_keg_a1.vmdl",
+  "ClassName": "",
+  "PackageIdent": "facepunch.beer_keg_a1",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

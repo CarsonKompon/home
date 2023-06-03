@@ -45,16 +45,16 @@ public partial class RoomProp : Prop
     public async void SpawnPackage(string ident)
     {
         var package = await Package.FetchAsync( ident, false );
-        var entityname = package.GetMeta( "PrimaryAsset", "" );
-        if(string.IsNullOrEmpty(entityname)) return;
+        if(ClassName == "") ClassName = package.GetMeta( "PrimaryAsset", "" );
+        if(string.IsNullOrEmpty(ClassName)) return;
         if(!(package.Tags.Contains("runtime") && package.PackageType == Package.Type.Addon)) return;
         
-        await package.MountAsync( true );
+        var thing = await package.MountAsync( true );
 
-		var type = TypeLibrary.GetType( entityname );
+		var type = TypeLibrary.GetType( ClassName );
 		if ( type == null )
 		{
-			Log.Warning( $"'{entityname}' type wasn't found for {package.FullIdent}" );
+			Log.Warning( $"'{ClassName}' type wasn't found for {package.FullIdent}" );
 			return;
 		}
 

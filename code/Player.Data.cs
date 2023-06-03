@@ -119,9 +119,6 @@ public partial class HomePlayer
 			Log.Info("🏠: Player data loaded!");
 			player.Money = data.Money;
 			player.Stash = data.Stash;
-
-			player.GiveMoney(50);
-			player.GivePlaceable("chair_office_01", 1);
 		}
 	}
 

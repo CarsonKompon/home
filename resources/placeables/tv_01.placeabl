@@ -1,0 +1,14 @@
+{
+  "Id": "tv_01",
+  "Name": "TV Media Player",
+  "Cost": 25000,
+  "State": "Hidden",
+  "Category": "Furniture",
+  "Type": "PackageEntity",
+  "Model": "models/items/electronics/tv_medium.vmdl",
+  "ClassName": "",
+  "PackageIdent": "playback.mediaplayer",
+  "ThumbnailOverride": "https://files.facepunch.com/sbox/asset/playback.mediaplayer/logo.a496106d.png",
+  "PlaceSound": null,
+  "StashSound": null
+}

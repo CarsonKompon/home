@@ -1,0 +1,14 @@
+{
+  "Id": "desk_office_01",
+  "Name": "Office Desk",
+  "Cost": 250,
+  "State": "Visible",
+  "Category": "Furniture",
+  "Type": "Prop",
+  "Model": "models/sbox_props/office_desk/office_desk.vmdl",
+  "ClassName": "",
+  "PackageIdent": "facepunch.office_desk",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}
