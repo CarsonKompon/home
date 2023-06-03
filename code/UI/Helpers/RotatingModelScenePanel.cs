@@ -33,11 +33,6 @@ public class RotatingModelScenePanel : ScenePanel
         World = new SceneWorld();
         WorldModel = new SceneModel(World, Model, Transform.Zero);
 
-        // Center the model based on mins/maxs
-        var bb = WorldModel.Model.Bounds;
-        WorldModel.Position = (bb.Maxs + bb.Mins) * -0.5f;
-
-
         LightWarm = new SceneSpotLight(World);
         LightWarm.Radius = 280;
         LightWarm.Position = Vector3.Up * 100.0f + Vector3.Forward * 100.0f + Vector3.Right * -200;
