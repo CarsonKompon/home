@@ -1,5 +1,7 @@
 using System.Net.WebSockets;
 using Sandbox;
+using Sandbox.UI;
+using Sandbox.UI.Construct;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +42,7 @@ public class PlayerData
 
 public partial class HomePlayer
 {
-    [Net] public long Money { get; set; }
+    [Net, Change] public long Money { get; set; }
 	[Net] public IList<StashEntry> Stash { get; set; }
 	public List<RoomLayout> RoomLayouts = new List<RoomLayout>();
 
@@ -144,6 +146,15 @@ public partial class HomePlayer
 		Money -= amount;
 		SavePlayerDataClientRpc(To.Single(this.Client));
 		return true;
+	}
+
+	public void OnMoneyChanged(long oldMoney, long newMoney)
+	{
+		if(!Game.IsClient) return;
+		if(Client.SteamId != Game.LocalClient.SteamId) return;
+		if(HomeGUI.Current == null) return;
+		var change = HomeGUI.Current.MoneyChangesPanel.AddChild<MoneyChanged>();
+		change.SetAmount(newMoney - oldMoney);
 	}
 
 	public bool HasPlaceable(string id, int amount = 1)

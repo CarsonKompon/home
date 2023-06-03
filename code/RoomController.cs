@@ -144,7 +144,6 @@ public partial class RoomController : Entity
 
         foreach(var prop in Props)
         {
-            Log.Info("Adding entry for prop: " + prop);
             if(prop == null || !prop.IsValid()) continue;
             RoomLayoutEntry entry = new RoomLayoutEntry();
             Transform localTransform = GetFrontDoor().StartTransform.ToLocal(prop.Transform);

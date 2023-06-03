@@ -90,6 +90,44 @@ homegui {
         bottom: 50%;
     }
 
+    .money-changes {
+
+        position: absolute;
+        left: 18%;
+        top: -790%;
+        flex-direction: column;
+        justify-content: flex-end;
+        width: 60%;
+        height: 800%;
+
+        MoneyChanged {
+            font-family: Poppins;
+            font-size: 32px;
+            font-weight: 500;
+            color: red;
+            opacity: 1;
+            
+            transition: all 0.2s ease-in-out;
+
+            &:intro
+            {
+                opacity: .5;
+                left: -5%;
+            }
+
+            &:outro
+            {
+                opacity: 0;
+                left: 20%;
+            }
+
+            &.positive
+            {
+                color: lime;
+            }
+        }
+    }
+
     &.hide {
         opacity: 0;
         pointer-events: none;
@@ -410,12 +448,17 @@ RoomPanel {
         RoomLayoutButton {
             font-family: Verdana;
             font-size: 18px;
-            justify-content: space-between;
 
             //background-color: #eee;
             border-radius: 4px;
             padding: 4px;
             margin-bottom: 4px;
+
+            .layout-extras {
+                position: absolute;
+                right: 4px;
+                top: 2px;
+            }
 
             .layout-delete {
                 margin-left: 4px;

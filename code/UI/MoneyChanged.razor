@@ -1,0 +1,39 @@
+@using System;
+@using System.Collections.Generic;
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+
+@namespace Home
+
+<root>
+    <label text=@Amount />
+</root>
+
+@code
+{
+    public string Amount;
+    private RealTimeSince _timeSince = 0;
+
+    public void SetAmount(long amount)
+    {
+        Amount = $"{MathF.Abs(amount):n0}";
+        if(amount > 0)
+        {
+            Amount = "+$" + Amount;
+            AddClass("positive");
+        }
+        else
+        {
+            Amount = "-$" + Amount;
+        }
+    }
+
+    public override void Tick()
+    {
+        if(_timeSince > 2f)
+        {
+            Delete();
+        }
+    }
+}

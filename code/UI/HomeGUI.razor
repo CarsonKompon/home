@@ -14,6 +14,9 @@
     <panel class="canvas">
         <label class="money" text=@GetMoney() />
         <label class="location" text=@GetLocation() />
+        <panel @ref=MoneyChangesPanel class="money-changes">
+
+        </panel>
     </panel>
 
     <image class="roof" src="ui/ui_roof.png" />
@@ -22,16 +25,22 @@
 
 @code
 {
-
+    public static HomeGUI Current;
     public AvatarHud AvatarHud;
-    public Label MoneyLabel;
-    public Label LocationLabel;
+    public Panel MoneyChangesPanel { get; set; }
 
+    protected override void OnAfterTreeRender( bool firstTime )
+	{
+		base.OnAfterTreeRender( firstTime );
+
+		Current = this;
+	}
+		
     string GetMoney()
     {
         if (Game.LocalPawn is HomePlayer player)
         {
-            return $"${player.Money}";
+            return $"${player.Money:n0}";
         }
         return "$0";
     }

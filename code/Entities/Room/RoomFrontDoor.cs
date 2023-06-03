@@ -34,6 +34,8 @@ public partial class RoomFrontDoor : DoorEntity
     {
         base.ClientSpawn();
 
+        StartTransform = Transform;
+
         Number = new RoomFrontDoorNumber();
         Number.NumberLabel.Text = RoomId.ToString();
         Number.Position = Position + Rotation.Backward * 2.125f + Rotation.Right * 24f + Rotation.Up * 4f;
