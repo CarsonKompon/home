@@ -188,7 +188,7 @@ public partial class HomePlayer
 	{
 		if(!CanUsePlaceable(id, amount))
 			return false;
-		Stash.First(s => s.Id == id).Used += amount;
+		//Stash.First(s => s.Id == id).Used += amount;
 		return true;
 	}
 
@@ -196,7 +196,9 @@ public partial class HomePlayer
 	public void UnusePlaceable(string id, int amount = 1)
 	{
 		if(!Stash.Any(s => s.Id == id && s.Used >= amount)) return;
-		Stash.First(s => s.Id == id).Used -= amount;
+		var thing = Stash.First(s => s.Id == id);
+		thing.Used -= amount;
+		if(thing.Used < 0) thing.Used = 0;
 	}
 
 }

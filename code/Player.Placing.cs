@@ -51,13 +51,19 @@ public partial class HomePlayer
 		CanPlace = true;
 	}
 
-	public void SetPlacing(RoomProp prop)
+	public void SetPlacing(Entity ent)
 	{
 		Game.AssertClient();
-		HomePlaceable placeable = HomePlaceable.Find(prop.PlaceableId);
-		Placing = placeable.Id;
+		PlaceableComponent component = ent.Components.Get<PlaceableComponent>();
+		Placing = component.PlaceableId;
+		HomePlaceable placeable = HomePlaceable.Find(component.PlaceableId);
 		PlacingModel = placeable.Model;
-		MovingEntity = prop;
+		if(string.IsNullOrWhiteSpace(PlacingModel) && ent is ModelEntity modelEnt)
+		{
+			PlacingModel = modelEnt.GetModelName();
+			placeable.Model = PlacingModel;
+		}
+		MovingEntity = ent;
 		CanPlace = true;
 	}
 

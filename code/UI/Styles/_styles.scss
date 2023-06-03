@@ -223,6 +223,7 @@ HomeInventoryDragging {
     pointer-events: none;
     opacity: 0.5;
     z-index: 10;
+    overflow: hidden;
 
     .icon {
         width: 100%;
@@ -652,6 +653,37 @@ ShopPlaceableButton {
 
     &:hover {
         background-color: #eee;
+    }
+}
+
+PlaceableContextMenu {
+    position: absolute;
+    width: 192px;
+    height: 192px;
+    border-radius: 8px;
+    background-color: white;
+    pointer-events: all;
+    flex-direction: column;
+    padding: 8px;
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 700;
+
+    .option-switch {
+        justify-content: space-between;
+        align-items: center;
+
+        .name {
+            flex-grow: 1;
+        }
+
+        switch {
+            flex-shrink: 0;
+        }
+    }
+
+    label {
+        color: black;
     }
 }
 

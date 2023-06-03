@@ -25,7 +25,7 @@ public partial class RoomController : Entity
     public List<RoomEditableMaterial> EditableMaterials { get; set; } = null;
     [Net] public RoomState State { get; set; } = RoomState.Vacant;
 
-    [Net] public IList<RoomProp> Props { get; set; } = new List<RoomProp>();
+    [Net] public IList<Entity> Entities { get; set; } = new List<Entity>();
     [Net] public HomePlayer RoomOwner { get; set; } = null;
     private RealTimeSince LastUpdate = 0f;
 
@@ -106,11 +106,11 @@ public partial class RoomController : Entity
         SetState(RoomState.Vacant);
 
         // Delete all the props
-        foreach(var prop in Props)
+        foreach(var ent in Entities)
         {
-            prop.Delete();
+            ent.Delete();
         }
-        Props.Clear();
+        Entities.Clear();
     }
 
     public void SetState(RoomState state)
@@ -142,15 +142,17 @@ public partial class RoomController : Entity
         RoomLayout layout = new RoomLayout();
         layout.Name = Name;
 
-        foreach(var prop in Props)
+        foreach(var ent in Entities)
         {
-            if(prop == null || !prop.IsValid()) continue;
+            if(ent == null || !ent.IsValid()) continue;
+            if(ent.Components.Get<PlaceableComponent>() is not PlaceableComponent component) continue;
             RoomLayoutEntry entry = new RoomLayoutEntry();
-            Transform localTransform = GetFrontDoor().StartTransform.ToLocal(prop.Transform);
-            entry.Id = prop.PlaceableId;
+            Transform localTransform = GetFrontDoor().StartTransform.ToLocal(ent.Transform);
+            entry.Id = component.PlaceableId;
             entry.Position = localTransform.Position;
             entry.Rotation = localTransform.Rotation;
-            entry.Scale = prop.Scale;
+            entry.Scale = ent.Scale;
+            entry.HasPhysics = component.HasPhysics;
 
             layout.Entries.Add(entry);
         }
@@ -164,7 +166,7 @@ public partial class RoomController : Entity
 
 
     [ConCmd.Server("home_load_layout")]
-    public static void LoadLayout()
+    public static async void LoadLayout()
     {
         if(ConsoleSystem.Caller == null) return;
         if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
@@ -175,25 +177,19 @@ public partial class RoomController : Entity
         // Change room name
         player.Room.Name = layout.Name;
 
-        // Delete all the props
-        foreach(var prop in player.Room.Props)
+        // Delete all the entities
+        foreach(var ent in player.Room.Entities)
         {
-            prop.Delete();
+            ent.Delete();
         }
 
-        // Create new props
+        // Create new entities
         foreach(var entry in layout.Entries)
         {
             if(!player.UsePlaceable(entry.Id)) continue;
             Transform localTransform = player.Room.GetFrontDoor().StartTransform.ToWorld(new Transform(entry.Position, entry.Rotation));
-            RoomProp prop = new RoomProp(HomePlaceable.Find(entry.Id), player.Client.SteamId)
-            {
-                Position = localTransform.Position,
-                Rotation = localTransform.Rotation,
-                Scale = entry.Scale
-            };
-
-            player.Room.Props.Add(prop);
+            Entity ent = await HomeGame.SpawnPlaceable(entry.Id, player.Client.SteamId, localTransform.Position, localTransform.Rotation, entry.Scale);
+            HomeGame.SetPlaceablePhysics(ent.NetworkIdent, entry.HasPhysics);
         }
     }
 

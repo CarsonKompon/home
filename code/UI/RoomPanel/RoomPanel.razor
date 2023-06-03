@@ -45,6 +45,8 @@
     public bool Editing = false;
     public string RoomName = "N/A";
 
+    private RealTimeSince LastLoad = 0;
+
     public void OnNameEdit()
     {
         Editing = true;
@@ -61,6 +63,7 @@
 
     public void LoadLayout()
     {
+        if(LastLoad < 1f) return;
         Log.Info("🏠: Loading layout...");
         string layout = "";
         foreach(RoomLayoutButton button in RoomLayoutButton.All)

@@ -1,0 +1,14 @@
+{
+  "Id": "cardboard_box_01",
+  "Name": "Cardboard Box",
+  "Cost": 10,
+  "State": "Visible",
+  "Category": "Furniture",
+  "Type": "Prop",
+  "Model": "models/sbox_props/cardboard_box/cardboard_box.vmdl",
+  "ClassName": "",
+  "PackageIdent": "facepunch.cardboard_box",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

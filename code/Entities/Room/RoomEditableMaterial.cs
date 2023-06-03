@@ -30,7 +30,7 @@ public partial class RoomEditableMaterial : BrushEntity
     {
         base.Spawn();
 
-        SetupPhysicsFromModel( PhysicsMotionType.Static );
+        SetupPhysicsFromModel( PhysicsMotionType.Keyframed );
 
         if(Game.IsServer)
         {

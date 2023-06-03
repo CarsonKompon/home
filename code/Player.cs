@@ -1,6 +1,7 @@
 using System.Globalization;
 using System;
 using Sandbox;
+using Sandbox.UI;
 using Sandbox.Component;
 using System.ComponentModel;
 using System.Text.Json;
@@ -493,13 +494,35 @@ public partial class HomePlayer : AnimatedEntity
 						.Ignore(this)
 						.Run();
 
-					if(tr.Entity is RoomProp prop && prop.OwnerId == Game.LocalClient.SteamId)
+					if(tr.Entity.Components.Get<PlaceableComponent>() is PlaceableComponent component && component.OwnerId == Game.LocalClient.SteamId)
 					{
-						SetPlacing(prop);
+						SetPlacing(tr.Entity);
 						var dragging = Game.RootPanel.AddChild<HomeInventoryDragging>();
-			            dragging.Placeable = HomePlaceable.Find(prop.PlaceableId);
+			            dragging.Placeable = HomePlaceable.Find(component.PlaceableId);
 
-						PlacingAngle = prop.LocalAngle;
+						PlacingAngle = component.LocalAngle;
+					}
+				}
+				else if(Input.Pressed("attack2"))
+				{
+					// Cast a ray to see if we clicked on a HomePlaceable
+					var tr = Trace.Ray(new Ray(Camera.Position, Screen.GetDirection(Mouse.Position)), 1000f)
+						.Ignore(this)
+						.Run();
+					
+					if(tr.Entity.Components.Get<PlaceableComponent>() is PlaceableComponent component && component.OwnerId == Game.LocalClient.SteamId)
+					{
+						// Destroy all previous context menus
+						foreach(var menu in Game.RootPanel.ChildrenOfType<PlaceableContextMenu>())
+						{
+							menu.Delete();
+						}
+
+						// Create new context menu
+						var contextMenu = Game.RootPanel.AddChild<PlaceableContextMenu>();				
+						contextMenu.SetEntity(tr.Entity);
+						contextMenu.Style.Left = Mouse.Position.x * contextMenu.ScaleFromScreen;
+						contextMenu.Style.Top = Mouse.Position.y * contextMenu.ScaleFromScreen;
 					}
 				}
 			}

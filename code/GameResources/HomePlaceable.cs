@@ -36,6 +36,7 @@ public partial class HomePlaceable : GameResource
     public PlaceableCategory Category { get; set; } = PlaceableCategory.Furniture;
 
     public PlaceableType Type { get; set; } = PlaceableType.Prop;
+    public PhysicsMotionType PhysicsType { get; set; } = PhysicsMotionType.Keyframed;
 
     [ResourceType("vmdl")]
     public string Model { get; set; }
@@ -78,12 +79,33 @@ public partial class HomePlaceable : GameResource
 
         if(PackageIdent != "")
         {
-            Package.Fetch(PackageIdent, false).ContinueWith((task) => {
-                LoadedPackage = task.Result;
-                ThumbnailOverride = LoadedPackage.Thumb;
-            });
+            InitFromPackage();
         }
 	}
+
+    private async void InitFromPackage()
+    {
+        LoadedPackage = await Package.FetchAsync(PackageIdent, false);
+        ThumbnailOverride = LoadedPackage.Thumb;
+    
+        // if(string.IsNullOrWhiteSpace(Model))
+        // {
+        //     var className = LoadedPackage.GetMeta( "PrimaryAsset", "" );
+        //     if(string.IsNullOrEmpty(className)) return;
+            
+        //     await LoadedPackage.MountAsync( false );
+            
+        //     var entityType = TypeLibrary.GetType<Entity>( className )?.TargetType;
+        //     if(entityType == null) return;
+        //     var entity = TypeLibrary.Create<Entity>( entityType );
+        //     if(entity == null) return;
+        //     if(entity is ModelEntity modelEntity)
+        //     {
+        //         Model = modelEntity.GetModelName();
+        //     }
+        //     entity.Delete();
+        // }
+    }
 
     public static HomePlaceable Find(string id)
     {

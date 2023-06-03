@@ -17,4 +17,5 @@ public partial class RoomLayoutEntry : BaseNetworkable
     [Net] public Vector3 Position { get; set; }
     [Net] public Rotation Rotation { get; set; }
     [Net] public float Scale { get; set; }
+    [Net] public bool HasPhysics { get; set; } = false;
 }

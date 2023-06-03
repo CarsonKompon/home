@@ -72,7 +72,7 @@ public partial class HomeGame : GameManager
 	}
 
 	[ConCmd.Server("home_try_place")]
-	public static void TryPlace()
+	public static async void TryPlace()
 	{
 		// Check the player and their variables
 		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
@@ -86,30 +86,38 @@ public partial class HomeGame : GameManager
 		// Check placing in the room
 		if(player.Room.PointInside(player.PlacingPosition) == false) return;
 
-		// Check if we are moving a prop or placing a new one
+		// Check if we are moving an entity or placing a new one
 		if(player.MovingEntity != null)
 		{
-			// Move the prop
-			RoomProp prop = player.MovingEntity as RoomProp;
-			prop.Position = player.PlacingPosition;
-			prop.Rotation = player.PlacingRotation;
-			prop.LocalAngle = player.PlacingAngle;
+			if(player.MovingEntity is ModelEntity model)
+			{
+				model.SetupPhysicsFromModel(PhysicsMotionType.Keyframed);
+			}
+
+			// Move the entity
+			if(player.MovingEntity.Components.Get<PlaceableComponent>() is PlaceableComponent component)
+			{
+				player.MovingEntity.Position = player.PlacingPosition;
+				player.MovingEntity.Rotation = player.PlacingRotation;
+				component.LocalAngle = player.PlacingAngle;
+			
+				if(player.MovingEntity is ModelEntity modelEnt)
+				{
+					modelEnt.SetupPhysicsFromModel(component.HasPhysics ? PhysicsMotionType.Dynamic : PhysicsMotionType.Keyframed);
+				}
+			}
 		}
 		else
 		{
 			// Check the player's inventory
 			if(!player.UsePlaceable(placeable.Id)) return;
 
-			// Create the prop
-			RoomProp prop = new RoomProp(placeable, ConsoleSystem.Caller.SteamId)
+			// Create the placeable
+			Entity ent = await SpawnPlaceable(placeable.Id, ConsoleSystem.Caller.SteamId, player.PlacingPosition, player.PlacingRotation, 1.0f);
+			if(ent.Components.Get<PlaceableComponent>() is PlaceableComponent component)
 			{
-				Position = player.PlacingPosition,
-				Rotation = player.PlacingRotation,
-				LocalAngle = player.PlacingAngle
-			};
-
-			// Add the prop to the room
-			player.Room.Props.Add(prop);
+				component.LocalAngle = player.PlacingAngle;
+			}
 		}
 
 		player.FinishPlacing();
@@ -122,13 +130,12 @@ public partial class HomeGame : GameManager
 		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
 		if(player.MovingEntity == null) return;
 
-		//Check the prop
-		if(player.MovingEntity is not RoomProp prop) return;
-		if(!player.CanUsePlaceable(prop.PlaceableId)) return;
-		player.UnusePlaceable(prop.PlaceableId);
+		//Check if entity is a placeable
+		if(player.MovingEntity.Components.Get<PlaceableComponent>() is not PlaceableComponent component) return;
+		player.UnusePlaceable(component.PlaceableId);
 
 		// Remove the prop from the room
-		prop.Delete();
+		player.MovingEntity.Delete();
 
 		player.FinishPlacing();
 	}
@@ -163,6 +170,136 @@ public partial class HomeGame : GameManager
 
 		// Give the placeable to the player
 		player.GivePlaceable(placeable.Id);
+	}
+
+	public static async Task<Entity> SpawnPlaceable(string id, long owner, Vector3 position, Rotation rotation, float scale)
+	{
+		HomePlaceable placeable = HomePlaceable.Find(id);
+		HomePlayer player = Game.Clients.Where(x => x.SteamId == owner).FirstOrDefault()?.Pawn as HomePlayer;
+		if(player == null) return null;
+
+		switch(placeable.Type)
+        {
+            case PlaceableType.Prop:
+
+				// Spawn the prop
+                Prop prop = new Prop()
+				{
+					Position = position,
+					Rotation = rotation,
+					Scale = scale,
+				};
+
+				// Set the model and physics
+				prop.SetModel(placeable.Model);
+				prop.SetupPhysicsFromModel(placeable.PhysicsType);
+
+				Log.Info(prop);
+				
+				// Add the component
+				prop.Components.Add(new PlaceableComponent(placeable, owner));
+
+				// Add the prop to the room
+				player.Room.Entities.Add(prop);
+
+                return prop;
+
+            case PlaceableType.Entity:
+                // Getting a type that matches the name
+                var entityType = TypeLibrary.GetType<Entity>( placeable.ClassName )?.TargetType;
+                if ( entityType == null ) return null;
+
+                // Creating an instance of that type
+                Entity entity = TypeLibrary.Create<Entity>( entityType );
+				if(entity == null) return null;
+
+				// Setting the entity's position
+				entity.Position = position;
+				entity.Rotation = rotation;
+				entity.Scale = scale;
+
+				// Set the physics
+				if(entity is ModelEntity modelEntity)
+				{
+					modelEntity.SetupPhysicsFromModel(placeable.PhysicsType);
+				}
+
+				// Add the component
+				entity.Components.Add(new PlaceableComponent(placeable, owner));
+
+				// Add the entity to the room
+				player.Room.Entities.Add(entity);
+
+                return entity;
+
+            case PlaceableType.PackageEntity:
+                // Create the package entity
+				Entity packageEntity = await SpawnPackage(placeable.PackageIdent, position, rotation, scale);
+				
+				// Add the component
+				packageEntity.Components.Add(new PlaceableComponent(placeable, owner));
+
+				// Set the physics
+				if(packageEntity is ModelEntity modelEnt)
+				{
+					modelEnt.SetupPhysicsFromModel(placeable.PhysicsType);
+				}
+
+				// Add the package entity to the room
+				player.Room.Entities.Add(packageEntity);
+
+                return packageEntity;
+        }
+
+		return null;
+	}
+
+	public static async Task<Entity> SpawnPackage(string ident, Vector3 position, Rotation rotation, float scale)
+    {
+        var package = await Package.FetchAsync( ident, false );
+        var className = package.GetMeta( "PrimaryAsset", "" );
+        if(string.IsNullOrEmpty(className)) return null;
+        
+        var thing = await package.MountAsync( true );
+
+		var type = TypeLibrary.GetType( className );
+		if ( type == null )
+		{
+			Log.Warning( $"'{className}' type wasn't found for {package.FullIdent}" );
+			return null;
+		}
+
+		var entity = type.Create<Entity>();
+		entity.Position = position;
+		entity.Rotation = rotation;
+		entity.Scale = scale;
+
+		return entity;
+    }
+
+	[ConVar.Server("home_set_placeable_physics")]
+	public static void SetPlaceablePhysics(int networkIdent, bool enabled)
+	{
+		// Find the entity
+		Entity entity = Entity.FindByIndex(networkIdent);
+		if(entity == null) return;
+
+		// Check if the entity has a placeable component
+		if(entity.Components.Get<PlaceableComponent>() is not PlaceableComponent component) return;
+
+		// Set the physics
+		if(entity is ModelEntity model)
+        {
+            if(enabled)
+            {
+                model.SetupPhysicsFromModel(PhysicsMotionType.Dynamic);
+            }
+            else
+            {
+                model.SetupPhysicsFromModel(PhysicsMotionType.Keyframed);
+            }
+			component.HasPhysics = enabled;
+        }
 	}
 
 	[ClientRpc]
