@@ -1,0 +1,66 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+
+@inherits WorldPanel;
+@attribute [StyleSheet("/UI/Styles/_styles.scss")]
+
+@namespace Home
+
+<root>
+	<img class="avatar" src=@AvatarTexture() />
+	<label class="name" text=@Player.Client.Name />
+</root>
+
+@code
+{
+
+	private HomePlayer Player;	
+
+	public Nametag( HomePlayer player )
+	{
+		Player = player;
+		PanelBounds = new Rect( -1000, -1000, 2000, 2000 );
+		SetClass( "local", player.IsLocalPawn );
+	}
+
+	string AvatarTexture()
+    {
+        return $"avatar:{Player.Client.SteamId}";
+    }
+
+	[GameEvent.Client.Frame]
+	private void OnFrame()
+	{
+		if ( !Player.IsValid() ) return;
+		if ( !Player.Client.IsValid() ) return;
+
+		Style.Opacity = MathX.Clamp(1.25f - (Vector3.DistanceBetween( Camera.Position, Player.EyePosition ) * 0.004f), 0f, 1f);
+
+		var hat = Player.GetAttachment( "hat" ) ?? new Transform( Player.EyePosition );
+		Position = hat.Position + Vector3.Up * 8;
+		Rotation = Rotation.LookAt( -Screen.GetDirection( new Vector2( Screen.Width * 0.5f, Screen.Height * 0.5f ) ) );
+	}
+
+	private static Entity Target;
+	[GameEvent.Tick.Client]
+	public static void LookingAtAnybody()
+	{
+		if ( Game.LocalPawn is not HomePlayer pl )
+		{
+			Target = null;
+			return;
+		}
+
+		var from = pl.EyePosition;
+		var to = from + pl.EyeRotation.Forward * 600f;
+		var tr = Trace.Ray( from, to )
+			.WithTag( "player" )
+			.Ignore( Game.LocalPawn )
+			.Run();
+
+		Target = tr.Entity;
+	}
+
+}

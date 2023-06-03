@@ -52,6 +52,8 @@ public partial class HomePlayer : AnimatedEntity
 	private SpotLightEntity ViewFlashlight;
 	private SpotLightEntity WorldFlashlight;
 
+	Nametag Nametag;
+
 
 	public RealTimeSince TimeSinceSpawned { get; set; }
 
@@ -330,8 +332,17 @@ public partial class HomePlayer : AnimatedEntity
 	{
 		base.ClientSpawn();
 
+		Nametag = new Nametag(this);
+
 		ViewFlashlight = CreateFlashlight();
 		ViewFlashlight.EnableViewmodelRendering = true;
+	}
+
+	protected override void OnDestroy()
+	{
+		base.OnDestroy();
+
+		Nametag?.Delete();
 	}
 
 	public SpotLightEntity CreateFlashlight()
