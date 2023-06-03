@@ -21,6 +21,7 @@ public class RotatingModelScenePanel : ScenePanel
     private SceneSpotLight LightWarm;
 	private SceneSpotLight LightBlue;
     private float RotationAngle = 45f;
+    public float IdleSpeed = 0f;
     private bool Hovering = false;
 
     public RotatingModelScenePanel()
@@ -68,6 +69,8 @@ public class RotatingModelScenePanel : ScenePanel
             WorldModel = new SceneModel(World, Model, Transform.Zero.WithScale(0.25f));
         }
 
+        RotationAngle += IdleSpeed * Time.Delta;
+
         if(!DoesRotate) return;
 
         if(Hovering)
@@ -95,6 +98,6 @@ public class RotatingModelScenePanel : ScenePanel
         base.OnMouseOut(e);
 
         Hovering = false;
-        RotationAngle = 45f;
+        //RotationAngle = 45f;
     }
 }

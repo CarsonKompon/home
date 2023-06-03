@@ -3,6 +3,18 @@ using System;
 using System.Threading.Tasks;
 using Sandbox;
 
+public enum PlaceableCategory
+{
+    Furniture,
+    Building
+}
+
+public enum PlaceableType
+{
+    Prop,
+    Entity,
+    PackageEntity
+}
 
 [GameResource("Home Placeable", "placeabl", "Describes a placeable model or entity that can be stored in the player's inventory and placed in their room.", Icon = "house" )]
 public partial class HomePlaceable : GameResource
@@ -12,10 +24,17 @@ public partial class HomePlaceable : GameResource
 
     public int Cost { get; set; } = 0;
 
+    public PlaceableCategory Category { get; set; } = PlaceableCategory.Furniture;
+
+    public PlaceableType Type { get; set; } = PlaceableType.Prop;
+
     [ResourceType("vmdl")]
     public string Model { get; set; }
 
+    public string ClassName { get; set; } = "";
+
     public string PackageIdent { get; set; } = "";
+
     [ResourceType("png")]
     public string ThumbnailOverride { get; set; } = "";
 
@@ -50,6 +69,7 @@ public partial class HomePlaceable : GameResource
         {
             Package.Fetch(PackageIdent, false).ContinueWith((task) => {
                 LoadedPackage = task.Result;
+                ThumbnailOverride = LoadedPackage.Thumb;
             });
         }
 	}

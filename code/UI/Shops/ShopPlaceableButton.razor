@@ -1,0 +1,53 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Sandbox;
+@using Sandbox.UI;
+
+@namespace Home
+
+<root>
+    <div class="info">
+        <img class="icon" src=@GetTexture() />
+        <div class="names">
+            <div class="name">@Placeable.Name</div>
+            <div class="description">@GetDescription()</div>
+        </div>
+    </div>
+    <button class="buy" onclick="@Purchase" >$@Placeable.Cost</button>
+</root>
+
+@code
+{
+    public HomePlaceable Placeable { get; set; }
+
+    public string GetDescription()
+    {
+        if(Game.LocalPawn is not HomePlayer player) return "";
+        var stashEntry = player.Stash.Where(x => x.GetPlaceable().Id == Placeable.Id).FirstOrDefault();
+        if(stashEntry == null) return $"You currently own 0";
+        return $"You currently own {stashEntry.Amount}";
+    }
+
+    public string GetTexture()
+    {
+        return Placeable.GetThumbnail();
+    }
+
+    public void Purchase()
+    {
+        ConsoleSystem.Run("home_buy", Placeable.Id);
+    }
+
+    protected override void OnMouseOver(MousePanelEvent e)
+    {
+        base.OnMouseOver(e);
+        if(Game.LocalPawn is not HomePlayer player) return;
+        ShopBase.SetTarget(Placeable);
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(Placeable, GetDescription());
+    }
+}

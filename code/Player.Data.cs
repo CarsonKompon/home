@@ -88,9 +88,7 @@ public partial class HomePlayer
 		}
 		foreach(string file in FileSystem.Data.FindFile(steamId + "/layouts", "*.json"))
 		{
-			Log.Info("FOUND FILE " + file);
 			RoomLayout layout = FileSystem.Data.ReadJson<RoomLayout>(steamId + "/layouts/" + file);
-			Log.Info(layout);
 			player.RoomLayouts.Add(layout);
 		}
 

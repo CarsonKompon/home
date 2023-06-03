@@ -133,6 +133,24 @@ public partial class HomeGame : GameManager
 		player.FinishPlacing();
 	}
 
+	[ConCmd.Server("home_buy")]
+	public static void PurchasePlaceable(string id)
+	{
+		// Check the player and their variables
+		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+
+		// Check the placeable
+		HomePlaceable placeable = HomePlaceable.Find(id);
+		if(placeable == null) return;
+
+		// Check the player's money
+		if(!player.HasMoney(placeable.Cost)) return;
+		player.TakeMoney(placeable.Cost);
+
+		// Give the placeable to the player
+		player.GivePlaceable(placeable.Id);
+	}
+
 	[ConCmd.Admin("home_give_placeable", Help = "Gives a placeable to a player")]
 	public static void GivePlaceable(string id)
 	{

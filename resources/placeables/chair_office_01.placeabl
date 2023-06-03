@@ -1,9 +1,13 @@
 {
   "Id": "chair_office_01",
   "Name": "Office Chair",
-  "Cost": 0,
+  "Cost": 125,
+  "Category": "Furniture",
+  "Type": "Prop",
   "Model": "models/sbox_props/office_chair/office_chair.vmdl",
+  "ClassName": "prop_physics",
   "PackageIdent": "facepunch.office_chair",
+  "ThumbnailOverride": "",
   "PlaceSound": null,
   "StashSound": null
 }

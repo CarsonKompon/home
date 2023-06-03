@@ -1,0 +1,57 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Sandbox;
+@using Sandbox.UI;
+
+@namespace Home
+
+<root class="shop-placeable">
+    @if(Target == null)
+    {
+        <div class="preview" />
+    }
+    else
+    {
+        <RotatingModelScenePanel IdleSpeed=@(20) Model=@Target.Model class="preview" />
+    }
+    <div class="shop">
+        <div class="items">
+            @foreach(var item in PlaceableList())
+            {
+                <ShopPlaceableButton Placeable=@item />
+            }
+        </div>
+    </div>
+    <img src="/ui/ui_no.png" class="close" onclick="@Close" />
+</root>
+
+@code
+{
+    public HomePlaceable Target { get; set; } = null;
+
+    public virtual List<HomePlaceable> PlaceableList()
+    {
+        return HomePlaceable.All.ToList();
+    }
+
+    [ClientRpc]
+    public static void Open()
+    {
+        Game.RootPanel.Children.OfType<ShopFurniture>().FirstOrDefault()?.AddClass("open");
+    }
+
+    public void Close()
+    {
+        RemoveClass("open");
+    }
+
+    public static void SetTarget(HomePlaceable placeable)
+    {
+        foreach(var thing in Game.RootPanel.Children.OfType<ShopBase>())
+        {
+            thing.Target = placeable;
+        }
+    }
+
+}

@@ -537,6 +537,113 @@ RoomPanel {
 
 }
 
+.shop-placeable
+{
+    top: 10%;
+    left: 15%;
+    width: 70%;
+    height: 80%;
+    background-color: rgb(155, 106, 73);
+    border-radius: 24px;
+    padding: 32px;
+    gap: 16px;
+    display: none; 
+
+    z-index: -200;
+
+    .preview {
+        width: 50%;
+        height: 100%;
+        border-radius: 24px;
+        background-color: rgb(194, 135, 96);}
+
+    .shop {
+        width: 50%;
+        height: 100%;
+        border-radius: 24px;
+        background-color: rgb(128, 93, 69);
+        padding: 16px;
+        
+        .items {
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+        }
+    }
+
+    .close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background-image-tint: black;
+        pointer-events: all;
+    }
+
+    &.open {
+        display: flex;
+    }
+}
+
+ShopPlaceableButton {
+    width: 100%;
+    height: 96px;
+    border-radius: 8px;
+    background-color: #ccc;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px;
+
+    .icon {
+        width: 86px;
+        height: 86px;
+        border-radius: 8px;
+        background-color: #eee;
+    }
+
+    .info {
+        height: 100%;
+        justify-content: space-between;
+        align-items: center;
+
+        .names {
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding-left: 8px;
+        }
+
+        .name {
+            font-family: Poppins;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .description {
+            
+            font-style: italic;
+        }
+    }
+
+    .buy {
+        font-family: Poppins;
+        font-size: 24px;
+        font-weight: 500;
+        background-color: #555;
+        margin-right: 8px;
+        padding: 4px 8px;
+        border-radius: 8px;
+        color: white;
+
+        &:hover {
+            background-color: rgb(23, 161, 23);
+        }
+    }
+
+    &:hover {
+        background-color: #eee;
+    }
+}
+
 .nametag {
     font-family: Ubuntu;
     font-size: 48px;
