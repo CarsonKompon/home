@@ -496,7 +496,7 @@ public partial class HomePlayer : AnimatedEntity
 
 					if(tr.Entity.Components.Get<PlaceableComponent>() is PlaceableComponent component && component.OwnerId == Game.LocalClient.SteamId)
 					{
-						SetPlacing(tr.Entity);
+						SetPlacing(tr.Entity.Root);
 						var dragging = Game.RootPanel.AddChild<HomeInventoryDragging>();
 			            dragging.Placeable = HomePlaceable.Find(component.PlaceableId);
 
@@ -510,7 +510,7 @@ public partial class HomePlayer : AnimatedEntity
 						.Ignore(this)
 						.Run();
 					
-					if(tr.Entity.Components.Get<PlaceableComponent>() is PlaceableComponent component && component.OwnerId == Game.LocalClient.SteamId)
+					if(tr.Entity.Root.Components.Get<PlaceableComponent>() is PlaceableComponent component && component.OwnerId == Game.LocalClient.SteamId)
 					{
 						// Destroy all previous context menus
 						foreach(var menu in Game.RootPanel.ChildrenOfType<PlaceableContextMenu>())
@@ -520,7 +520,7 @@ public partial class HomePlayer : AnimatedEntity
 
 						// Create new context menu
 						var contextMenu = Game.RootPanel.AddChild<PlaceableContextMenu>();				
-						contextMenu.SetEntity(tr.Entity);
+						contextMenu.SetEntity(tr.Entity.Root);
 						contextMenu.Style.Left = Mouse.Position.x * contextMenu.ScaleFromScreen;
 						contextMenu.Style.Top = Mouse.Position.y * contextMenu.ScaleFromScreen;
 					}

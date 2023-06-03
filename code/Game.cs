@@ -89,22 +89,17 @@ public partial class HomeGame : GameManager
 		// Check if we are moving an entity or placing a new one
 		if(player.MovingEntity != null)
 		{
-			if(player.MovingEntity is ModelEntity model)
-			{
-				model.SetupPhysicsFromModel(PhysicsMotionType.Keyframed);
-			}
-
 			// Move the entity
 			if(player.MovingEntity.Components.Get<PlaceableComponent>() is PlaceableComponent component)
 			{
+				 component.SetPhysicsType(PhysicsMotionType.Keyframed);
+
 				player.MovingEntity.Position = player.PlacingPosition;
 				player.MovingEntity.Rotation = player.PlacingRotation;
 				component.LocalAngle = player.PlacingAngle;
-			
-				if(player.MovingEntity is ModelEntity modelEnt)
-				{
-					modelEnt.SetupPhysicsFromModel(component.HasPhysics ? PhysicsMotionType.Dynamic : PhysicsMotionType.Keyframed);
-				}
+
+				component.SetPhysicsType(component.HasPhysics ? PhysicsMotionType.Dynamic : PhysicsMotionType.Keyframed);
+				
 			}
 		}
 		else
@@ -192,12 +187,11 @@ public partial class HomeGame : GameManager
 
 				// Set the model and physics
 				prop.SetModel(placeable.Model);
-				prop.SetupPhysicsFromModel(placeable.PhysicsType);
-
-				Log.Info(prop);
 				
 				// Add the component
-				prop.Components.Add(new PlaceableComponent(placeable, owner));
+				PlaceableComponent component = new PlaceableComponent(placeable, owner);
+				prop.Components.Add(component);
+				component.SetPhysicsType(placeable.PhysicsType);
 
 				// Add the prop to the room
 				player.Room.Entities.Add(prop);
@@ -218,14 +212,10 @@ public partial class HomeGame : GameManager
 				entity.Rotation = rotation;
 				entity.Scale = scale;
 
-				// Set the physics
-				if(entity is ModelEntity modelEntity)
-				{
-					modelEntity.SetupPhysicsFromModel(placeable.PhysicsType);
-				}
-
 				// Add the component
-				entity.Components.Add(new PlaceableComponent(placeable, owner));
+				component = new PlaceableComponent(placeable, owner);
+				entity.Components.Add(component);
+				component.SetPhysicsType(placeable.PhysicsType);
 
 				// Add the entity to the room
 				player.Room.Entities.Add(entity);
@@ -237,13 +227,9 @@ public partial class HomeGame : GameManager
 				Entity packageEntity = await SpawnPackage(placeable.PackageIdent, position, rotation, scale);
 				
 				// Add the component
-				packageEntity.Components.Add(new PlaceableComponent(placeable, owner));
-
-				// Set the physics
-				if(packageEntity is ModelEntity modelEnt)
-				{
-					modelEnt.SetupPhysicsFromModel(placeable.PhysicsType);
-				}
+				component = new PlaceableComponent(placeable, owner);
+				packageEntity.Components.Add(component);
+				component.SetPhysicsType(placeable.PhysicsType);
 
 				// Add the package entity to the room
 				player.Room.Entities.Add(packageEntity);
@@ -292,11 +278,11 @@ public partial class HomeGame : GameManager
         {
             if(enabled)
             {
-                model.SetupPhysicsFromModel(PhysicsMotionType.Dynamic);
+                component.SetPhysicsType(PhysicsMotionType.Dynamic);
             }
             else
             {
-                model.SetupPhysicsFromModel(PhysicsMotionType.Keyframed);
+                component.SetPhysicsType(PhysicsMotionType.Keyframed);
             }
 			component.HasPhysics = enabled;
         }

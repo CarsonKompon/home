@@ -64,17 +64,6 @@ partial class Pawn : AnimatedEntity
 		{
 			Position = helper.Position;
 		}
-
-		// If we're running serverside and Attack1 was just pressed, spawn a ragdoll
-		if ( Game.IsServer && Input.Pressed( InputButton.PrimaryAttack ) )
-		{
-			var ragdoll = new ModelEntity();
-			ragdoll.SetModel( "models/citizen/citizen.vmdl" );
-			ragdoll.Position = Position + Rotation.Forward * 40;
-			ragdoll.Rotation = Rotation.LookAt( Vector3.Random.Normal );
-			ragdoll.SetupPhysicsFromModel( PhysicsMotionType.Dynamic, false );
-			ragdoll.PhysicsGroup.Velocity = Rotation.Forward * 1000;
-		}
 	}
 
 	/// <summary>

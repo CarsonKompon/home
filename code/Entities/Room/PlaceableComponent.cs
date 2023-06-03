@@ -17,9 +17,10 @@ public partial class PlaceableComponent : EntityComponent
 
     public PlaceableComponent()
     {
+        ShouldTransmit = true;
     }
 
-    public PlaceableComponent(HomePlaceable placeable, long owner)
+    public PlaceableComponent(HomePlaceable placeable, long owner) : this()
     {
         PlaceableId = placeable.Id;
         OwnerId = owner;
@@ -32,7 +33,6 @@ public partial class PlaceableComponent : EntityComponent
     {
         if(Game.IsServer && Game.Clients.FirstOrDefault(x => x.SteamId == OwnerId)?.Pawn is HomePlayer player)
         {
-            Log.Info("what");
             StashEntry entry = player.Stash.FirstOrDefault(x => x.Id == PlaceableId);
             entry.Used++;
         }
@@ -51,26 +51,30 @@ public partial class PlaceableComponent : EntityComponent
         base.OnDeactivate();
     }
 
-    // public override void Spawn()
-    // {
-    //     base.Spawn();
-    //     SetupPhysicsFromModel(PhysicsMotionType.Static);
+    public void SetPhysicsType(PhysicsMotionType type)
+    {
+        Game.AssertServer();
 
-    //     if(Game.IsServer && Game.Clients.FirstOrDefault(x => x.SteamId == OwnerId)?.Pawn is HomePlayer player)
-    //     {
-    //         StashEntry entry = player.Stash.FirstOrDefault(x => x.Id == PlaceableId);
-    //         entry.Used++;
-    //     }
-    // }
+        if(Entity is ModelEntity model)
+        {
+            model.ResetBones();
+            model.SetupPhysicsFromModel(type);
+        }
+    }
 
-	// protected override void OnDestroy()
-	// {
-    //     if(Game.IsServer && Game.Clients.FirstOrDefault(x => x.SteamId == OwnerId)?.Pawn is HomePlayer player)
-    //     {
-    //         StashEntry entry = player.Stash.FirstOrDefault(x => x.Id == PlaceableId);
-    //         entry.Used--;
-    //     }
+    private PhysicsBodyType MotionToBodyType(PhysicsMotionType type)
+    {
+        switch(type)
+        {
+            case PhysicsMotionType.Static:
+                return PhysicsBodyType.Static;
+            case PhysicsMotionType.Dynamic:
+                return PhysicsBodyType.Dynamic;
+            case PhysicsMotionType.Keyframed:
+                return PhysicsBodyType.Keyframed;
+            default:
+                return PhysicsBodyType.Static;
+        }
+    }
 
-	// 	base.OnDestroy();
-	// }
 }
