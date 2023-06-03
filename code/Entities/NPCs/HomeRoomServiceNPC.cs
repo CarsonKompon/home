@@ -14,6 +14,7 @@ public partial class RoomServiceNPC : BaseNPC
 
     public RoomServiceNPC()
     {
+        DisplayName = "Room Service";
         ClothingString = "[{\"id\":1594058106},{\"id\":1772984322},{\"id\":502735166},{\"id\":-1413300318},{\"id\":-1870268993},{\"id\":469696431},{\"id\":1977425295},{\"id\":-1678954621},{\"id\":-1415286990},{\"id\":-573917948},{\"id\":-1688334362}]";
     }
 

@@ -14,6 +14,7 @@ public partial class ShopFurnatureNPC : BaseNPC
 
     public ShopFurnatureNPC()
     {
+        DisplayName = "Furnature Shop";
         ClothingString = "[{\"id\":-1266562526},{\"id\":-1901789076},{\"id\":56388154},{\"id\":1977425295},{\"id\":791197114},{\"id\":626961084},{\"id\":1254089650},{\"id\":915965493},{\"id\":591027714}]";
     }
 

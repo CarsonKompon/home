@@ -10,9 +10,13 @@ namespace Home;
 /// </summary>
 public partial class BaseNPC : AnimatedEntity, IUse
 {
+    public string DisplayName = "Unnamed NPC";
+
     protected Transform StartingTransform = new();
     protected string ClothingString = "";
     ClothingContainer Clothing = new();
+
+    NPCNametag Nametag;
 
     public virtual bool IsUsable( Entity user ) => true;
 
@@ -30,6 +34,13 @@ public partial class BaseNPC : AnimatedEntity, IUse
         SetModel("models/citizen/citizen.vmdl");
         Clothing.Deserialize(ClothingString);
         Clothing.DressEntity( this );
+    }
+
+    public override void ClientSpawn()
+    {
+        base.ClientSpawn();
+
+        Nametag = new(this);
     }
 
     [GameEvent.Tick.Server]

@@ -8,7 +8,7 @@
 
 @namespace Home
 
-<root>
+<root class="nametag">
 	<img class="avatar" src=@AvatarTexture() />
 	<label class="name" text=@Player.Client.Name />
 </root>
@@ -41,26 +41,6 @@
 		var hat = Player.GetAttachment( "hat" ) ?? new Transform( Player.EyePosition );
 		Position = hat.Position + Vector3.Up * 8;
 		Rotation = Rotation.LookAt( -Screen.GetDirection( new Vector2( Screen.Width * 0.5f, Screen.Height * 0.5f ) ) );
-	}
-
-	private static Entity Target;
-	[GameEvent.Tick.Client]
-	public static void LookingAtAnybody()
-	{
-		if ( Game.LocalPawn is not HomePlayer pl )
-		{
-			Target = null;
-			return;
-		}
-
-		var from = pl.EyePosition;
-		var to = from + pl.EyeRotation.Forward * 600f;
-		var tr = Trace.Ray( from, to )
-			.WithTag( "player" )
-			.Ignore( Game.LocalPawn )
-			.Run();
-
-		Target = tr.Entity;
 	}
 
 }
