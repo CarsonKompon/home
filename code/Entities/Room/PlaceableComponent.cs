@@ -57,7 +57,6 @@ public partial class PlaceableComponent : EntityComponent
 
         if(Entity is ModelEntity model)
         {
-            model.ResetBones();
             model.SetupPhysicsFromModel(type);
         }
     }

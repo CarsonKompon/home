@@ -92,14 +92,15 @@ public partial class HomeGame : GameManager
 			// Move the entity
 			if(player.MovingEntity.Components.Get<PlaceableComponent>() is PlaceableComponent component)
 			{
-				 component.SetPhysicsType(PhysicsMotionType.Keyframed);
+				component.SetPhysicsType(PhysicsMotionType.Keyframed);
 
 				player.MovingEntity.Position = player.PlacingPosition;
 				player.MovingEntity.Rotation = player.PlacingRotation;
 				component.LocalAngle = player.PlacingAngle;
 
 				component.SetPhysicsType(component.HasPhysics ? PhysicsMotionType.Dynamic : PhysicsMotionType.Keyframed);
-				
+				//player.MovingEntity.ResetInterpolation();
+				player.MovingEntity.RenderDirty();
 			}
 		}
 		else
@@ -183,10 +184,11 @@ public partial class HomeGame : GameManager
 					Position = position,
 					Rotation = rotation,
 					Scale = scale,
+					Transmit = TransmitType.Always
 				};
 
 				// Set the model and physics
-				prop.SetModel(placeable.Model);
+				prop.SetModel(placeable.GetModel());
 				
 				// Add the component
 				PlaceableComponent component = new PlaceableComponent(placeable, owner);
@@ -211,6 +213,7 @@ public partial class HomeGame : GameManager
 				entity.Position = position;
 				entity.Rotation = rotation;
 				entity.Scale = scale;
+				entity.Transmit = TransmitType.Always;
 
 				// Add the component
 				component = new PlaceableComponent(placeable, owner);
@@ -225,7 +228,8 @@ public partial class HomeGame : GameManager
             case PlaceableType.PackageEntity:
                 // Create the package entity
 				Entity packageEntity = await SpawnPackage(placeable.PackageIdent, position, rotation, scale);
-				
+				packageEntity.Transmit = TransmitType.Always;
+
 				// Add the component
 				component = new PlaceableComponent(placeable, owner);
 				packageEntity.Components.Add(component);

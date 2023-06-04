@@ -5,6 +5,7 @@
   "State": "Visible",
   "Category": "Furniture",
   "Type": "Prop",
+  "PhysicsType": "Keyframed",
   "Model": "models/wetfloor_sign.vmdl",
   "ClassName": "",
   "PackageIdent": "randkassets.wetfloor_sign",

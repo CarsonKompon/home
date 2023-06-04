@@ -5,10 +5,11 @@
   "State": "Hidden",
   "Category": "Furniture",
   "Type": "PackageEntity",
+  "PhysicsType": "Keyframed",
   "Model": null,
   "ClassName": "",
   "PackageIdent": "playback.mediaplayer",
-  "ThumbnailOverride": "https://files.facepunch.com/sbox/asset/playback.mediaplayer/logo.a496106d.png",
+  "ThumbnailOverride": null,
   "PlaceSound": null,
   "StashSound": null
 }

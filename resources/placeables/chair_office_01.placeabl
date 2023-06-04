@@ -5,10 +5,11 @@
   "State": "Visible",
   "Category": "Furniture",
   "Type": "Prop",
+  "PhysicsType": "Keyframed",
   "Model": "models/sbox_props/office_chair/office_chair.vmdl",
   "ClassName": "",
   "PackageIdent": "facepunch.office_chair",
-  "ThumbnailOverride": "https://files.facepunch.com/sbox/asset//facepunch.office_chair/thumb.png.db08d53349e9b657",
+  "ThumbnailOverride": null,
   "PlaceSound": null,
   "StashSound": null
 }

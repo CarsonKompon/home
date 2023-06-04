@@ -9,7 +9,7 @@
   "Model": "models/sbox_props/pallet/pallet.vmdl",
   "ClassName": "",
   "PackageIdent": "facepunch.pallet",
-  "ThumbnailOverride": "https://files.facepunch.com/sbox/asset//facepunch.pallet/thumb.png.498769da8954cc6a",
+  "ThumbnailOverride": null,
   "PlaceSound": null,
   "StashSound": null
 }

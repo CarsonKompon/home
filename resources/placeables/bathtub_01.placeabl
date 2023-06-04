@@ -5,6 +5,7 @@
   "State": "Visible",
   "Category": "Furniture",
   "Type": "Prop",
+  "PhysicsType": "Keyframed",
   "Model": "models/sbox_props/bathtub_a/bathtub_a.vmdl",
   "ClassName": "",
   "PackageIdent": "facepunch.bathtub",

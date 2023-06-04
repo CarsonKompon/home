@@ -46,7 +46,7 @@ public partial class HomePlayer
 	{
 		Game.AssertClient();
 		Placing = placeable.Id;
-		PlacingModel = placeable.Model;
+		PlacingModel = placeable.GetModel();
 		MovingEntity = null;
 		CanPlace = true;
 	}
@@ -57,11 +57,11 @@ public partial class HomePlayer
 		PlaceableComponent component = ent.Components.Get<PlaceableComponent>();
 		Placing = component.PlaceableId;
 		HomePlaceable placeable = HomePlaceable.Find(component.PlaceableId);
-		PlacingModel = placeable.Model;
+		PlacingModel = placeable.GetModel();
 		if(string.IsNullOrWhiteSpace(PlacingModel) && ent is ModelEntity modelEnt)
 		{
 			PlacingModel = modelEnt.GetModelName();
-			placeable.Model = PlacingModel;
+			placeable.RealModel = PlacingModel;
 		}
 		MovingEntity = ent;
 		CanPlace = true;

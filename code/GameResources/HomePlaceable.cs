@@ -56,12 +56,20 @@ public partial class HomePlaceable : GameResource
     [ResourceType("vsnd")]
     public string StashSound { get; set; }
 
+    private string PackageThumbnail = "";
+    [HideInEditor] public string RealModel = "";
+
 
     private Package LoadedPackage;
     public string GetThumbnail() {
-        if(ThumbnailOverride != "") return ThumbnailOverride;
-        if(PackageIdent == "") return ThumbnailOverride;
+        if(!string.IsNullOrEmpty(ThumbnailOverride)) return ThumbnailOverride;
+        if(!string.IsNullOrEmpty(PackageIdent)) return PackageThumbnail;
         return LoadedPackage.Thumb;
+    }
+
+    public string GetModel() {
+        if(!string.IsNullOrEmpty(RealModel)) return RealModel;
+        return Model;
     }
 
 
@@ -77,16 +85,26 @@ public partial class HomePlaceable : GameResource
             _all.Add(this);
         }
 
-        if(PackageIdent != "")
-        {
-            InitFromPackage();
-        }
+        InitFromPackage();
 	}
 
-    private async void InitFromPackage()
+    public async void InitFromPackage()
     {
+        if(string.IsNullOrEmpty(PackageIdent)) return;
+
         LoadedPackage = await Package.FetchAsync(PackageIdent, false);
-        ThumbnailOverride = LoadedPackage.Thumb;
+        PackageThumbnail = LoadedPackage.Thumb;
+
+        if(string.IsNullOrEmpty(Model))
+        {
+            var model = LoadedPackage.GetMeta("SingleAssetSource", "");
+            if(!model.EndsWith(".vmdl")) model = LoadedPackage.GetMeta("PrimaryAsset", "");
+            if(model.EndsWith(".vmdl"))
+            {
+                RealModel = model;
+            }
+        }
+
     
         // if(string.IsNullOrWhiteSpace(Model))
         // {
@@ -114,7 +132,7 @@ public partial class HomePlaceable : GameResource
 
     public static HomePlaceable FindByModel(string model)
     {
-        return _all.Find(p => p.Model == model);
+        return _all.Find(p => p.GetModel() == model);
     }
 
     public static HomePlaceable FindByName(string name)
