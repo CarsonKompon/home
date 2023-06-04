@@ -450,6 +450,7 @@ RoomPanel {
         RoomLayoutButton {
             font-family: Verdana;
             font-size: 18px;
+            flex-shrink: 0;
 
             //background-color: #eee;
             border-radius: 4px;
