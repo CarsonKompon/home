@@ -85,19 +85,19 @@ public class RotatingModelScenePanel : ScenePanel
 		Camera.Rotation = Rotation.From( angles );
     }
 
-    protected override void OnMouseOver( MousePanelEvent e )
-    {
-        base.OnMouseOver(e);
+    // protected override void OnMouseOver( MousePanelEvent e )
+    // {
+    //     base.OnMouseOver(e);
 
-        Hovering = true;
+    //     Hovering = true;
 
-    }
+    // }
 
-    protected override void OnMouseOut( MousePanelEvent e )
-    {
-        base.OnMouseOut(e);
+    // protected override void OnMouseOut( MousePanelEvent e )
+    // {
+    //     base.OnMouseOut(e);
 
-        Hovering = false;
-        //RotationAngle = 45f;
-    }
+    //     Hovering = false;
+    //     //RotationAngle = 45f;
+    // }
 }

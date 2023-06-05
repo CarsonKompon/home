@@ -6,7 +6,8 @@ using Sandbox;
 public enum PlaceableCategory
 {
     Furniture,
-    Building
+    Building,
+    Foliage
 }
 
 public enum PlaceableType

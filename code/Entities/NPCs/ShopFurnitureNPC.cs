@@ -11,7 +11,6 @@ namespace Home;
 [Title( "Shop Furniture NPC" ), Category( "NPCs" ), Icon( "person" )]
 public partial class ShopFurnitureNPC : BaseNPC
 {
-
     public ShopFurnitureNPC()
     {
         DisplayName = "Furniture Shop";

@@ -20,6 +20,26 @@
 @code
 {
     public HomePlaceable Placeable { get; set; }
+    public ShopBase Shop { get; set; }
+
+		protected override void OnAfterTreeRender( bool firstTime )
+		{
+			base.OnAfterTreeRender( firstTime );
+
+            if(firstTime)
+            {
+                Panel parent = Parent;
+                int fallback = 0;
+                while(parent is not ShopBase && fallback < 10)
+                {
+                    parent = parent.Parent;
+                    fallback++;
+                }
+                Shop = parent as ShopBase;
+            }
+		}
+
+		
 
     public string GetDescription()
     {
@@ -43,7 +63,7 @@
     {
         base.OnMouseOver(e);
         if(Game.LocalPawn is not HomePlayer player) return;
-        ShopBase.SetTarget(Placeable);
+        Shop?.SetTarget(Placeable);
     }
 
     protected override int BuildHash()

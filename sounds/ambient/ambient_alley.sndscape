@@ -1,0 +1,10 @@
+{
+  "MasterVolume": "1.00,1.00,0",
+  "LoopedSounds": [
+    {
+      "SoundFile": "sounds/ambient/ambient_alley.vsnd",
+      "Volume": "0.18,0.18,0"
+    }
+  ],
+  "StingSounds": []
+}
