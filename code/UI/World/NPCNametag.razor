@@ -30,7 +30,7 @@
 
 		Style.Opacity = MathX.Clamp(1.25f - (Vector3.DistanceBetween( Camera.Position, NPC.Position ) * 0.004f), 0f, 1f);
 
-		Position = NPC.Position + Vector3.Up * 80;
+		Position = NPC.GetBoneTransform(NPC.GetBoneIndex("head")).Position + Vector3.Up * 25;
 		Rotation = Rotation.LookAt( -Screen.GetDirection( new Vector2( Screen.Width * 0.5f, Screen.Height * 0.5f ) ) );
 	}
 

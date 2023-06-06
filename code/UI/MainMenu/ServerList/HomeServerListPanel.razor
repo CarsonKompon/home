@@ -1,0 +1,190 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using System.Threading.Tasks;
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.Services;
+@using System.Threading
+@attribute [StyleSheet]
+
+@namespace Home
+
+<root class="server-list">
+
+    @if( list == null || ( list.IsQuerying && !list.Any() ) )
+    {
+        <LoaderFullScreen></LoaderFullScreen>
+    }
+    else if ( !list.Any() )
+    {
+        <div class="loading-status">No servers available! Why not host one?</div>
+    }
+    else
+    {
+        <div class="header">
+
+            <div class="grow"></div>
+            <div class="players" @onclick=@( () => Sort( "players", true ) )>
+                <i class="title">people</i>
+                @if( order == "players" )
+                {
+                    <i>@(orderDesc ? "arrow_drop_down" : "arrow_drop_up")</i>
+                }
+
+            </div>
+            <div class="ping" @onclick=@( () => Sort( "ping", false ) )>
+
+                <i class="title">settings_ethernet</i>
+
+                @if( order == "ping" )
+                {
+                    <i>@(orderDesc ? "arrow_drop_down" : "arrow_drop_up")</i>
+                }
+
+            </div>
+        </div>
+
+        <div class="canvas">
+        @foreach (var server in list.Where( x => TestFilter( x ) ).OrderBy( GetOrder ) )
+        {
+            <ServerRow ShowGame=@ShowGame Server=@server></ServerRow>
+        }
+        </div>
+    }
+
+</root>
+
+@code
+{
+    public bool ShowGame { get; set; } = true;
+
+    public string FilterByGame { get; set; }
+
+    ServerList list;
+
+    bool orderDesc = true;
+    string order = "players";
+
+
+    string _textFilter = null;
+
+    public string TextFilter
+    {
+        get => _textFilter;
+        set
+        {
+            if (_textFilter == value) return;
+
+            _textFilter = value;
+            StateHasChanged();
+        }
+    }
+
+    bool _showEmpty = true;
+    public bool ShowEmpty
+    {
+        get => _showEmpty;
+        set
+        {
+            if (_showEmpty == value) return;
+
+            _showEmpty = value;
+            StateHasChanged();
+        }
+    }
+
+    bool _showFull = true;
+    public bool ShowFull
+    {
+        get => _showFull;
+        set
+        {
+            if (_showFull == value) return;
+
+            _showFull = value;
+            StateHasChanged();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        Log.Info($"Filtering By Game '{FilterByGame}'");
+
+        list?.Dispose();
+        list = new ServerList();
+
+        if (!string.IsNullOrWhiteSpace(FilterByGame))
+        {
+            list.AddFilter("gametagsand", $"game:{FilterByGame.Split('#')[0]}");
+        }
+
+        _ = Refresh();
+    }
+
+    void Sort( string sortOrder, bool defaultDesc )
+    {
+        if (order == sortOrder)
+        {
+            orderDesc = !orderDesc;
+            return;
+        }
+
+        orderDesc = defaultDesc;
+        order = sortOrder;
+    }
+
+    int GetOrder(ServerList.Entry server )
+    {
+        if (order == "players")
+        {
+            if (orderDesc) return -server.Players;
+            return server.Players;
+        }
+
+        //        if ( order == "ping" )
+        {
+            if (orderDesc) return -server.Ping;
+            return server.Ping;
+        }
+    }
+
+    public async Task Refresh()
+    {
+        if (list.IsQuerying)
+            return;
+
+
+
+        list.Query();
+
+        while ( list.IsQuerying )
+        {
+            await Task.Delay(100);
+            StateHasChanged();
+        }
+
+        StateHasChanged();
+    }
+
+    bool TestFilter( ServerList.Entry server )
+    {
+        if ( !string.IsNullOrWhiteSpace( TextFilter ) )
+        {
+            bool hasTextMatch = false;
+
+            hasTextMatch = hasTextMatch || server.Name.Contains(TextFilter, StringComparison.OrdinalIgnoreCase);
+
+            if (!hasTextMatch)
+                return false;
+        }
+
+        if (server.Players == 0 && ShowEmpty == false)
+            return false;
+
+        if (server.Players >= server.MaxPlayers && ShowFull == false)
+            return false;
+
+        return true;
+    }
+}

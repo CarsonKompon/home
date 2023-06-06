@@ -20,7 +20,7 @@
 @code
 {
     public HomePlaceable Placeable { get; set; }
-    public ShopBase Shop { get; set; }
+    public ShopPlaceable Shop { get; set; }
 
 		protected override void OnAfterTreeRender( bool firstTime )
 		{
@@ -30,12 +30,12 @@
             {
                 Panel parent = Parent;
                 int fallback = 0;
-                while(parent is not ShopBase && fallback < 10)
+                while(parent is not ShopPlaceable && fallback < 10)
                 {
                     parent = parent.Parent;
                     fallback++;
                 }
-                Shop = parent as ShopBase;
+                Shop = parent as ShopPlaceable;
             }
 		}
 

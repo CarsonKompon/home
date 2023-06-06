@@ -10,10 +10,10 @@ namespace Home;
 /// </summary>
 public partial class BaseNPC : AnimatedEntity, IUse
 {
-    public string DisplayName = "Unnamed NPC";
+    public virtual string DisplayName => "Unnamed NPC";
+    protected virtual string ClothingString => "";
 
     protected Transform StartingTransform = new();
-    protected string ClothingString = "";
     ClothingContainer Clothing = new();
 
     NPCNametag Nametag;

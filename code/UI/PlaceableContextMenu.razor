@@ -9,19 +9,19 @@
 <root>
     <div class="option-switch">
         <div class="name">Physics Enabled</div>
-        <switch Value="@HasPhysics()" @ref="SwitchPhysics" ></switch>
+        <switchcontrol Value="@HasPhysics()" @ref="SwitchPhysics" ></switchcontrol>
     </div>
 </root>
 
 @code
 {
     public Entity Entity { get; set; }
-    public Switch SwitchPhysics { get; set; }
+    public SwitchControl SwitchPhysics { get; set; }
 
     protected override void OnAfterTreeRender(bool firstTime)
     {
         base.OnAfterTreeRender(firstTime);
-        SwitchPhysics.ValueChanged += (value) => {
+        SwitchPhysics.OnValueChanged += (value) => {
             OnPhysicsEnabledChanged(value);
         };
     }

@@ -1,0 +1,63 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using System.Threading.Tasks;
+@using Sandbox;
+@using Sandbox.Services;
+@using Sandbox.MenuSystem;
+@using Sandbox.UI;
+@attribute [StyleSheet]
+
+@namespace Home
+
+<root style="flex-direction: column;">
+
+    <div class="game-title">
+        <img class="roof" src="/ui/ui_roof.png" />
+        <div class="title-text">@Game.Menu.Package.Title</div>
+        <div class="title-subtext">By Carson Kompon</div>
+    </div>
+
+    <div class="controls">
+
+        <a class="button" onclick=@PlayGame>Play Game</a>
+
+        <a class="button" href="/servers">Server List</a>
+        <a class="button" href="/settings">Settings</a>
+
+        <span style="height: 20px;"></span>
+
+        <a class="button" @onclick=@Game.Menu.Close>Quit</a>
+
+    </div>
+
+</root>
+
+@code
+{
+
+    public async void PlayGame()
+    {
+        var list = new ServerList();
+        list.AddFilter("gametagsand", $"game:{Game.Menu.Package.FullIdent.Split('#')[0]}");
+        list.Query();
+        while(list.IsQuerying)
+        {
+            await Task.Delay(100);
+        }
+        if(list.Count == 0) return;
+        list.Sort((a, b) => a.Map == "carsonk.home_staycation_strip" ? -1 : 1);
+        Game.Menu.ConnectToServer(list[0].SteamId);
+    }
+
+    async Task CreateNewLobby()
+    {
+        await Game.Menu.CreateLobbyAsync();
+        // we will navigate to lobby when it's ready
+    }
+
+    void LeaveGame()
+    {
+        Game.Menu.LeaveServer("Leaving");
+    }
+}

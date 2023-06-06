@@ -3,13 +3,6 @@ using System;
 using System.Threading.Tasks;
 using Sandbox;
 
-public enum PlaceableCategory
-{
-    Furniture,
-    Building,
-    Foliage
-}
-
 public enum PlaceableType
 {
     Prop,
@@ -34,7 +27,7 @@ public partial class HomePlaceable : GameResource
 
     public PlaceableState State { get; set; } = PlaceableState.Visible;
 
-    public PlaceableCategory Category { get; set; } = PlaceableCategory.Furniture;
+    public string[] Categories { get; set; } = { "furniture" };
 
     public PlaceableType Type { get; set; } = PlaceableType.Prop;
     public PhysicsMotionType PhysicsType { get; set; } = PhysicsMotionType.Keyframed;

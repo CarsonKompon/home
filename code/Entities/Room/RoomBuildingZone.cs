@@ -13,7 +13,7 @@ namespace Home;
 public partial class RoomBuildingZone : TriggerMultiple
 {
     /// <summary>
-    /// The name of this location
+    /// The room's ID
     /// </summary>
     [Property( Title = "Room ID" )]
     public int RoomId { get; set; } = 1;

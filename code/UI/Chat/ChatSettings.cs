@@ -16,7 +16,7 @@ namespace Home
 		public HomeChatSettings()
 		{
             // AVATARS
-            Switch toggleAvatars = new Switch();
+            SwitchControl toggleAvatars = new SwitchControl();
             toggleAvatars.Value = !Cookie.Get<bool>("home.chat.hide-avatars", false);
             SettingAvatars = new HomeChatSettingsEntry( "#chat.settings.avatars", toggleAvatars );
             SettingAvatars.Control.AddEventListener( "onchange", onSwitchAvatars );
@@ -24,9 +24,9 @@ namespace Home
             onSwitchAvatars();
 
             // FONT SIZE
-            Slider sliderFontSize = new Slider();
-            sliderFontSize.MinValue = 10;
-            sliderFontSize.MaxValue = 24;
+            SliderControl sliderFontSize = new SliderControl();
+            sliderFontSize.Min = 10;
+            sliderFontSize.Max = 24;
             sliderFontSize.Step = 1;
             sliderFontSize.Value = Cookie.Get<float>("home.chat.font-size", 14);
             SettingFontSize = new HomeChatSettingsEntry( "#chat.settings.fontsize", sliderFontSize );
@@ -35,7 +35,7 @@ namespace Home
             onSliderFontSize();
 
             // CHAT SOUNDS
-            Switch toggleChatSounds = new Switch();
+            SwitchControl toggleChatSounds = new SwitchControl();
             toggleChatSounds.Value = !Cookie.Get<bool>("home.chat.mute", false);
             SettingChatSounds = new HomeChatSettingsEntry( "#chat.settings.chatsfx", toggleChatSounds );
             SettingChatSounds.Control.AddEventListener( "onchange", onSwitchChatSounds );
@@ -45,7 +45,7 @@ namespace Home
 
         private void onSwitchAvatars()
         {
-            Switch toggle = SettingAvatars.Control as Switch;
+            SwitchControl toggle = SettingAvatars.Control as SwitchControl;
             if ( !toggle.Value )
             {
                 HomeChatBox.Current.AddClass( "hide-avatars" );
@@ -59,14 +59,14 @@ namespace Home
 
         private void onSliderFontSize()
         {
-            Slider slider = SettingFontSize.Control as Slider;
+            SliderControl slider = SettingFontSize.Control as SliderControl;
             HomeChatBox.Current.Style.FontSize = slider.Value;
             Cookie.Set( "home.chat.font-size", slider.Value );
         }
 
         private void onSwitchChatSounds()
         {
-            Switch toggle = SettingChatSounds.Control as Switch;
+            SwitchControl toggle = SettingChatSounds.Control as SwitchControl;
             if ( !toggle.Value )
             {
                 HomeChatBox.Current.AddClass( "mute" );

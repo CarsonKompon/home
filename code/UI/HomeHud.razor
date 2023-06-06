@@ -22,10 +22,13 @@
 
 @code
 {
+    public ShopPlaceable ShopPlaceable { get; set; }
+
     internal HomeHud()
     {
         Game.RootPanel = this;
     }
+
 
     [ConCmd.Client("home_toggle_hud")]
     public static void ToggleHud()
