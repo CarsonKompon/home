@@ -36,4 +36,14 @@
 		gap: 8px;
 		align-items: flex-start;
 	}
+
+    .news
+    {
+        position: absolute;
+        width: 500px;
+        height: 60%;
+        top: 20%;
+        right: 0px;
+        background-color: rgba(white, 0.2);
+    }
 }
