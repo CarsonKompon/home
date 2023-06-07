@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System;
 using System.Threading.Tasks;
 using Sandbox;
@@ -67,17 +68,16 @@ public partial class HomePlaceable : GameResource
     }
 
 
-    public static IReadOnlyList<HomePlaceable> All => _all;
-    internal static List<HomePlaceable> _all = new();
+    public static List<HomePlaceable> All => ResourceLibrary.GetAll<HomePlaceable>().ToList();
 
 	protected override void PostLoad()
 	{
 		base.PostLoad();
 
-        if(!_all.Contains(this) && State != PlaceableState.Disabled)
-        {
-            _all.Add(this);
-        }
+        // if(!_all.Contains(this) && State != PlaceableState.Disabled)
+        // {
+        //     _all.Add(this);
+        // }
 
         InitFromPackage();
 	}
@@ -87,7 +87,10 @@ public partial class HomePlaceable : GameResource
         if(string.IsNullOrEmpty(PackageIdent)) return;
 
         LoadedPackage = await Package.FetchAsync(PackageIdent, false);
+        LoadedPackage.IsMounted();
         PackageThumbnail = LoadedPackage.Thumb;
+
+        ResourceLibrary.GetAll<MyResource>().Where(x => Game.Server.RequiredContent.Contains(x.Package.FullIdent));
 
         if(string.IsNullOrEmpty(Model))
         {
@@ -121,21 +124,21 @@ public partial class HomePlaceable : GameResource
 
     public static HomePlaceable Find(string id)
     {
-        return _all.Find(p => p.Id == id);
+        return All.Find(p => p.Id == id);
     }
 
     public static HomePlaceable FindByModel(string model)
     {
-        return _all.Find(p => p.GetModel() == model);
+        return All.Find(p => p.GetModel() == model);
     }
 
     public static HomePlaceable FindByName(string name)
     {
-        return _all.Find(p => p.Name == name);
+        return All.Find(p => p.Name == name);
     }
 
     public static HomePlaceable FindByCost(int cost)
     {
-        return _all.Find(p => p.Cost <= cost);
+        return All.Find(p => p.Cost <= cost);
     }
 }

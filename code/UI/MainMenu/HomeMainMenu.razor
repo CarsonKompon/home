@@ -27,9 +27,22 @@
 
         AddDestination("/", typeof(HomeFrontPage));
         AddDestination("/servers", typeof(HomeServerList));
+        AddDestination("/lobby", typeof(HomeLobbyPage));
 
         BindClass( "ingame", () => Game.InGame );
     }
+
+    [GameEvent.Menu.ServerJoined]
+    public void OnServerJoined() => Navigate("/");
+
+    [GameEvent.Menu.LobbyJoined]
+    public void OnLobbyJoined() => Navigate("/lobby");
+
+    [GameEvent.Menu.LobbyLeave]
+    public void OnLobbyLeave() => Navigate("/");
+
+    [GameEvent.Menu.ServerLeave]
+    public void OnServerLeave() => Navigate("/");
 	
 
 }

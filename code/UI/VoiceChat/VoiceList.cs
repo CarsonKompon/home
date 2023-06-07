@@ -11,7 +11,6 @@ public class HomeVoiceList : Panel
 	public HomeVoiceList()
 	{
 		Current = this;
-		StyleSheet.Load( "/UI/VoiceChat/VoiceList.scss" );
 	}
 
 	// Show a voice list entry locally

@@ -18,13 +18,25 @@
     }
     else if ( !list.Any() )
     {
-        <div class="loading-status">No servers available! Why not host one?</div>
+        <div class="loading-status">No servers available!</div>
     }
     else
     {
         <div class="header">
-
-            <div class="grow"></div>
+            <div class="name" @onclick=@( () => Sort( "name", true ) )>
+                <div class="title">Server Name</div>
+                @if( order == "name" )
+                {
+                    <i>@(orderDesc ? "arrow_drop_down" : "arrow_drop_up")</i>
+                }
+            </div>
+            <div class="map" @onclick=@( () => Sort( "map", true ) )>
+                <div class="title">Map</div>
+                @if( order == "map" )
+                {
+                    <i>@(orderDesc ? "arrow_drop_down" : "arrow_drop_up")</i>
+                }
+            </div>
             <div class="players" @onclick=@( () => Sort( "players", true ) )>
                 <i class="title">people</i>
                 @if( order == "players" )
@@ -48,7 +60,7 @@
         <div class="canvas">
         @foreach (var server in list.Where( x => TestFilter( x ) ).OrderBy( GetOrder ) )
         {
-            <ServerRow ShowGame=@ShowGame Server=@server></ServerRow>
+            <HomeServerRow ShowGame=@ShowGame Server=@server></HomeServerRow>
         }
         </div>
     }

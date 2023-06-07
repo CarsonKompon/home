@@ -28,6 +28,7 @@ public partial class RoomFrontDoor : DoorEntity
         base.Spawn();
 
         StartTransform = Transform;
+        SetState(RoomState.Vacant);
     }
 
     public override void ClientSpawn()

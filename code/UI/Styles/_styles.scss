@@ -10,6 +10,9 @@
 
 @import "/UI/Styles/_rainbow.scss";
 
+@import "/UI/Styles/_chat.scss";
+@import "/UI/Styles/_voicelist.scss";
+
 .hidden {
     display: none;
 }
@@ -737,6 +740,16 @@ PlaceableContextMenu {
     border: 1px solid rgba( #555, 0.1 );
     padding: 2px 5px;
     border-radius: 3px;
-    transform: translate( -50%, 100% );
     color: #222;
+    transition: all 0s ease-in-out;
+
+    &:intro {
+        opacity: 0;
+        transform: translate( 0%, 50% ) scale( 1.1 );
+    }
+
+    &:outro {
+        opacity: 0;
+        transform: translate( 0%, -50% ) scale( 0.9 );
+    }
 }

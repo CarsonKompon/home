@@ -32,6 +32,7 @@ public partial class HomeGame : GameManager
 			Game.RootPanel?.Delete(true);
 			Game.RootPanel = new HomeHud();
 		}
+
 	}
 
 	public override void ClientJoined( IClient client )

@@ -1,0 +1,37 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using System.Threading.Tasks;
+@using Sandbox;
+@using Sandbox.UI;
+
+@namespace Home
+
+<root>
+
+	<div class="icon" style="background-image: url( @(Package?.Thumb) )"></div>
+
+	<column>
+	@if (Package != null)
+	{
+		<div class="title">@Package.Title</div>
+		<div class="org">by @Package.Org.Title</div>
+	}
+	else
+	{
+		<div class="title">@Ident</div>
+	}
+	</column>
+
+</root>
+
+@code
+{
+	public string Ident;
+	public Package Package;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		Package = await Package.FetchAsync(Ident, true);
+	}
+}
