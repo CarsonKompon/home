@@ -1,0 +1,84 @@
+
+.body .form .form-group {
+    width: auto;
+    flex-shrink: 1;
+
+    .form-label {
+
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        width: 150px;
+
+    }
+
+    textentry {
+        text-overflow: ellipsis;
+        background-color: rgba(black, 0.6);
+        label {
+            color: white;
+        }
+
+        &:focus
+		{
+			text-overflow: clip;
+            background-color: rgba(black, 1);
+		}
+
+        &:hover {
+            background-color: rgba(black, 0.8);
+        }
+    }
+
+    textentry .description {
+        height: 200px;
+    }
+
+    slidercontrol .inner {
+        background-color: rgba(black, 0.6);
+        height: 40px;
+        padding: 5px;
+
+        .values {
+            padding: 11;
+        }
+    }
+
+    .addons {
+        flex-wrap: wrap;
+        gap: 10px;
+        align-self: center;
+        width: 500px;
+    }
+
+    .addon {
+        background-color: white;
+        border-radius: 32px;
+        font-size: 20px;
+
+        &:hover {
+            background-color: rgb(255, 0, 0);
+            color: white;
+        }
+    }
+
+    .addons-add {
+        justify-content: center;
+        align-items: center;
+        align-self: center;
+
+        transition: all 0.1s ease-in-out;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+
+        &:active {
+            transform: scale(0.9);
+        }
+    }
+}
+
+.body .right {
+    width: auto;
+}

@@ -6,6 +6,7 @@
 @using Sandbox.MenuSystem;
 @using Sandbox.UI;
 @using Sandbox.UI.GameMenu;
+@attribute [StyleSheet]
 
 @namespace Home
 
@@ -24,7 +25,7 @@
             <span class="block">&gt;</span>
             <a class="button" href="/servers"> Server List </a>
             <span class="block">&gt;</span>
-            <span class="block">Create Server</span>
+            <span class="block">Your Lobby</span>
         </div>
 
         <div class="right">
@@ -44,20 +45,10 @@
                 </Control>
             </FormGroup>
 
-            @if (!string.IsNullOrEmpty(Game.Menu.Lobby.SavedGame))
-            {
-                <FormGroup>
-                    <Label>Saved Game</Label>
-                    <Control>
-                        <TextEntry Disabled Value=@Game.Menu.Lobby.SavedGame Tooltip="Server Title"> </TextEntry>
-                    </Control>
-                </FormGroup>
-            }
-
             <FormGroup>
                 <Label>Description</Label>
                 <Control>
-                    <TextEntry Value:bind=@Game.Menu.Lobby.Description Tooltip="Server Description"> </TextEntry>
+                    <TextEntry class="description" Value:bind=@Game.Menu.Lobby.Description Tooltip="Server Description"> </TextEntry>
                 </Control>
             </FormGroup>
 
@@ -73,16 +64,18 @@
 
             <FormGroup>
                 <Label>Addons</Label>
-                <Control>
+                <Control class="addons">
 
                     @foreach (var addon in Game.Menu.Lobby.Addons)
                     {
-                        <div class="button" onclick="@( () => Game.Menu.Lobby.Addons = Game.Menu.Lobby.Addons.Remove( addon ) )">@addon</div>
+                        <div class="button addon" onclick="@( () => Game.Menu.Lobby.Addons = Game.Menu.Lobby.Addons.Remove( addon ) )">@addon</div>
                     }
-                    <a class="button" href="/lobby/addons">Add</a>
+                    <a href="/lobby/addons" title="Go To Main Menu">
+                        <i class="addons-add" href="/lobby/addons">add_circle</i>
+                    </a>
                 </Control>
             </FormGroup>
-
+@* 
             <div style="height: 40px; flex-shrink: 0;"></div>
 
             @foreach (var group in Game.Menu.Package.PackageSettings.GroupBy(x => x.Group))
@@ -110,7 +103,7 @@
 		        }
 
                 <div style="height: 40px; flex-shrink: 0;"></div>
-	        }
+	        } *@
 
         </div>
 

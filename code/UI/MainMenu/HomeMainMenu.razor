@@ -28,8 +28,10 @@
         AddDestination("/", typeof(HomeFrontPage));
         AddDestination("/servers", typeof(HomeServerList));
         AddDestination("/lobby", typeof(HomeLobbyPage));
+        AddDestination("/lobby/addons", typeof(HomeLobbyAddonPage));
 
         BindClass( "ingame", () => Game.InGame );
+        BindClass( "inlobby", () => Game.Menu.Lobby != null );
     }
 
     [GameEvent.Menu.ServerJoined]

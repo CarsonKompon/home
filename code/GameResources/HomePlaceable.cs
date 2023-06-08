@@ -90,8 +90,6 @@ public partial class HomePlaceable : GameResource
         LoadedPackage.IsMounted();
         PackageThumbnail = LoadedPackage.Thumb;
 
-        ResourceLibrary.GetAll<MyResource>().Where(x => Game.Server.RequiredContent.Contains(x.Package.FullIdent));
-
         if(string.IsNullOrEmpty(Model))
         {
             var model = LoadedPackage.GetMeta("SingleAssetSource", "");
