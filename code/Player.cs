@@ -130,7 +130,13 @@ public partial class HomePlayer : AnimatedEntity
 		SimulateActiveChild(cl, ActiveChild);
 
 		// Flashlight
-		if(WorldFlashlight.IsValid()) WorldFlashlight.Enabled = FlashlightEnabled;
+		if(WorldFlashlight.IsValid())
+		{
+			var bone = GetBoneTransform(GetBoneIndex("head"));
+			WorldFlashlight.Enabled = FlashlightEnabled;
+			WorldFlashlight.Position = bone.Position + bone.Rotation.Left * 8f;
+			WorldFlashlight.Rotation = Rotation.LookAt(bone.Rotation.Left);
+		}
 		if(ViewFlashlight.IsValid()) ViewFlashlight.Enabled = FlashlightEnabled;
 
 		// Third Person Toggle
@@ -321,7 +327,7 @@ public partial class HomePlayer : AnimatedEntity
 
 		WorldFlashlight = CreateFlashlight();
 		WorldFlashlight.EnableHideInFirstPerson = true;
-		WorldFlashlight.SetParent(this, "head", new Transform( Vector3.Forward * 5, Rotation.From( 0, 0, 0 ) ) );
+		WorldFlashlight.SetParent(this, "head" );
 
 		if(Game.IsClient)
 		{
