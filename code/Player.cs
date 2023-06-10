@@ -537,7 +537,7 @@ public partial class HomePlayer : AnimatedEntity
 		
 		if(Input.Down("rightclick") && ThirdPersonZoom > 0f)
 		{
-			ThirdPersonRotation += look.WithYaw(look.yaw * 1f);
+			ThirdPersonRotation += look;
 			look = default;
 		}
 		else

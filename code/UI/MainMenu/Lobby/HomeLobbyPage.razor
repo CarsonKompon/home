@@ -21,9 +21,9 @@
     <div class="navbar">
 
         <div class="left">
-            <a class="button" href="/"> Home </a>
+            <a class="btn" href="/"> Home </a>
             <span class="block">&gt;</span>
-            <a class="button" href="/servers"> Server List </a>
+            <a class="btn" href="/servers"> Server List </a>
             <span class="block">&gt;</span>
             <span class="block">Your Lobby</span>
         </div>
@@ -68,7 +68,7 @@
 
                     @foreach (var addon in Game.Menu.Lobby.Addons)
                     {
-                        <div class="button addon" onclick="@( () => Game.Menu.Lobby.Addons = Game.Menu.Lobby.Addons.Remove( addon ) )">@addon</div>
+                        <div class="btn addon" onclick="@( () => Game.Menu.Lobby.Addons = Game.Menu.Lobby.Addons.Remove( addon ) )">@addon</div>
                     }
                     <a href="/lobby/addons" title="Go To Main Menu">
                         <i class="addons-add" href="/lobby/addons">add_circle</i>
@@ -135,16 +135,16 @@
     <div class="navbar">
     
         <div class="left">
-            <a class="button" href="/" title="Go To Main Menu"> &lt; </a>
+            <a class="btn" href="/" title="Go To Main Menu"> &lt; </a>
 
-            <span class="button" onclick=@( () => Game.Menu.Lobby?.Leave() )>Exit Lobby</span>
+            <span class="btn" onclick=@( () => Game.Menu.Lobby?.Leave() )>Exit Lobby</span>
         </div>
 
         <div class="right">
 
             @if (Game.Menu.Lobby.Owner.IsMe)
             {
-                <span class="button" onclick=@StartGame>Start Game</span>
+                <span class="btn" onclick=@StartGame>Start Game</span>
             }
         </div>
 

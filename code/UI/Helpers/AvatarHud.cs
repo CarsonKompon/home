@@ -90,9 +90,35 @@ public class AvatarHud : ScenePanel
 	   
 		interestPos = AvatarModel.Transform.PointToLocal( interestPos );
 
-		lookPos = interestPos;
-		headPos = Vector3.Lerp( headPos, interestPos, Time.Delta * 12.0f );
-		aimPos = Vector3.Lerp( aimPos, interestPos, Time.Delta * 60.0f );
+        if(FullBody)
+        {
+            // Get mouse position
+            var mousePosition = Mouse.Position;
+
+            // subtract what we think is about the player's eye position
+            if(Mouse.Active){
+                mousePosition.x -= Box.Rect.Width * 0.7f;
+                mousePosition.y -= Box.Rect.Height * 0.26f;
+            }else{
+                mousePosition.x = 0;
+                mousePosition.y = 0;
+            }
+            mousePosition /= ScaleToScreen;
+
+            // convert it to an imaginary world position
+            var worldpos = new Vector3( 200, mousePosition.x, -mousePosition.y );
+
+            // convert that to local space for the model
+            lookPos = AvatarModel.Transform.PointToLocal( worldpos );
+            headPos = Vector3.Lerp( headPos, AvatarModel.Transform.PointToLocal( worldpos ), Time.Delta * 20.0f );
+            aimPos = Vector3.Lerp( aimPos, AvatarModel.Transform.PointToLocal( worldpos ), Time.Delta * 5.0f );
+        }
+        else
+        {
+            lookPos = interestPos;
+            headPos = Vector3.Lerp( headPos, interestPos, Time.Delta * 12.0f );
+            aimPos = Vector3.Lerp( aimPos, interestPos, Time.Delta * 60.0f );
+        }
 
         AvatarModel.Position = Vector3.Zero;
         AvatarModel.Rotation = Rotation.From(0, 0, 0);
@@ -151,7 +177,7 @@ public class AvatarHud : ScenePanel
         Vector3 pos = Vector3.Zero;
         if(FullBody)
         {
-            pos = AvatarModel.Position + angles.Forward * -220f + Vector3.Up * 25f;
+            pos = AvatarModel.Position + angles.Forward * -125f + Vector3.Up * 40f;
         }
         else
         {

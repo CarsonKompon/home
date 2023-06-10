@@ -3,27 +3,200 @@
 {
     width: 100%;
     height: 100%;
-    padding: 48px 0px;
+    padding: 72px 0px;
+    justify-content: space-between;
+    gap: 32px;
+    z-index: 10;
 
     .left
     {
         flex-direction: column;
-        width: 50%;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 0px;
 
-        .roof
+        .avatar
         {
-            height: 200px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
+            flex-direction: column;
+            align-items: center;
+
+            .roof
+            {
+                aspect-ratio: 2.5;
+                width: 100%;
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+                z-index: 1;
+            }
+
+            AvatarHud
+            {
+                aspect-ratio: 0.5;
+                width:100%;
+                margin-top: -112px;
+                left: -24px;
+            }
         }
 
-        AvatarHud
+        .player-info
         {
-            aspect-ratio: 0.5;
             width: 100%;
-            justify-content: center;
-            background-color: pink;
+            height: 100px;
+            gap: 8px;
+
+            .pfp
+            {
+                aspect-ratio: 1;
+                height: 100%;
+                //background-color: palegreen;
+                border-radius: 100%;
+            }
+
+            .player-data
+            {
+                flex-direction: column;
+                flex-grow: 1;
+                justify-content: center;
+                font-family: Poppins;
+                gap: -2px;
+
+                .name
+                {
+                    font-size: 32px;
+                    font-weight: 800;
+                }
+
+                .money
+                {
+                    font-size: 24px;
+                    font-weight: 200;
+                    font-style: italic;
+                }
+            }
+        }
+    }
+
+    .right
+    {
+        flex-grow: 1;
+        padding: 32px;
+        padding-top: 16px;
+        background-color: rgba(black, 0.25);
+        flex-direction: column;
+        gap: 8px;
+
+        .navbar
+        {
+            padding: 0px;
+            width: 100%;
+            justify-content: space-evenly;
+
+            a
+            {
+                font-family: Poppins;
+                color: white;
+                padding: 0px 8px;
+                transition: background-color 0.1s ease-in-out;
+                &:hover
+                {
+                    background-color: rgba(white, 0.1);
+                    cursor: pointer;
+                }
+
+                &.active
+                {
+                    border-bottom: 2px solid white;
+                }
+            }
+        }
+
+        .navigator-canvas
+        {
+            height: auto;
+        }
+
+        .navigator-body
+        {
+            padding: 16px;
+            background-color: rgba(black, 0.5);
+        }
+
+        PauseGameMenu
+        {
+            width: 100%;
+            align-items: center;
+            justify-content: space-around;
+
+            .server-info
+            {
+                flex-direction: column;
+                align-items: center;
+
+                h2
+                {
+                    font-size: 48px;
+                    font-weight: 800;
+                    margin-bottom: 2px;
+                    text-overflow: ellipsis;
+                }
+
+                .map-name
+                {
+                    font-size: 24px;
+                    font-weight: 200;
+                    font-style: italic;
+                    text-overflow: ellipsis;
+                }
+            }
+
+            PlayerList
+            {
+                width: 100%;
+            }
+        }
+
+        HomeInventory
+        {
+            opacity: 1;
+            border-radius: 0;
+            width: 100%;
+            height: 100%;
+
+            .inventory-header
+            {
+                display: none;
+            }
+
+            .inventory-container
+            {
+                background-color: rgba(black, 0);
+                padding: 0px;
+                width: 96%;
+                height: 96%;
+            }
+        }
+
+        HomeSettingsPage
+        {
+            .navbar
+            {
+                display: none;
+            }
+
+            .settings
+            {
+                height: 100%;
+                flex-direction: column;
+                background-color: rgba(black, 0);
+                overflow: scroll;
+
+                .category
+                {
+                    height: auto;
+                    flex-shrink: 0;
+                }
+            }
         }
     }
 }

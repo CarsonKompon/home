@@ -11,14 +11,14 @@
 @namespace Home
 
 <root class="gamemainmenu">
-    @if(!Game.InGame)
+    @if(Game.InGame)
     {
-        <HomeMainMenuBackground class="background" />
-        <div class="navigator-canvas" slot="navigator-canvas"></div>
+        <HomePauseMenu class="pausemenu" />
     }
     else
     {
-        <HomePauseMenu class="pausemenu" />
+        <HomeMainMenuBackground class="background" />
+        <div class="navigator-canvas" slot="navigator-canvas"></div>
     }
 </root>
 
@@ -42,18 +42,10 @@
     }
 
     [GameEvent.Menu.ServerJoined]
-    public void OnServerJoined()
-    {
-        AddDestination("/", typeof(HomeSettingsPage));
-        Navigate("/");
-    }
+    public void OnServerJoined() => Navigate("/");
 
     [GameEvent.Menu.ServerLeave]
-    public void OnServerLeave()
-    {
-        Navigate("/");
-        AddDestination("/", typeof(HomeFrontPage));
-    }
+    public void OnServerLeave() => Navigate("/");
 
     [GameEvent.Menu.LobbyJoined]
     public void OnLobbyJoined() => Navigate("/lobby");
@@ -63,7 +55,7 @@
 	
     protected override int BuildHash()
     {
-        return HashCode.Combine(Game.InGame);
+        return HashCode.Combine(Game.InGame, Game.IsMainMenuVisible);
     }
 
 }

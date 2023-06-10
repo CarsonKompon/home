@@ -11,10 +11,25 @@
 
 <root class="gamepausemenu">
     <div class="left">
-        <img class="roof" src="/ui/ui_roof.png" />
-        <AvatarHud FullBody=@(true) />
+        <div class="avatar">
+            <img class="roof" src="/ui/ui_roof.png" />
+            <AvatarHud FullBody=@(true) />
+        </div>
+        <div class="player-info">
+            <img class="pfp" src=@AvatarTexture() />
+            <div class="player-data">
+                <div class="name">@Game.UserName</div>
+                <div class="money">$100</div>
+            </div>
+        </div>
     </div>
     <div class="right">
+        <div class="navbar">
+            <a href="/">Game</a>
+            <a href="/inventory">Inventory</a>
+            <a href="/outfit">Outfit</a>
+            <a href="/settings">Settings</a>
+        </div>
         <div class="navigator-canvas" slot="navigator-canvas"></div>
     </div>
 </root>
@@ -24,12 +39,20 @@
 
     public HomePauseMenu()
     {
-        DefaultUrl = "/inventory";
+        DefaultUrl = "/";
 
-        AddDestination("/inventory", typeof(PauseInventoryMenu));
+        AddDestination("/", typeof(PauseGameMenu));
+        AddDestination("/inventory", typeof(HomeInventory));
+        AddDestination("/outfit", typeof(PauseOutfitMenu));
+        AddDestination("/settings", typeof(HomeSettingsPage));
 
         BindClass( "ingame", () => Game.InGame );
         BindClass( "inlobby", () => Game.Menu.Lobby != null );
-    }	
+    }
+
+    string AvatarTexture()
+    {
+        return $"avatar:{Game.SteamId}";
+    }
 
 }

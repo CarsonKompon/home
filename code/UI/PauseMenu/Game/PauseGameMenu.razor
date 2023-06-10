@@ -1,0 +1,60 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using System.Threading.Tasks;
+@using Sandbox;
+@using Sandbox.Services;
+@using Sandbox.MenuSystem;
+@using Sandbox.UI;
+@attribute [StyleSheet]
+
+@namespace Home
+
+<root style="flex-direction: column;">
+
+   <div class="server-info">
+      <h2>@Game.Server.ServerTitle</h2>
+      <div class="map-name">@MapName</div>
+   </div>
+
+   @* <PlayerList /> *@
+   <div class="player-list">
+      TODO: Player List Here once Client/Entity data is available
+   </div>
+
+   <div class="buttons">
+      <button class="btn" onclick=@LeaveGame>Leave Game</button>
+   </div>
+
+</root>
+
+@code
+{
+   string MapName = "";
+
+   protected override void OnAfterTreeRender(bool firstTime)
+   {
+      base.OnAfterTreeRender(firstTime);
+      if (firstTime)
+      {
+         GetMapName();
+      }
+   }
+
+   async void GetMapName()
+   {
+      var pack = await Package.FetchAsync(Game.Server.MapIdent, true);
+      MapName = pack.Title;
+   }
+
+   void LeaveGame()
+   {
+      Game.Menu.LeaveServer("Leaving");
+   }
+
+   protected override int BuildHash()
+   {
+      return HashCode.Combine(Game.Server.ServerTitle, MapName); // TODO: add playerlist here
+   }
+
+}
