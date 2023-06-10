@@ -20,14 +20,25 @@
 
     <div class="controls">
 
-        <a class="button" onclick=@PlayGame>Play Game</a>
+        <a class="button" onclick=@PlayGame>
+            <div class="title">Play Game</div>
+            <div class="desc">Automatically connect to the server with the most players.</div>
+        </a>
 
-        <a class="button" href="/servers">Server List</a>
-        <a class="button" href="/settings">Settings</a>
+        <a class="button" href="/servers">
+            <div class="title">Server List</div>
+            <div class="desc">See a full list of all Home servers.</div>
+        </a>
 
-        <span style="height: 20px;"></span>
+        <a class="button" href="/settings">
+            <div class="title">Settings</div>
+            <div class="desc">Change your controls/keybinds.</div>
+        </a>
 
-        <a class="button" @onclick=@Game.Menu.Close>Quit</a>
+        <a class="button" onclick=@Game.Menu.Close>
+            <div class="title">Quit</div>
+            <div class="desc">Return to the S&box Main Menu.</div>
+        </a>
 
     </div>
 
@@ -41,7 +52,7 @@
             <span style="height: 8px;" />
             The goal for Home is that anyone will be able to create their own sub-communities with servers that host different maps/content via addons.
             <span style="height: 8px;" />
-            If you wish to create your own maps, please let me know as I plan on documenting the process and creating a guide for it at some point.
+            If you wish to create your own content, let me know as I plan on documenting the process and creating a guide for it at some point.
             <span style="height: 8px;" />
             My main project at the moment is my full-time job working on Turnip Boy Robs a Bank. Please consider checking it out!
         </div>
@@ -65,15 +76,15 @@
         {
             await Task.Delay(100);
         }
-        if(list.Count == 0) return;
-        list.Sort((a, b) => a.Map == "carsonk.home_staycation_strip" ? -1 : 1);
+        if(list.Count == 0)
+        {
+            // Create a lobby instead
+            await Game.Menu.CreateLobbyAsync();
+            return;
+        }
+        // Get the server with the most players
+        list.Sort((a, b) => b.Players - a.Players);
         Game.Menu.ConnectToServer(list[0].SteamId);
-    }
-
-    async Task CreateNewLobby()
-    {
-        await Game.Menu.CreateLobbyAsync();
-        // we will navigate to lobby when it's ready
     }
 
     void LeaveGame()

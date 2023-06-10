@@ -3,7 +3,9 @@
   "Name": "Wet Floor Sign",
   "Cost": 25,
   "State": "Visible",
-  "Category": "Furniture",
+  "Categories": [
+    "misc"
+  ],
   "Type": "Prop",
   "PhysicsType": "Keyframed",
   "Model": "models/wetfloor_sign.vmdl",

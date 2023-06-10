@@ -107,7 +107,7 @@ public partial class HomePlayer : AnimatedEntity
 		if ( LifeState == LifeState.Dead )
 		{
 			// Respawn
-			if ( (timeSinceDied > 3 || Input.Pressed("attack1")) && Game.IsServer )
+			if ( (timeSinceDied > 3 || Input.Pressed("click")) && Game.IsServer )
 			{
 				Respawn();
 			}
@@ -377,8 +377,9 @@ public partial class HomePlayer : AnimatedEntity
 
         Controller = new HomeWalkController
         {
-            WalkSpeed = 60f,
-            DefaultSpeed = 180f
+            WalkSpeed = 80f,
+            DefaultSpeed = 250f,
+			SprintSpeed = 400f,
         };
 
         if(DevController is HomeNoclipController)
@@ -473,7 +474,7 @@ public partial class HomePlayer : AnimatedEntity
 		{
 			if(IsPlacing)
 			{
-				if(Input.Released("attack1"))
+				if(Input.Released("click"))
 				{
 					if(CanPlace) TryPlace();
 					else TryPickup();
@@ -487,7 +488,7 @@ public partial class HomePlayer : AnimatedEntity
 			}
 			else
 			{
-				if(Input.Pressed("attack1"))
+				if(Input.Pressed("click"))
 				{
 					// Cast a ray to see if we clicked on a HomePlaceable
 					var tr = Trace.Ray(new Ray(Camera.Position, Screen.GetDirection(Mouse.Position)), 1000f)
@@ -503,7 +504,7 @@ public partial class HomePlayer : AnimatedEntity
 						PlacingAngle = component.LocalAngle;
 					}
 				}
-				else if(Input.Pressed("attack2"))
+				else if(Input.Pressed("rightclick"))
 				{
 					// Cast a ray to see if we clicked on a HomePlaceable
 					var tr = Trace.Ray(new Ray(Camera.Position, Screen.GetDirection(Mouse.Position)), 1000f)
@@ -528,7 +529,7 @@ public partial class HomePlayer : AnimatedEntity
 			}
 		}
 		
-		if(Input.Down("attack2") && ThirdPersonZoom > 0f)
+		if(Input.Down("rightclick") && ThirdPersonZoom > 0f)
 		{
 			ThirdPersonRotation += look.WithYaw(look.yaw * 1f);
 			look = default;

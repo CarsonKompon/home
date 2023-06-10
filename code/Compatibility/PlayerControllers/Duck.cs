@@ -16,7 +16,7 @@ namespace Home
 
 		public virtual void PreTick() 
 		{
-			bool wants = Input.Down( "duck" );
+			bool wants = Input.Down( "crouch" );
 
 			if ( wants != IsActive ) 
 			{

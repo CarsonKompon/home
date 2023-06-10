@@ -45,12 +45,12 @@
                 </Control>
             </FormGroup>
 
-            <FormGroup>
+            @* <FormGroup>
                 <Label>Description</Label>
                 <Control>
                     <TextEntry class="description" Value:bind=@Game.Menu.Lobby.Description Tooltip="Server Description"> </TextEntry>
                 </Control>
-            </FormGroup>
+            </FormGroup> *@
 
             @if (MaxPlayersSupported > 1)
             {
@@ -111,7 +111,7 @@
         {
             <div class="right">
                 <h2>Map</h2>
-                <MapButton MapIdent=@Game.Menu.Lobby.Map></MapButton>
+                <HomeMapButton MapIdent=@Game.Menu.Lobby.Map></HomeMapButton>
             </div>
         }
 

@@ -55,8 +55,8 @@ public partial class BaseNPC : AnimatedEntity, IUse
         if(nearestPlayers.Count() > 0)
         {
             HomePlayer nearestPlayer = nearestPlayers.FirstOrDefault<HomePlayer>();
-            targetPos = nearestPlayer.GetBoneTransform( nearestPlayer.GetBoneIndex( "head" ) ).Position + Vector3.Down * 50;
-            targetRot = Rotation.LookAt( targetPos - Position );
+            targetPos = nearestPlayer.EyePosition + Vector3.Down * 60f;
+            targetRot = Rotation.LookAt( targetPos - GetBoneTransform(GetBoneIndex("head")).Position );
         }
 
         CitizenAnimationHelper animHelper = new CitizenAnimationHelper(this);

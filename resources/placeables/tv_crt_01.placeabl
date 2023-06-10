@@ -3,7 +3,9 @@
   "Name": "CRT Television",
   "Cost": 200,
   "State": "Visible",
-  "Category": "Furniture",
+  "Categories": [
+    "electronics"
+  ],
   "Type": "Prop",
   "PhysicsType": "Keyframed",
   "Model": "models/sbox_props/tv/tv.vmdl",

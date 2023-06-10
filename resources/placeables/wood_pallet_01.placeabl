@@ -3,7 +3,9 @@
   "Name": "Wood Pallet",
   "Cost": 50,
   "State": "Visible",
-  "Category": "Furniture",
+  "Categories": [
+    "misc"
+  ],
   "Type": "Prop",
   "PhysicsType": "Keyframed",
   "Model": "models/sbox_props/pallet/pallet.vmdl",

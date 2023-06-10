@@ -4,7 +4,7 @@ using Editor;
 namespace Home;
 
 /// <summary>
-/// Talking to this NPC will open a shop containing placeables tagged "foliage".
+/// Talking to this NPC will open a shop containing placeables tagged "furniture".
 /// </summary>
 [Library( "home_npc_shop_furniture" ), HammerEntity]
 [EditorModel( "models/citizen/citizen.vmdl" )]

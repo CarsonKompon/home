@@ -3,7 +3,9 @@
   "Name": "TV Media Player",
   "Cost": 25000,
   "State": "Hidden",
-  "Category": "Furniture",
+  "Categories": [
+    "electronics"
+  ],
   "Type": "PackageEntity",
   "PhysicsType": "Keyframed",
   "Model": null,

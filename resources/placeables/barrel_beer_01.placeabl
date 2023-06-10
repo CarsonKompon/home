@@ -3,7 +3,9 @@
   "Name": "Beer Keg #1",
   "Cost": 75,
   "State": "Visible",
-  "Category": "Furniture",
+  "Categories": [
+    "misc"
+  ],
   "Type": "Prop",
   "PhysicsType": "Keyframed",
   "Model": "models/props/beer_keg/beer_keg_a1.vmdl",

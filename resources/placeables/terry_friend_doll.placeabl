@@ -3,7 +3,9 @@
   "Name": "Terry \u0022Friend\u0022 Doll",
   "Cost": 100000,
   "State": "Visible",
-  "Category": "Furniture",
+  "Categories": [
+    "misc"
+  ],
   "Type": "Prop",
   "PhysicsType": "Keyframed",
   "Model": "models/citizen/citizen.vmdl",

@@ -3,7 +3,9 @@
   "Name": "Cardboard Box",
   "Cost": 10,
   "State": "Visible",
-  "Category": "Furniture",
+  "Categories": [
+    "misc"
+  ],
   "Type": "Prop",
   "PhysicsType": "Keyframed",
   "Model": "models/sbox_props/cardboard_box/cardboard_box.vmdl",

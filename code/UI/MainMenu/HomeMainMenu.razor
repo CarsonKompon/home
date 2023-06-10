@@ -29,6 +29,8 @@
         AddDestination("/servers", typeof(HomeServerList));
         AddDestination("/lobby", typeof(HomeLobbyPage));
         AddDestination("/lobby/addons", typeof(HomeLobbyAddonPage));
+        AddDestination("/lobby/map", typeof(HomeLobbyMapPage));
+        AddDestination("/settings", typeof(HomeSettingsPage));
 
         BindClass( "ingame", () => Game.InGame );
         BindClass( "inlobby", () => Game.Menu.Lobby != null );

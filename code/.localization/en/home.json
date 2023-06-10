@@ -14,8 +14,10 @@
     "npc.roomservice": "Room Service",
     "npc.freemoney": "Free Money",
 
+    "shop.electronics": "Electronics Shop",
     "shop.furniture": "Furniture Shop",
     "shop.foliage": "Foliage Shop",
+    "shop.misc": "Miscellaneous Shop",
 
     "inventory.inventory": "Inventory",
 

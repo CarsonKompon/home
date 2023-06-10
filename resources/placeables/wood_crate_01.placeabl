@@ -3,7 +3,9 @@
   "Name": "Wooden Crate",
   "Cost": 50,
   "State": "Visible",
-  "Category": "Furniture",
+  "Categories": [
+    "misc"
+  ],
   "Type": "Prop",
   "PhysicsType": "Keyframed",
   "Model": "models/sbox_props/wooden_crate/wooden_crate.vmdl",

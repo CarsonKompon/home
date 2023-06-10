@@ -1,6 +1,9 @@
+.body .form {
+    flex-grow: 1;
+    margin-right: 32px;
+}
 
 .body .form .form-group {
-    width: auto;
     flex-shrink: 1;
 
     .form-label {
@@ -15,6 +18,8 @@
     textentry {
         text-overflow: ellipsis;
         background-color: rgba(black, 0.6);
+        flex-grow: 1;
+        width: auto;
         label {
             color: white;
         }
@@ -32,6 +37,7 @@
 
     textentry .description {
         height: 200px;
+        flex-shrink: 0;
     }
 
     slidercontrol .inner {
@@ -40,7 +46,9 @@
         padding: 5px;
 
         .values {
-            padding: 11;
+            height: 100%;
+            padding: 5px 12px;
+            align-items: center;  
         }
     }
 
@@ -48,7 +56,6 @@
         flex-wrap: wrap;
         gap: 10px;
         align-self: center;
-        width: 500px;
     }
 
     .addon {
@@ -80,5 +87,5 @@
 }
 
 .body .right {
-    width: auto;
+    flex-shrink: 0;
 }

@@ -25,7 +25,7 @@ namespace Home
 			if ( Input.Down( "run" ) )
 				vel *= 5.0f;
 
-			if ( Input.Down( "duck" ) )
+			if ( Input.Down( "crouch" ) )
 				vel *= 0.2f;
 
 			Velocity += vel * Time.Delta;
