@@ -1,0 +1,35 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@using Sandbox.UI.GameMenu;
+
+@attribute [StyleSheet]
+@inherits Sandbox.UI.NavHostPanel
+
+@namespace Home
+
+<root class="gamepausemenu">
+    <div class="left">
+        <img class="roof" src="/ui/ui_roof.png" />
+        <AvatarHud FullBody=@(true) />
+    </div>
+    <div class="right">
+        <div class="navigator-canvas" slot="navigator-canvas"></div>
+    </div>
+</root>
+
+@code
+{
+
+    public HomePauseMenu()
+    {
+        DefaultUrl = "/inventory";
+
+        AddDestination("/inventory", typeof(PauseInventoryMenu));
+
+        BindClass( "ingame", () => Game.InGame );
+        BindClass( "inlobby", () => Game.Menu.Lobby != null );
+    }	
+
+}

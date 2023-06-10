@@ -129,7 +129,7 @@ homegui {
         }
     }
 
-    &.hide {
+    &.hide, &.inmainmenu {
         opacity: 0;
         pointer-events: none;
     }

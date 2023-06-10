@@ -11,6 +11,7 @@ namespace Home;
 
 public class AvatarHud : ScenePanel
 {
+    public bool FullBody {get;set;} = false;
     private SceneModel AvatarModel;
     private List<SceneModel> ClothingObjects = new();
 
@@ -19,11 +20,6 @@ public class AvatarHud : ScenePanel
 
     public void Rebuild()
     {
-        if(Game.LocalClient.Pawn == null)
-        {
-            return;
-        }
-
         // Cleanup
         World?.Delete();
         ClothingObjects.Clear();
@@ -38,9 +34,7 @@ public class AvatarHud : ScenePanel
         new SceneCubemap(World, Texture.Load("textures/cubemaps/default.vtex" ), BBox.FromPositionAndSize( Vector3.Zero, 1000 ) );
 
         Angles angles = new( 25, 180, 0 );
-		Vector3 pos = Vector3.Up * 40 + angles.Forward * -20;
 
-		Camera.Position = pos;
 		Camera.Rotation = Rotation.From( angles );
 		//Camera.AmbientLightColor = Color.Gray * 0.1f;
 		Camera.Name = "Home Avatar";
@@ -62,7 +56,7 @@ public class AvatarHud : ScenePanel
 
     void DressAvatar()
     {
-        if(Game.LocalClient.Pawn == null)
+        if(Game.LocalPawn == null)
         {
             return;
         }
@@ -109,9 +103,7 @@ public class AvatarHud : ScenePanel
         var speed = ( Noise.Perlin( RealTime.Now * 2.0f ) - 0.33f) * 2.0f;
 		if ( speed < 0 ) speed = 0;
 
-        HomePlayer LocalAvatar = Game.LocalClient.Pawn as HomePlayer;
-
-        if(LocalAvatar != null)
+        if(Game.LocalPawn is HomePlayer LocalAvatar)
         {
             var Velocity = Vector3.Zero;
             if(LocalAvatar.Controller != null)
@@ -156,8 +148,16 @@ public class AvatarHud : ScenePanel
         AvatarModel.Update(RealTime.Delta);
 
         Angles angles = new(2, 180, 0);
-        Vector3 pos = AvatarModel.GetBoneWorldTransform("head").Position + angles.Forward * -80 + Vector3.Up * 5;
-
+        Vector3 pos = Vector3.Zero;
+        if(FullBody)
+        {
+            pos = AvatarModel.Position + angles.Forward * -220f + Vector3.Up * 25f;
+        }
+        else
+        {
+            pos = AvatarModel.GetBoneWorldTransform("head").Position + angles.Forward * -80f + Vector3.Up * 5f;
+        }
+        
         Camera.Position = pos;
         Camera.Rotation = Rotation.From(angles);
         Camera.Ortho = false;

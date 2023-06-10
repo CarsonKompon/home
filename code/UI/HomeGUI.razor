@@ -29,6 +29,12 @@
     public AvatarHud AvatarHud;
     public Panel MoneyChangesPanel { get; set; }
 
+    public HomeGUI()
+    {
+        Current = this;
+        BindClass("inmainmenu", () => Game.IsMainMenuVisible);
+    }
+
     protected override void OnAfterTreeRender( bool firstTime )
 	{
 		base.OnAfterTreeRender( firstTime );

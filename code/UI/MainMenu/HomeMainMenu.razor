@@ -14,8 +14,12 @@
     @if(!Game.InGame)
     {
         <HomeMainMenuBackground class="background" />
+        <div class="navigator-canvas" slot="navigator-canvas"></div>
     }
-    <div class="navigator-canvas" slot="navigator-canvas"></div>
+    else
+    {
+        <HomePauseMenu class="pausemenu" />
+    }
 </root>
 
 @code
@@ -31,22 +35,35 @@
         AddDestination("/lobby/addons", typeof(HomeLobbyAddonPage));
         AddDestination("/lobby/map", typeof(HomeLobbyMapPage));
         AddDestination("/settings", typeof(HomeSettingsPage));
+        AddDestination("/ingame", typeof(HomeSettingsPage));
 
         BindClass( "ingame", () => Game.InGame );
         BindClass( "inlobby", () => Game.Menu.Lobby != null );
     }
 
     [GameEvent.Menu.ServerJoined]
-    public void OnServerJoined() => Navigate("/");
+    public void OnServerJoined()
+    {
+        AddDestination("/", typeof(HomeSettingsPage));
+        Navigate("/");
+    }
+
+    [GameEvent.Menu.ServerLeave]
+    public void OnServerLeave()
+    {
+        Navigate("/");
+        AddDestination("/", typeof(HomeFrontPage));
+    }
 
     [GameEvent.Menu.LobbyJoined]
     public void OnLobbyJoined() => Navigate("/lobby");
 
     [GameEvent.Menu.LobbyLeave]
     public void OnLobbyLeave() => Navigate("/");
-
-    [GameEvent.Menu.ServerLeave]
-    public void OnServerLeave() => Navigate("/");
 	
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(Game.InGame);
+    }
 
 }

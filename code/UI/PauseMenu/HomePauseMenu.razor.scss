@@ -1,0 +1,29 @@
+
+.gamepausemenu
+{
+    width: 100%;
+    height: 100%;
+    padding: 48px 0px;
+
+    .left
+    {
+        flex-direction: column;
+        width: 50%;
+
+        .roof
+        {
+            height: 200px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        AvatarHud
+        {
+            aspect-ratio: 0.5;
+            width: 100%;
+            justify-content: center;
+            background-color: pink;
+        }
+    }
+}
