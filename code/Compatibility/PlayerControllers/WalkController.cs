@@ -7,9 +7,9 @@ namespace Home
     [Library]
 	public partial class HomeWalkController : HomeBasePlayerController
     {
-        [Net] public float SprintSpeed { get; set; } = 380.0f;
-        [Net] public float WalkSpeed { get; set; } = 150.0f;
-        [Net] public float DefaultSpeed { get; set; } = 190.0f;
+        [Net] public float SprintSpeed { get; set; } = 400.0f;
+        [Net] public float WalkSpeed { get; set; } = 80.0f;
+        [Net] public float DefaultSpeed { get; set; } = 250.0f;
         [Net] public float Acceleration { get; set; } = 10.0f;
         [Net] public float AirAcceleration { get; set; } = 50.0f;
         [Net] public float FallSoundZ { get; set; } = -30.0f;

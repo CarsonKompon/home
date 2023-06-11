@@ -64,11 +64,14 @@ public partial class HomeGame : GameManager
 	public static void LoadLibraries()
 	{
 		// Load the chat commands
-		Current.ChatCommands = new List<ChatCommandAttribute>();
-		foreach(TypeDescription typeDesc in TypeLibrary.GetTypes<ChatCommandAttribute>())
+		if(Current != null)
 		{
-			ChatCommandAttribute command = TypeLibrary.Create<ChatCommandAttribute>(typeDesc.TargetType);
-			Current.ChatCommands.Add(command);
+			Current.ChatCommands = new List<ChatCommandAttribute>();
+			foreach(TypeDescription typeDesc in TypeLibrary.GetTypes<ChatCommandAttribute>())
+			{
+				ChatCommandAttribute command = TypeLibrary.Create<ChatCommandAttribute>(typeDesc.TargetType);
+				Current.ChatCommands.Add(command);
+			}
 		}
 	}
 
@@ -293,62 +296,6 @@ public partial class HomeGame : GameManager
         }
 	}
 
-	[ClientRpc]
-	public static void LoadLayout(string name)
-	{
-		Log.Info("loading clientrpc style");
-		// Check the player and their variables
-		if(!Game.IsClient) return;
-		if(Game.LocalPawn is not HomePlayer player) return;
-		if(player.Room == null) return;
-
-		// Check the layout
-		RoomLayout layout = player.RoomLayouts.First(l => l.Name == name);
-		if(layout == null) return;
-
-		// Load the layout
-		Log.Info(layout);
-		player.HomeUploadData = Json.Serialize(layout);
-		ConsoleSystem.Run("home_load_layout");
-	}
-
-	[ClientRpc]
-	public static void SaveLayout(string name, bool addNumber = false)
-	{
-		// Check the player and their variables
-		if(!Game.IsClient) return;
-		if(Game.LocalPawn is not HomePlayer player) return;
-		if(player.Room == null) return;
-
-		// TODO: Ask if player wants to overwrite layout if exists
-
-		// Save the layout
-		RoomLayout layout = player.Room.SaveLayout(name);
-
-		// Add the layout to the local layouts
-		if(player.RoomLayouts.Find(l => l.Name == name) == null)
-		{
-			player.RoomLayouts.Add(layout);
-		}
-		else
-		{
-			if(addNumber)
-			{
-				int number = 1;
-				while(player.RoomLayouts.Find(l => l.Name == layout.Name) == null)
-				{
-					layout.Name = name + " (" + number + ")";
-					number++;
-				}
-				player.RoomLayouts.Add(layout);
-			}else{
-				player.RoomLayouts[player.RoomLayouts.FindIndex(l => l.Name == layout.Name)] = layout;
-			}
-		}
-
-		// Save the layout to a local file
-		FileSystem.Data.WriteJson(player.Client.SteamId + "/layouts/" + layout.Name + ".json", layout);
-	}
 
 	[ClientRpc]
 	public static void DeleteLayout(string name)

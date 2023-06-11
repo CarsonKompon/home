@@ -1,4 +1,6 @@
 using System.Globalization;
+using System.Collections.Generic;
+using System.Linq;
 using System;
 using Sandbox;
 using Sandbox.UI;
@@ -53,6 +55,8 @@ public partial class HomePlayer : AnimatedEntity
 	private SpotLightEntity ViewFlashlight;
 	private SpotLightEntity WorldFlashlight;
 
+	[ClientInput] public string LastRoomName { get; set; }
+
 	Nametag Nametag;
 
 
@@ -65,7 +69,7 @@ public partial class HomePlayer : AnimatedEntity
 	[Net] public string ClothingString { get; set; } = "";
 
 	[Net] public string Location { get; set; } = "N/A";
-	[Net] public RoomController Room { get; set; } = null;
+	[Net, Change] public RoomController Room { get; set; } = null;
 
     TimeSince timeSinceDied;
 
@@ -79,6 +83,8 @@ public partial class HomePlayer : AnimatedEntity
         // Load clothing from client data
         Clothing.LoadFromClient(client);
 		ClothingString = Clothing.Serialize();
+
+		
     }
 
     /// <summary>
@@ -329,6 +335,8 @@ public partial class HomePlayer : AnimatedEntity
 		WorldFlashlight.EnableHideInFirstPerson = true;
 		WorldFlashlight.SetParent(this, "head" );
 
+		Room = null;
+
 		if(Game.IsClient)
 		{
 			_ = new PlacingGuide();
@@ -343,6 +351,8 @@ public partial class HomePlayer : AnimatedEntity
 
 		ViewFlashlight = CreateFlashlight();
 		ViewFlashlight.EnableViewmodelRendering = true;
+
+		LastRoomName = Cookie.GetString("home.last_room_name");
 	}
 
 	protected override void OnDestroy()
@@ -381,12 +391,7 @@ public partial class HomePlayer : AnimatedEntity
 
 		TimeSinceSpawned = 0;
 
-        Controller = new HomeWalkController
-        {
-            WalkSpeed = 80f,
-            DefaultSpeed = 250f,
-			SprintSpeed = 400f,
-        };
+        Controller = new HomeWalkController();
 
         if(DevController is HomeNoclipController)
         {
@@ -741,5 +746,70 @@ public partial class HomePlayer : AnimatedEntity
 	/// Override the aim ray to use the player's eye position and rotation.
 	/// </summary>
 	public override Ray AimRay => new Ray( EyePosition, EyeRotation.Forward );
+
+	[ClientRpc]
+	public void SaveLayout(string name, bool removeOwner = false)
+	{
+		// Check the player and their variables
+		if(Game.LocalPawn is not HomePlayer player) return;
+		if(player.Room == null) return;
+
+		// TODO: Ask if player wants to overwrite layout if exists?
+
+		// Save the layout
+		RoomLayout layout = player.Room.SaveLayout(name);
+
+		// Add the layout to the local layouts
+		if(player.RoomLayouts.Find(l => l.Name == name) == null)
+		{
+			player.RoomLayouts.Add(layout);
+		}
+		else
+		{
+			var index = player.RoomLayouts.FindIndex(l => l.Name == layout.Name);
+			Log.Info(index);
+			player.RoomLayouts[index] = layout;
+		}
+
+		if(removeOwner)
+		{
+			ConsoleSystem.Run("home_remove_owner");
+		}
+
+		// Save the layout to a local file
+		FileSystem.Data.WriteJson(player.Client.SteamId + "/layouts/" + layout.Name + ".json", layout);
+
+		NotificationPanel.AddEntry("💾 Saved layout \"" + name + "\"", "", 5);
+	}
+
+	[ClientRpc]
+	public void LoadLayout(string name)
+	{
+		// Check the player and their variables
+		if(Game.LocalPawn is not HomePlayer player) return;
+		if(player.Room == null) return;
+
+		// Check the layout
+		RoomLayout layout = player.RoomLayouts.FirstOrDefault(l => l.Name == name, null);
+		if(layout == null)
+		{
+			NotificationPanel.AddEntry("📁 COULD NOT LOAD LAYOUT \"" + name + "\"", "", 5);
+			return;
+		}
+
+		// Load the layout
+		player.HomeUploadData = Json.Serialize(layout);
+		ConsoleSystem.Run("home_load_layout");
+		NotificationPanel.AddEntry("📁 Loaded layout \"" + name + "\"", "", 5);
+	}
+
+	public void OnRoomChanged(RoomController oldRoom, RoomController newRoom)
+	{
+		Log.Info("Room changed from " + (oldRoom == null ? "null" : oldRoom.Name) + " to " + (newRoom == null ? "null" : newRoom.Name));
+		if(oldRoom == null && newRoom != null)
+		{
+			LoadLayout(newRoom.Name);
+		}
+	}
 
 }

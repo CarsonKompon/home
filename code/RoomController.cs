@@ -86,31 +86,19 @@ public partial class RoomController : Entity
 
     public void SetOwner(HomePlayer owner)
     {
-        if(RoomOwner != null) return;
+        Game.AssertServer();
 
         RoomOwner = owner;
-        RoomOwner.Room = this;
+        owner.Room = this;
+        Name = RoomOwner.LastRoomName;
 
         SetState(RoomState.Open);
-        ResetName();
-
-        // TODO: Spawn the owner's props here
     }
 
     public void RemoveOwner()
     {
-        ResetName();
-        if(RoomOwner != null) RoomOwner.Room = null;
-        RoomOwner = null;
-
-        SetState(RoomState.Vacant);
-
-        // Delete all the props
-        foreach(var ent in Entities)
-        {
-            ent.Delete();
-        }
-        Entities.Clear();
+        if(RoomOwner == null) return;
+        RoomOwner.SaveLayout(Name, true);
     }
 
     public void SetState(RoomState state)
@@ -134,7 +122,7 @@ public partial class RoomController : Entity
 
     public void ResetName()
     {
-        Name = "Room #" + Id.ToString();
+        Name = "Default";
     }
 
     public RoomLayout SaveLayout(string name = "New Layout")
@@ -156,8 +144,6 @@ public partial class RoomController : Entity
 
             layout.Entries.Add(entry);
         }
-
-        Log.Info(layout);
 
         return layout;
     }
@@ -201,6 +187,28 @@ public partial class RoomController : Entity
         if(player.Room == null) return;
 
         player.Room.Name = newName;
+    }
+
+    [ConCmd.Server("home_remove_owner")]
+    public static void RemoveOwnerConsole()
+    {
+        if(ConsoleSystem.Caller == null) return;
+        if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+        if(player.Room == null) return;
+
+        player.Room.ResetName();
+        player.Room.RoomOwner = null;
+
+        player.Room.SetState(RoomState.Vacant);
+
+        // Delete all the props
+        foreach(var ent in player.Room.Entities)
+        {
+            ent.Delete();
+        }
+        player.Room.Entities.Clear();
+
+        player.Room = null;
     }
 
 }

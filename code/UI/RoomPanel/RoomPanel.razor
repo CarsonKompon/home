@@ -58,13 +58,15 @@
         Editing = false;
         if(Game.LocalPawn is not HomePlayer player) return;
         if(player.Room == null) return;
+        player.LastRoomName = RoomName;
+        Cookie.SetString("home.last_room_name", RoomName);
         ConsoleSystem.Run("home_rename_room", RoomName);
     }
 
     public void LoadLayout()
     {
+        if(Game.LocalPawn is not HomePlayer player) return;
         if(LastLoad < 1f) return;
-        Log.Info("🏠: Loading layout...");
         string layout = "";
         foreach(RoomLayoutButton button in RoomLayoutButton.All)
         {
@@ -75,13 +77,15 @@
             }
         }
         if(layout == "") return;
-        HomeGame.LoadLayout(layout);
+        player.LastRoomName = layout;
+        Cookie.SetString("home.last_room_name", layout);
+        player.LoadLayout(layout);
     }
 
     public void SaveLayout()
     {
-        Log.Info("🏠: Saving layout...");
-        HomeGame.SaveLayout(GetRoomName());
+        if(Game.LocalPawn is not HomePlayer player) return;
+        player.SaveLayout(GetRoomName());
     }
 
     public string GetRoomName()

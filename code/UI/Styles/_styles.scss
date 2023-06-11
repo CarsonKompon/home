@@ -81,7 +81,7 @@ homegui {
         font-size: 24px;
         font-weight: bolder;
         color: white;
-        margin-bottom: 5%;
+        margin-bottom: 3%;
     }
 
     .roof {
@@ -497,6 +497,8 @@ ShopPlaceableButton {
         height: 100%;
         justify-content: space-between;
         align-items: center;
+        //flex-grow: 2;
+        flex-shrink: 2;
 
         .names {
             flex-direction: column;
@@ -526,6 +528,7 @@ ShopPlaceableButton {
         padding: 4px 8px;
         border-radius: 8px;
         color: white;
+        //flex-grow: 1;
 
         &:hover {
             background-color: rgb(23, 161, 23);

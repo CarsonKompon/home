@@ -11,7 +11,20 @@
   "MenuResources": "/ui/mainmenu/*\n/ui/ui_roof*\n/ui/pausemenu/*\n/ui/inventory/*\n/ui/tabmenu/playerlist/*",
   "HasCode": true,
   "CodePath": "/code/",
-  "PackageReferences": [],
+  "PackageReferences": [
+    "facepunch.beer_keg_a1",
+    "facepunch.beer_cask",
+    "facepunch.beer_keg_a2",
+    "facepunch.bathtub",
+    "facepunch.cardboard_box",
+    "facepunch.office_chair",
+    "facepunch.office_desk",
+    "facepunch.mattress",
+    "randkassets.wetfloor_sign",
+    "facepunch.tv",
+    "facepunch.wooden_crate",
+    "facepunch.pallet"
+  ],
   "EditorReferences": null,
   "Metadata": {
     "MaxPlayers": 64,

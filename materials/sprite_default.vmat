@@ -1,0 +1,12 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/2dtest_sprite.shader_c"
+
+	//---- Rendering ----
+	F_RENDER_BACKFACES 1
+
+	//---- Color ----
+	Texture "materials/lights/white_color.tga"
+}

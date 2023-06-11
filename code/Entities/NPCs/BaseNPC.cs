@@ -70,6 +70,6 @@ public partial class BaseNPC : AnimatedEntity, IUse
     public virtual bool OnUse(Entity user)
     {
         return false;
-    } 
+    }
 
 }
