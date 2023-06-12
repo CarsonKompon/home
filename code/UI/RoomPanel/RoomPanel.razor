@@ -12,7 +12,7 @@
         <div class="spacer" />
         @if(Editing)
         {
-            <TextEntry class="layout-entry" Value:bind=@RoomName />
+            <TextEntry class="layout-entry" CharacterRegex="^[^?/\\|*]$" Value:bind=@RoomName />
             <img src="ui/ui_save.png" onclick="@OnNameSave" />
         }
         else

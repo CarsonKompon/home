@@ -1,4 +1,5 @@
 using Sandbox;
+using Sandbox.UI;
 using Editor;
 
 namespace Home;
@@ -11,12 +12,26 @@ namespace Home;
 public class ArcadeMachineTetris : ArcadeMachineBase
 {
     public override string ControllerType => "ArcadeControllerTetris";
+    public WorldPanel Screen { get; set; }
 
     public override void Spawn()
     {
         base.Spawn();
-        
-        var test = new TestSprite();
-        test.Spawn();
     }
+
+    public override void ClientSpawn()
+    {
+        base.ClientSpawn();
+        
+        Screen = new ArcadeScreenTetris();
+    }
+
+    [GameEvent.Client.Frame]
+    public void OnFrame()
+    {
+        if (Screen == null) return;
+        var screenPos = GetAttachment("ScreenPos").Value;
+        Screen.Transform = screenPos;
+    }
+    
 }

@@ -1,0 +1,17 @@
+{
+  "Id": "bench_01",
+  "Name": "Plastic Bench",
+  "Cost": 85,
+  "State": "Visible",
+  "Categories": [
+    "furniture"
+  ],
+  "Type": "Prop",
+  "PhysicsType": "Keyframed",
+  "Model": "models/sbox_props/benches/bench_plastic.vmdl",
+  "ClassName": "",
+  "PackageIdent": "facepunch.bench_plastic",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

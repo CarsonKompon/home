@@ -1,0 +1,17 @@
+{
+  "Id": "christmas_tree_01",
+  "Name": "Christmas Tree",
+  "Cost": 200,
+  "State": "Visible",
+  "Categories": [
+    "foliage"
+  ],
+  "Type": "Prop",
+  "PhysicsType": "Keyframed",
+  "Model": "models/christmas_tree.vmdl",
+  "ClassName": "",
+  "PackageIdent": "titanovsky.christmas_tree",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

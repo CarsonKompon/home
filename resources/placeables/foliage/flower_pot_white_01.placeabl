@@ -1,0 +1,17 @@
+{
+  "Id": "flower_pot_white_01",
+  "Name": "White Flower Pot",
+  "Cost": 25,
+  "State": "Visible",
+  "Categories": [
+    "foliage"
+  ],
+  "Type": "Prop",
+  "PhysicsType": "Keyframed",
+  "Model": "models/items/plants_and_nature/potted_whiteflowers.vmdl",
+  "ClassName": "",
+  "PackageIdent": "luke.office_flowers_2",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

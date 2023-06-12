@@ -1,0 +1,17 @@
+{
+  "Id": "tv_floor_01",
+  "Name": "Media Player TV",
+  "Cost": 8000,
+  "State": "Hidden",
+  "Categories": [
+    "electronics"
+  ],
+  "Type": "Entity",
+  "PhysicsType": "Keyframed",
+  "Model": "models/entities/tv_floor_01.vmdl",
+  "ClassName": "PlaceableTV",
+  "PackageIdent": "",
+  "ThumbnailOverride": "materials/models/editor/tube.png",
+  "PlaceSound": null,
+  "StashSound": null
+}

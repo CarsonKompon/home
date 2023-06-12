@@ -1,0 +1,17 @@
+{
+  "Id": "wood_pallet_01",
+  "Name": "Wood Pallet",
+  "Cost": 50,
+  "State": "Visible",
+  "Categories": [
+    "construction"
+  ],
+  "Type": "Prop",
+  "PhysicsType": "Keyframed",
+  "Model": "models/sbox_props/pallet/pallet.vmdl",
+  "ClassName": "",
+  "PackageIdent": "facepunch.pallet",
+  "ThumbnailOverride": null,
+  "PlaceSound": null,
+  "StashSound": null
+}

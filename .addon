@@ -7,7 +7,7 @@
   "Schema": 1,
   "HasAssets": true,
   "AssetsPath": "",
-  "Resources": "/ui/*\n/ui/styles/*\n/ui/chat/*\n/code/ui/*\n/code/ui/chat/*\n*.scss",
+  "Resources": "/ui/*\n/ui/styles/*\n/ui/chat/*\n/code/ui/*\n/code/ui/chat/*\n*.scss\nsprites/*",
   "MenuResources": "/ui/mainmenu/*\n/ui/ui_roof*\n/ui/pausemenu/*\n/ui/inventory/*\n/ui/tabmenu/playerlist/*",
   "HasCode": true,
   "CodePath": "/code/",
@@ -23,7 +23,15 @@
     "randkassets.wetfloor_sign",
     "facepunch.tv",
     "facepunch.wooden_crate",
-    "facepunch.pallet"
+    "facepunch.pallet",
+    "facepunch.toilet_a",
+    "facepunch.binbag_a1",
+    "facepunch.trolley",
+    "facepunch.bench_plastic",
+    "luke.office_flowers_1",
+    "luke.office_flowers_2",
+    "luke.office_plant",
+    "titanovsky.christmas_tree"
   ],
   "EditorReferences": null,
   "Metadata": {

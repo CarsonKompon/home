@@ -11,7 +11,7 @@
 				[
 					{
 						_class = "RenderMeshFile"
-						filename = "models\\arcade\\dmx\\mesh\\arcade_machine_dev_01.dmx"
+						filename = "models\\entities\\dmx\\mesh\\tv_floor_01.dmx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
 						import_scale = 1.0
@@ -48,24 +48,18 @@
 						parent_bone = ""
 						surface_prop = "default"
 						collision_tags = "solid"
-						origin = [ -2.34683, 0.0, 41.940475 ]
+						origin = [ -4.484597, -0.095989, 1.152514 ]
 						angles = [ 0.0, 0.0, 0.0 ]
-						dimensions = [ 43.892616, 40.0, 83.911163 ]
+						dimensions = [ 14.488845, 95.798592, 2.196186 ]
 					},
-				]
-			},
-			{
-				_class = "AttachmentList"
-				children = 
-				[
 					{
-						_class = "Attachment"
-						name = "ScreenPos"
+						_class = "PhysicsShapeBox"
 						parent_bone = ""
-						relative_origin = [ -13.796968, 0.0, 58.153446 ]
-						relative_angles = [ -8.949255, -180.0, 0.0 ]
-						weight = 1.0
-						ignore_rotation = false
+						surface_prop = "default"
+						collision_tags = "solid"
+						origin = [ -4.699299, 0.0499, 35.611622 ]
+						angles = [ 0.0, 0.0, 0.0 ]
+						dimensions = [ 7.519129, 104.248772, 59.076782 ]
 					},
 				]
 			},

@@ -1,0 +1,17 @@
+{
+  "Id": "missing_id",
+  "Name": "Missingname.",
+  "Cost": 0,
+  "State": "Visible",
+  "Categories": [
+    "hardware"
+  ],
+  "Type": "Prop",
+  "PhysicsType": "Keyframed",
+  "Model": null,
+  "ClassName": "",
+  "PackageIdent": "",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

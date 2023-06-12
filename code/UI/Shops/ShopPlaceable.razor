@@ -84,6 +84,15 @@
         }
     }
 
+    [GameEvent.Client.BuildInput]
+    public void BuildInput()
+    {
+        if(Input.Pressed("crouch"))
+        {
+            Close();
+        }
+    }
+
     public void SetTarget(HomePlaceable placeable)
     {
         Target = placeable;
