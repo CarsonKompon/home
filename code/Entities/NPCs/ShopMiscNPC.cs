@@ -19,6 +19,12 @@ public partial class ShopMiscNPC : BaseNPC
         base.Spawn();
     }
 
+    [GameEvent.Tick.Server]
+	void Tick()
+    {
+        SetAnimParameter( "holdtype_pose", 4 );
+    }
+
     public override bool OnUse(Entity user)
     {
         if(!Game.IsServer) return false;
