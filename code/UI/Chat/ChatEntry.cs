@@ -18,7 +18,8 @@ namespace Home
 		{
 			Avatar = Add.Image();
 			NameLabel = Add.Label( "Name", "name" );
-			Message = Add.Label( "Message", "message" );
+			var messageDiv = Add.Panel("message-content");
+			Message = messageDiv.Add.Label( "Message", "message" );
 		}
 
 		public override void Tick()
