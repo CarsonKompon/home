@@ -18,7 +18,8 @@ public partial class ShopFoliageNPC : BaseNPC
     [GameEvent.Tick.Server]
 	void Tick()
     {
-        SetAnimParameter( "holdtype_pose", 2 );
+        SetAnimParameter( "sit", 2 );
+        SetAnimParameter( "sit_pose", 3);
     }
 
     public override bool OnUse(Entity user)

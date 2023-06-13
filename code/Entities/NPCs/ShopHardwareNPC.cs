@@ -18,8 +18,7 @@ public partial class ShopHardwareNPC : BaseNPC
     [GameEvent.Tick.Server]
 	void Tick()
     {
-        SetAnimParameter( "sit", 2 );
-        SetAnimParameter( "sit_pose", 3);
+        SetAnimParameter( "holdtype_pose", 2 );
     }
 
     public override bool OnUse(Entity user)
