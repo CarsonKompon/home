@@ -1,0 +1,21 @@
+wippanel {
+    background-color: rgba(white, 0.6);
+    justify-content: center;
+    align-items: center;
+    font-family: Poppins;
+    font-weight: bolder;
+    color: black;
+    border-radius: 64px;
+    font-size: 32px;
+    font-weight: 400;
+
+    flex-direction: column;
+    gap: 64px;
+    padding: 32px;
+
+    h2 {
+        font-size: 48px;
+        text-align: center;
+        font-weight: 900;
+    }
+}

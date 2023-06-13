@@ -1,0 +1,29 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@using Editor;
+
+@inherits WorldPanel
+@attribute [StyleSheet]
+@namespace Home
+
+<root>
+    <h2>WORK IN PROGRESS</h2>
+    <div class="content">
+This game is a HEAVY work in progress. There's not much to do at the moment so please feel free to take advantage of the "Free Money" NPC to your right.
+
+Your progress could be reset by me at any point when I do start adding ways to earn money but your saved layouts will not be lost and you will be able to load them once you earn your items back :)
+
+Hope you enjoy what there is to offer and let me know if you have any feedback/suggestions in the s&box discord @@carson
+    </div>
+</root>
+
+@code
+{
+    public WIPPanel()
+    {
+        var width = 1500f;
+        var height = 2200f;
+        PanelBounds = new Rect( -width/2, -height/2, width, height );
+    }
+}
