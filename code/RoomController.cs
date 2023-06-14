@@ -60,7 +60,16 @@ public partial class RoomController : Entity
             if(State != RoomState.Vacant && (RoomOwner == null || !RoomOwner.IsValid()))
             {
                 Log.Info("Room owner no longer existed in room #" + Id.ToString() + ".");
-                RemoveOwner();
+                ResetName();
+                RoomOwner = null;
+                SetState(RoomState.Vacant);
+
+                // Delete all the props
+                foreach(var ent in Entities)
+                {
+                    ent.Delete();
+                }
+                Entities.Clear();
             }
 
             LastUpdate = 0f;

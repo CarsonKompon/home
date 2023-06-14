@@ -163,7 +163,7 @@
     ],
     "Summary": "Welcome Home... To your s\u0026box home!",
     "Description": "Please note that this game is a heavy work in progress and is currently only being made by 1 person (myself) in my spare time.\n\nThis map is very WIP and will expand/evolve over time as I create the content I currently have envisioned.\n\nThe goal for Home is that anyone will be able to create their own sub-communities via servers that host different maps as well as content via addons.\n\nIf you wish to create your own content, please let me know as I plan on documenting the process and creating a guide for it.\n\nMy main project at the moment is my full-time job working on Turnip Boy Robs a Bank. Please consider checking it out!",
-    "Public": false,
+    "Public": true,
     "Collision": {
       "Defaults": {
         "solid": "Collide",
