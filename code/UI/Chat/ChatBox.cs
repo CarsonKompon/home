@@ -161,6 +161,8 @@ namespace Home
 			if ( message.Contains( '\n' ) || message.Contains( '\r' ) )
 				return;
 
+			Log.Info( $">> {ConsoleSystem.Caller?.Name ?? "Server"}: {message}" );
+
 			// Check for command
 			if( message.StartsWith( "/" ) )
 			{

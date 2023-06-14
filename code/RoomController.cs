@@ -90,7 +90,6 @@ public partial class RoomController : Entity
 
     public RoomFrontDoor GetFrontDoor()
     {
-        Log.Info(Id);
         return Entity.All.OfType<RoomFrontDoor>().FirstOrDefault(door => door.RoomId == Id);
     }
 
