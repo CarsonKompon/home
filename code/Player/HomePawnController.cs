@@ -20,6 +20,7 @@ namespace Home
 		public Vector3 GroundNormal { get; set; }
 
 		public Vector3 WishVelocity { get; set; }
+		public virtual bool HasAnimations => true;
 
 		public void UpdateFromEntity( Entity entity )
 		{

@@ -3,12 +3,14 @@
   "Name": "Office Chair",
   "Cost": 125,
   "State": "Visible",
-  "Category": "Furniture",
-  "Type": "Prop",
+  "Categories": [
+    "furniture"
+  ],
+  "Type": "Entity",
   "PhysicsType": "Keyframed",
   "Model": "models/sbox_props/office_chair/office_chair.vmdl",
-  "ClassName": "",
-  "PackageIdent": "facepunch.office_chair",
+  "ClassName": "OfficeChair01",
+  "PackageIdent": "",
   "ThumbnailOverride": null,
   "PlaceSound": null,
   "StashSound": null

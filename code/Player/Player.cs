@@ -182,6 +182,7 @@ public partial class HomePlayer : AnimatedEntity
 	void SimulateAnimation(HomePawnController controller)
 	{
 		if(controller == null) return;
+		if(!controller.HasAnimations) return;
 
 		// Where should we be rotated to
 		var turnSpeed = 0.02f;
@@ -214,6 +215,7 @@ public partial class HomePlayer : AnimatedEntity
 		animHelper.IsSwimming = this.GetWaterLevel() >= 0.5f;
 		animHelper.IsWeaponLowered = false;
 		animHelper.MoveStyle = Input.Down( "walk" ) ? CitizenAnimationHelper.MoveStyles.Walk : CitizenAnimationHelper.MoveStyles.Run;
+	
 
 		if ( controller.HasEvent( "jump" ) ) animHelper.TriggerJump();
 		// if ( ActiveChild != lastWeapon ) animHelper.TriggerDeploy();
