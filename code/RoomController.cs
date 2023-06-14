@@ -59,6 +59,7 @@ public partial class RoomController : Entity
             // Check if the room owner still exists
             if(State != RoomState.Vacant && (RoomOwner == null || !RoomOwner.IsValid()))
             {
+                Log.Info("Room owner no longer existed in room #" + Id.ToString() + ".");
                 RemoveOwner();
             }
 

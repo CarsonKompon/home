@@ -779,7 +779,7 @@ public partial class HomePlayer : AnimatedEntity
 		// Save the layout to a local file
 		FileSystem.Data.WriteJson(player.Client.SteamId + "/layouts/" + layout.Name + ".json", layout);
 
-		NotificationPanel.AddEntry("💾 Saved layout \"" + name + "\"", "", 5);
+		NotificationPanel.AddEntry(To.Single(player), "💾 Saved layout \"" + name + "\"", "", 5);
 	}
 
 	[ClientRpc]
@@ -793,14 +793,14 @@ public partial class HomePlayer : AnimatedEntity
 		RoomLayout layout = player.RoomLayouts.FirstOrDefault(l => l.Name == name, null);
 		if(layout == null)
 		{
-			NotificationPanel.AddEntry("📁 COULD NOT LOAD LAYOUT \"" + name + "\"", "", 5);
+			NotificationPanel.AddEntry(To.Single(player), "📁 COULD NOT LOAD LAYOUT \"" + name + "\"", "", 5);
 			return;
 		}
 
 		// Load the layout
 		player.HomeUploadData = Json.Serialize(layout);
 		ConsoleSystem.Run("home_load_layout");
-		NotificationPanel.AddEntry("📁 Loaded layout \"" + name + "\"", "", 5);
+		NotificationPanel.AddEntry(To.Single(player), "📁 Loaded layout \"" + name + "\"", "", 5);
 	}
 
 	public void OnRoomChanged(RoomController oldRoom, RoomController newRoom)

@@ -59,6 +59,7 @@ public partial class HomePlaceable : GameResource
     public string GetThumbnail() {
         if(!string.IsNullOrEmpty(ThumbnailOverride)) return ThumbnailOverride;
         if(!string.IsNullOrEmpty(PackageIdent)) return PackageThumbnail;
+        if(LoadedPackage == null) return "";
         return LoadedPackage.Thumb;
     }
 
