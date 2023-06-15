@@ -154,7 +154,9 @@
         }
       ]
     },
-    "HttpAllowList": [],
+    "HttpAllowList": [
+      "https://www.youtube.com/"
+    ],
     "PackageSettings": [
       {
         "Choices": [],

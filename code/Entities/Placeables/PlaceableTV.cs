@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Sandbox;
 using Sandbox.UI;
 using Editor;
 using System.Linq;
+using Home.Utils;
 
 namespace Home;
 
@@ -45,10 +47,10 @@ public partial class PlaceableTV : ModelEntity, IUse
         Video?.Dispose();
     }
 
-    [GameEvent.Tick.Client]
-    public void Tick()
+    [GameEvent.Client.Frame]
+    public void OnFrame()
     {
-        Video.Present();
+        Video?.Present();
         ScreenMaterial.Set("Color", Video.Texture);
         SetMaterialOverride(ScreenMaterial, "screen");
     }
@@ -56,14 +58,16 @@ public partial class PlaceableTV : ModelEntity, IUse
     public virtual bool OnUse(Entity user)
     {
         Game.AssertServer();
-        PlayVideo("https://www.youtube.com/watch?v=vQX6nPMkPWM");
+
+        PlayYoutubeVideo("dQw4w9WgXcQ");
         
         return false;
     }
 
     [ClientRpc]
-    public void PlayVideo(string url)
+    public async void PlayYoutubeVideo(string url)
     {
-        Video.Play(url);
+        var whoa = await MediaHelper.GetUrlFromYoutubeId(url);
+        Video.Play(whoa);
     }
 }
