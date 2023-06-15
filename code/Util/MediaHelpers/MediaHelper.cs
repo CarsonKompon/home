@@ -99,8 +99,6 @@ public static class MediaHelper
             {"User-Agent", "com.google.android.youtube/17.36.4 (Linux; U; Android 12; GB) gzip"}
         };
 
-        Log.Info(await Http.RequestStringAsync("https://www.youtube.com/", "POST"));
-
         var playerResponse = YoutubePlayerResponse.Parse(
             await Http.RequestStringAsync(YOUTUBE_PLAYER, "POST", content)
         );

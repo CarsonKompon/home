@@ -86,12 +86,14 @@
         {
             Current.WebPanel.Surface.Url = "https://www.youtube.com";
             Current.WebPanel.Surface.InBackgroundMode = false;
+            Current.WebPanel.Style.Display = DisplayMode.Flex;
             Current.PreviousUrl = Current.WebPanel.Surface.Url;
         }
     }
 
     public void Close()
     {
+        WebPanel.Style.Display = DisplayMode.None;
         WebPanel.Surface.InBackgroundMode = true;
         RemoveClass("open");
     }
