@@ -47,7 +47,6 @@
 	</ItemGroup>
 
   <ItemGroup>
-		<ProjectReference Include="e:\projects\s&amp;box projects\mediahelpers\mediahelpers.csproj" />
 		<ProjectReference Include="C:\SteamLibrary\steamapps\common\sbox\addons\base\code\Base Library.csproj" />
 
   </ItemGroup>

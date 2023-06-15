@@ -7,18 +7,14 @@
 @namespace Home
 
 <root>
-    <div class="icon" style="background-image: url( @GetTexture() ); )"></div>
+    <div class="icon" @ref="Background"></div>
 </root>
 
 @code
 {
+    public Panel Background {get; set;}
     public HomePlaceable Placeable { get; set; }
     public Vector2 DragOffset { get; set; } = new Vector2(25, 25);
-
-    private string GetTexture()
-    {
-        return Placeable.GetThumbnail();
-    }
 
     public override void OnMouseWheel( float value )
     {
@@ -40,6 +36,16 @@
         }
     }		
 
+    protected override void OnAfterTreeRender(bool firstTime)
+    {
+        base.OnAfterTreeRender(firstTime);
+
+        if(firstTime)
+        {
+            Background.Style.BackgroundImage = Placeable.Texture;
+        }
+    }
+
     public override void Tick()
     {
         base.Tick();
@@ -58,6 +64,6 @@
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(GetTexture());
+        return HashCode.Combine(Placeable);
     }
 }

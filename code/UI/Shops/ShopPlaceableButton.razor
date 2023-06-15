@@ -8,7 +8,7 @@
 
 <root>
     <div class="info">
-        <img class="icon" src=@GetTexture() />
+        <img class="icon" @ref="Icon" />
         <div class="names">
             <div class="name">@Placeable.Name</div>
             <div class="description">@GetDescription()</div>
@@ -19,6 +19,7 @@
 
 @code
 {
+    public Image Icon { get; set; }
     public HomePlaceable Placeable { get; set; }
     public ShopPlaceable Shop { get; set; }
 
@@ -36,6 +37,8 @@
                     fallback++;
                 }
                 Shop = parent as ShopPlaceable;
+
+                Icon.Texture = Placeable.Texture;
             }
 		}
 
@@ -47,11 +50,6 @@
         var stashEntry = player.Stash.Where(x => x.GetPlaceable().Id == Placeable.Id).FirstOrDefault();
         if(stashEntry == null) return $"You currently own 0";
         return $"You currently own {stashEntry.Amount}";
-    }
-
-    public string GetTexture()
-    {
-        return Placeable.GetThumbnail();
     }
 
     public void Purchase()

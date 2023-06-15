@@ -3,6 +3,9 @@ using System.Linq;
 using System;
 using System.Threading.Tasks;
 using Sandbox;
+using Home.Util;
+
+namespace Home;
 
 public enum PlaceableType
 {
@@ -53,15 +56,29 @@ public partial class HomePlaceable : GameResource
 
     private string PackageThumbnail = "";
     [HideInEditor] public string RealModel = "";
-
+    [HideInEditor] public Texture Texture
+    {
+        get {
+            if(_texture == null)
+            {
+                if(string.IsNullOrEmpty(ThumbnailOverride) && !string.IsNullOrEmpty(Model))
+                {
+                    _texture = SceneHelper.CreateModelThumbnail(Model);
+                }
+                else
+                {
+                    _texture = Texture.Load(ThumbnailOverride);
+                }
+            }
+            return _texture;
+        }
+        set {
+            _texture = value;
+        }
+    }
+    private Texture _texture;
 
     private Package LoadedPackage;
-    public string GetThumbnail() {
-        if(!string.IsNullOrEmpty(ThumbnailOverride)) return ThumbnailOverride;
-        if(!string.IsNullOrEmpty(PackageIdent)) return PackageThumbnail;
-        if(LoadedPackage == null) return "";
-        return LoadedPackage.Thumb;
-    }
 
     public string GetModel() {
         if(!string.IsNullOrEmpty(RealModel)) return RealModel;
@@ -89,7 +106,7 @@ public partial class HomePlaceable : GameResource
 
         LoadedPackage = await Package.FetchAsync(PackageIdent, false);
         LoadedPackage.IsMounted();
-        PackageThumbnail = LoadedPackage.Thumb;
+        //PackageThumbnail = LoadedPackage.Thumb;
 
         if(string.IsNullOrEmpty(Model))
         {

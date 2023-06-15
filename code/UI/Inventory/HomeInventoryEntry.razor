@@ -9,12 +9,13 @@
 @namespace Home
 
 <root>
-    <div class="icon" style="background-image: url( @GetTexture() ); )"></div>
+    <div @ref="Background" class="icon"></div>
     <label class="inventory-count" text=@GetAmount() />
 </root>
 
 @code
-{    
+{   
+    public Panel Background { get; set; }
     public StashEntry Entry;
     private Vector2 DragOffset;
     private HomeInventoryDragging Dragging = null;
@@ -23,6 +24,15 @@
     protected override void OnAfterTreeRender( bool firstTime )
     {
         Tooltip = GetName();
+
+        if(firstTime)
+        {
+            HomePlaceable placeable = Entry.GetPlaceable();
+            if(placeable != null)
+            {
+                Background.Style.BackgroundImage = placeable.Texture;
+            }
+        }
     }
 
     private string GetModel()
@@ -42,12 +52,6 @@
     private string GetAmount()
     {
         return (Entry.Amount - Entry.Used).ToString() + "/" + Entry.Amount.ToString();
-    }
-
-    private string GetTexture()
-    {
-        HomePlaceable placeable = Entry.GetPlaceable();
-        return placeable.GetThumbnail();
     }
 
     protected override void OnMouseDown(MousePanelEvent e)
