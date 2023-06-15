@@ -1,0 +1,23 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+
+<root>
+    <div class="input">
+        <TextEntry Value:bind=@MediaUrl Tooltip="Media URL"></TextEntry>
+        <button class="btn" onclick=@PlayMedia>Submit</button>
+    </div>
+    <div class="search">
+        
+    </div>
+</root>
+
+@code
+{
+    public string MediaUrl = "";
+
+    public void PlayMedia()
+    {
+
+    }
+}
