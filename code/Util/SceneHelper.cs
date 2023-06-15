@@ -25,7 +25,7 @@ public static class SceneHelper
         var light = new SceneLight(scene.World, new Vector3(32, 128, 128), 1024, Color.White);
         light.LightColor = Color.White.Lighten(2);
         light.ShadowsEnabled = true;
-        scene.AmbientLightColor = Color.FromBytes(180, 140, 255).Darken(0.5f);
+        scene.AmbientLightColor = Color.White.Darken(0.5f);
         Graphics.RenderToTexture(scene, texture);
         obj.Delete();
         scene.World.Delete();

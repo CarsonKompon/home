@@ -813,7 +813,7 @@ public partial class HomePlayer : AnimatedEntity
 	public void OnRoomChanged(RoomController oldRoom, RoomController newRoom)
 	{
 		Log.Info("Room changed from " + (oldRoom == null ? "null" : oldRoom.Name) + " to " + (newRoom == null ? "null" : newRoom.Name));
-		if(Game.IsClient && oldRoom == null && newRoom != null)
+		if(Game.IsClient && Game.LocalPawn == this && oldRoom == null && newRoom != null)
 		{
 			LoadLayout(newRoom.Name);
 		}
