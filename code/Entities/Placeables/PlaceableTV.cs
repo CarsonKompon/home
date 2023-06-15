@@ -59,15 +59,22 @@ public partial class PlaceableTV : ModelEntity, IUse
     {
         Game.AssertServer();
 
-        PlayYoutubeVideo("dQw4w9WgXcQ");
+        MediaBrowser.Open(To.Single(user), NetworkIdent);
         
         return false;
     }
 
     [ClientRpc]
-    public async void PlayYoutubeVideo(string url)
+    public async void PlayVideo(string url)
     {
-        var whoa = await MediaHelper.GetUrlFromYoutubeId(url);
-        Video.Play(whoa);
+        if(MediaHelper.IsYoutubeUrl(url))
+        {
+            var whoa = await MediaHelper.GetUrlFromYoutubeUrl(url);
+            Video.Play(whoa);
+        }
+        else if(url.EndsWith(".mp4") || url.EndsWith(".webm"))
+        {
+            Video.Play(url);
+        }
     }
 }

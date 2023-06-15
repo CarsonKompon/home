@@ -1,23 +1,103 @@
 @using System;
 @using Sandbox;
 @using Sandbox.UI;
+@using Home.Utils;
+@attribute [StyleSheet]
+
+@namespace Home
 
 <root>
     <div class="input">
-        <TextEntry Value:bind=@MediaUrl Tooltip="Media URL"></TextEntry>
-        <button class="btn" onclick=@PlayMedia>Submit</button>
+        <TextEntry onsubmit=@CheckSite Value:bind=@MediaUrl Tooltip="Media URL" Placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"></TextEntry>
+        <button @ref="ButtonSubmit" class="btn" onclick=@PlayMedia>Submit</button>
     </div>
     <div class="search">
-        
+        <WebPanel @ref="WebPanel"></WebPanel>
     </div>
+    <img src="/ui/ui_no.png" class="close" onclick="@Close" />
 </root>
 
 @code
 {
+    public static MediaBrowser Current {get;set;}
+    public Button ButtonSubmit {get; set;}
+    public WebPanel WebPanel {get; set;}
     public string MediaUrl = "";
+    private string PreviousUrl = "";
+    public Entity MediaEntity {get;set;}
+
+    protected override void OnAfterTreeRender(bool firstTime)
+    {
+        if (firstTime)
+        {
+            WebPanel.Surface.Url = "https://www.youtube.com";
+            PreviousUrl = WebPanel.Surface.Url;
+        }
+
+        if(WebPanel.Surface.Url != PreviousUrl)
+        {
+            MediaUrl = WebPanel.Surface.Url;
+            PreviousUrl = WebPanel.Surface.Url;
+        }
+
+        UpdateButton();
+    }
 
     public void PlayMedia()
     {
+        if(!ButtonSubmit.HasClass("can-press")) return;
+        if(MediaEntity is PlaceableTV tv)
+        {
+            tv.PlayVideo(MediaUrl);
+        }
+        Close();
+    }
 
+    public void CheckSite()
+    {
+        if(!MediaUrl.StartsWith("https://")) MediaUrl = "https://" + MediaUrl;
+        WebPanel.Surface.Url = MediaUrl;
+        PreviousUrl = MediaUrl;
+    }
+
+    public bool IsButtonValid()
+    {
+        if(MediaHelper.IsYoutubeUrl(MediaUrl)) return true;
+        if(MediaUrl.EndsWith(".mp4")) return true;
+        if(MediaUrl.EndsWith(".webm")) return true;
+        return false;
+    }
+
+    public void UpdateButton()
+    {
+        ButtonSubmit.SetClass("can-press", IsButtonValid());   
+    }
+
+    [ClientRpc]
+    public static void Open(int networkIdent)
+    {
+        if(Current == null)
+        {
+            Current = Game.RootPanel.AddChild<MediaBrowser>();
+        }
+        Current.MediaEntity = Entity.FindByIndex(networkIdent);
+        Current.AddClass("open");
+        if(Current.WebPanel != null)
+        {
+            Current.WebPanel.Surface.Url = "https://www.youtube.com";
+            Current.WebPanel.Surface.InBackgroundMode = false;
+            Current.PreviousUrl = Current.WebPanel.Surface.Url;
+        }
+    }
+
+    public void Close()
+    {
+        WebPanel.Surface.InBackgroundMode = true;
+        RemoveClass("open");
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(WebPanel.Surface.Url, IsButtonValid());
     }
 }

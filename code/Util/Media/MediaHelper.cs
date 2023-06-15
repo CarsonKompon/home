@@ -13,6 +13,15 @@ public static class MediaHelper
 {
     const string YOUTUBE_PLAYER = "https://www.youtube.com/youtubei/v1/player";
 
+    public static bool IsYoutubeUrl(string url)
+    {
+        if(url.StartsWith("https://www.youtube.com/watch?v=")) return true;
+        if(url.StartsWith("http://www.youtube.com/watch?v=")) return true;
+        if(url.StartsWith("https://youtu.be/")) return true;
+        if(url.StartsWith("http://youtu.be/")) return true;
+        return false;
+    }
+
     public static string GetIdFromYoutubeUrl(string url)
     {
         var uri = new Uri(url);
@@ -51,7 +60,11 @@ public static class MediaHelper
                     .FirstOrDefault()
                     ?? streams
                         .WhereNotNull()
-                        .FirstOrDefault();
+                        .Where(f => f.AudioCodec != null)
+                        .FirstOrDefault()
+                        ?? streams
+                            .WhereNotNull()
+                            .FirstOrDefault();
         
         if (format == null)
             return null;

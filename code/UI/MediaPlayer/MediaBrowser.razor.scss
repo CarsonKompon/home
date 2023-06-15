@@ -1,0 +1,81 @@
+
+MediaBrowser {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    left: 10%;
+    top: 10%;
+    background-color: white;
+    padding: 24px;
+    border-radius: 32px;
+    flex-direction: column;
+    pointer-events: all;
+    display: none;
+
+    .input {
+
+        padding: 16px;
+        gap: 8px;
+
+        TextEntry {
+            background-color: lightblue;
+            flex-grow: 1;
+            border-radius: 16px;
+
+            .placeholder {
+                color: black;
+                opacity: 0.6;
+            }
+        }
+
+        Button {
+            min-width: 120px;
+            background-color: rgba(blueviolet, 0.5);
+            border-radius: 16px;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            transition: all 0.1s ease-in-out;
+
+            &.can-press {
+                background-color: blueviolet;
+
+                &:hover {
+                    transform: scale(1.08);
+                }
+            }
+        }
+
+    }
+
+    .search {
+        flex-grow: 1;
+        padding: 32px;
+
+        WebPanel {
+            flex-grow: 1;
+        }
+    }
+
+    .close {
+        position: absolute;
+        top: 12px;
+        right: 18px;
+        border-radius: 100%;
+        background-image-tint: black;
+        pointer-events: all;
+
+        transition: all 0.1s ease-in-out;
+
+        &:hover {
+            background-color: rgba(white, 0.2);
+        }
+    }
+
+    &.open {
+        display: flex;
+    }
+
+}
