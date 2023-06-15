@@ -64,6 +64,21 @@ public partial class PlaceableTV : ModelEntity, IUse
         return false;
     }
 
+    [ConCmd.Server("home_tv_queue")]
+    public static void QueueMedia(int networkIdent, string url)
+    {
+        var entity = Entity.FindByIndex(networkIdent);
+        if(entity is not PlaceableTV tv)
+        {
+            Log.Error("📺: Tried to queue media on a TV that doesn't exist!");
+            return;
+        }
+
+        // TODO: Queue media
+
+        tv.PlayVideo(url);
+    }
+
     [ClientRpc]
     public async void PlayVideo(string url)
     {

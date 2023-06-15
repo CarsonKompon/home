@@ -48,7 +48,7 @@
         if(!ButtonSubmit.HasClass("can-press")) return;
         if(MediaEntity is PlaceableTV tv)
         {
-            tv.PlayVideo(MediaUrl);
+            ConsoleSystem.Run("home_tv_queue", tv.NetworkIdent, MediaUrl);
         }
         Close();
     }
