@@ -107,7 +107,7 @@ public partial class RoomController : Entity
     public void RemoveOwner()
     {
         if(RoomOwner == null) return;
-        RoomOwner.SaveLayout(Name, true);
+        RoomOwner.SaveLayout(To.Single(RoomOwner), Name, true);
     }
 
     public void SetState(RoomState state)

@@ -784,7 +784,6 @@ public partial class HomePlayer : AnimatedEntity
 		NotificationPanel.AddEntry(To.Single(player), "💾 Saved layout \"" + name + "\"", "", 5);
 	}
 
-	[ClientRpc]
 	public void LoadLayout(string name)
 	{
 		// Check the player and their variables
@@ -805,10 +804,16 @@ public partial class HomePlayer : AnimatedEntity
 		NotificationPanel.AddEntry(To.Single(player), "📁 Loaded layout \"" + name + "\"", "", 5);
 	}
 
+	[ClientRpc]
+	public void LoadLayoutClientRpc(string name)
+	{
+		LoadLayout(name);
+	}
+
 	public void OnRoomChanged(RoomController oldRoom, RoomController newRoom)
 	{
 		Log.Info("Room changed from " + (oldRoom == null ? "null" : oldRoom.Name) + " to " + (newRoom == null ? "null" : newRoom.Name));
-		if(oldRoom == null && newRoom != null)
+		if(Game.IsClient && oldRoom == null && newRoom != null)
 		{
 			LoadLayout(newRoom.Name);
 		}

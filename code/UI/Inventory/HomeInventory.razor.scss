@@ -21,14 +21,13 @@ HomeInventory {
     }
 
     .inventory-container {
-        width: 96%;
-        height: 90%;
+        flex-grow: 1;
         margin: 2%;
         padding: 8px;
         background-color: lightgrey;
         border-radius: 16px;
         //overflow-y: scroll;
-        //flex-wrap: wrap;
+        flex-wrap: wrap;
     }
 
     &.open {
@@ -39,9 +38,9 @@ HomeInventory {
 }
 
 HomeInventoryEntry {
-    aspect-ratio: 1;
     background-color: grey;
     width: 100px;
+    height: 100px;
     border-radius: 16px;
     margin: 4px;
     overflow: hidden;

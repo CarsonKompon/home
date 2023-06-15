@@ -3,7 +3,9 @@
   "Name": "Office Desk",
   "Cost": 250,
   "State": "Visible",
-  "Category": "Furniture",
+  "Categories": [
+    "furniture"
+  ],
   "Type": "Prop",
   "PhysicsType": "Keyframed",
   "Model": "models/sbox_props/office_desk/office_desk.vmdl",

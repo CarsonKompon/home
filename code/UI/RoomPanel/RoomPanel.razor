@@ -79,7 +79,7 @@
         if(layout == "") return;
         player.LastRoomName = layout;
         Cookie.SetString("home.last_room_name", layout);
-        player.LoadLayout(layout);
+        player.LoadLayoutClientRpc(To.Single(player), layout);
     }
 
     public void SaveLayout()

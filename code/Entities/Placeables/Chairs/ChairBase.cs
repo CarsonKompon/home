@@ -11,7 +11,7 @@ namespace Home;
 /// <summary>
 /// A placeable TV that you can queue media on
 /// </summary>
-[EditorModel("models/placeables/office_chair_01.vmdl")]
+[EditorModel("models/sbox_props/office_chair/office_chair.vmdl")]
 public partial class ChairBase : ModelEntity, IUse
 {
 
@@ -23,7 +23,7 @@ public partial class ChairBase : ModelEntity, IUse
     public override void Spawn()
     {
         base.Spawn();
-        SetModel("models/entities/office_chair_01.vmdl");
+        SetModel("models/sbox_props/office_chair/office_chair.vmdl");
         SetupPhysicsFromModel(PhysicsMotionType.Keyframed);
     }
 

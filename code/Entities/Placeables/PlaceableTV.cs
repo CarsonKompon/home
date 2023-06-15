@@ -23,10 +23,13 @@ public partial class PlaceableTV : ModelEntity, IUse
 
     public PlaceableTV()
     {
-        Video = new VideoPlayer();
-        Video.OnAudioReady = () => Video.PlayAudio(this);
+        if(Game.IsClient)
+        {
+            Video = new VideoPlayer();
+            Video.OnAudioReady = () => Video.PlayAudio(this);
+        }
 
-        ScreenMaterial = Material.Load("materials/arcade/arcade_screen.vmat");
+        ScreenMaterial = Material.Load("materials/arcade/arcade_screen.vmat").CreateCopy();
     }
 
     public override void Spawn()
@@ -53,8 +56,14 @@ public partial class PlaceableTV : ModelEntity, IUse
     public virtual bool OnUse(Entity user)
     {
         Game.AssertServer();
-        Video.Play("https://carsonk.net/content/archive/games/2021/Foddian-Game/Video1.mp4");
+        PlayVideo("https://www.youtube.com/watch?v=vQX6nPMkPWM");
         
         return false;
+    }
+
+    [ClientRpc]
+    public void PlayVideo(string url)
+    {
+        Video.Play(url);
     }
 }
