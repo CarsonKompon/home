@@ -56,27 +56,7 @@ public partial class HomePlaceable : GameResource
 
     private string PackageThumbnail = "";
     [HideInEditor] public string RealModel = "";
-    [HideInEditor] public Texture Texture
-    {
-        get {
-            if(_texture == null)
-            {
-                if(string.IsNullOrEmpty(ThumbnailOverride) && !string.IsNullOrEmpty(Model))
-                {
-                    _texture = SceneHelper.CreateModelThumbnail(Model);
-                }
-                else
-                {
-                    _texture = Texture.Load(ThumbnailOverride);
-                }
-            }
-            return _texture;
-        }
-        set {
-            _texture = value;
-        }
-    }
-    private Texture _texture;
+    [HideInEditor] public Texture Texture;
 
     private Package LoadedPackage;
 
@@ -99,7 +79,7 @@ public partial class HomePlaceable : GameResource
 
         InitFromPackage();
 	}
-
+    
     public async void InitFromPackage()
     {
         if(string.IsNullOrEmpty(PackageIdent)) return;

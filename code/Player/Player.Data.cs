@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using Home.Util;
 
 namespace Home;
 
@@ -68,6 +69,18 @@ public partial class HomePlayer
 	public void LoadPlayerDataClientRpc()
 	{
 		if(Game.LocalPawn is not HomePlayer player) return;
+
+		foreach(HomePlaceable placeable in HomePlaceable.All)
+		{
+			if(string.IsNullOrEmpty(placeable.ThumbnailOverride) && !string.IsNullOrEmpty(placeable.Model))
+			{
+				placeable.Texture = SceneHelper.CreateModelThumbnail(placeable.Model);
+			}
+			else
+			{
+				placeable.Texture = Texture.Load(placeable.ThumbnailOverride);
+			}
+		}
 
 		// Load player data from client data
 		HomeUploadData = FileSystem.Data.ReadAllText(Client.SteamId.ToString() + "/player.json");

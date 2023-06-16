@@ -152,7 +152,7 @@ namespace Home
 			}
 		}
 
-		[ConCmd.Server]
+		[ConCmd.Server("home_say")]
 		public static void SayMessage( string message )
 		{
 			Assert.NotNull( ConsoleSystem.Caller );
