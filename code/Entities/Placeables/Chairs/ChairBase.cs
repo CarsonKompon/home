@@ -29,9 +29,9 @@ public partial class ChairBase : ModelEntity, IUse
 
     public void SetUser(HomePlayer player)
     {
-        if(player.Controller is ArcadeControllerBase controller)
+        if(player.Controller is ChairController controller)
         {
-            NotificationPanel.AddEntry(To.Single(player), "🚫 You are already using an arcade machine.", "", 3);
+            NotificationPanel.AddEntry(To.Single(player), "🚫 You are already sitting in a chair.", "", 3);
             return;
         }
         ChairController chairController = new ChairController();
@@ -39,7 +39,6 @@ public partial class ChairBase : ModelEntity, IUse
         player.Controller = chairController;
         CurrentUser = player;
         
-        var attachment = GetAttachment("Seat");
         player.SetParent(this, "seat", SeatOffset);
     }
 

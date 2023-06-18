@@ -32,7 +32,13 @@
     "luke.office_flowers_2",
     "luke.office_plant",
     "titanovsky.christmas_tree",
-    "alex.lcd"
+    "alex.lcd",
+    "facepunch.trolley",
+    "carsonk.mediahelpers",
+    "frogpond.washingmachine",
+    "dan.froggychair",
+    "luke.plain_wardrobe",
+    "luke.minimal_wardrobe"
   ],
   "EditorReferences": null,
   "Metadata": {
@@ -155,7 +161,8 @@
       ]
     },
     "HttpAllowList": [
-      "https://www.youtube.com/"
+      "https://www.youtube.com/",
+      "https://kick.com/"
     ],
     "PackageSettings": [
       {

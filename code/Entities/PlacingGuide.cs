@@ -20,6 +20,11 @@ public class PlacingGuide : Entity
         if(tr.Hit)
         {
             player.PlacingPosition = tr.EndPosition;
+            var placeable = HomePlaceable.Find(player.Placing);
+            if(placeable != null)
+            {
+                player.PlacingPosition += placeable.OriginOffset.Length * tr.Normal;
+            }
             Vector3 surfaceUp = tr.Normal;
             Vector3 surfaceForward = Vector3.Cross(Vector3.Right, surfaceUp).Normal;
             Vector3 surfaceRight = Vector3.Cross(surfaceUp, surfaceForward).Normal;

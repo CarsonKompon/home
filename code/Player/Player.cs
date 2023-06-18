@@ -83,8 +83,6 @@ public partial class HomePlayer : AnimatedEntity
         // Load clothing from client data
         Clothing.LoadFromClient(client);
 		ClothingString = Clothing.Serialize();
-
-		
     }
 
     /// <summary>
@@ -406,7 +404,7 @@ public partial class HomePlayer : AnimatedEntity
         EnableHideInFirstPerson = true;
         EnableShadowInFirstPerson = true;
 
-        Clothing.DressEntity(this);
+        Dress();
 
         Game.AssertServer();
 
@@ -418,6 +416,12 @@ public partial class HomePlayer : AnimatedEntity
 
 		GameManager.Current?.MoveToSpawnpoint( this );
 		ResetInterpolation();
+	}
+
+	public void Dress()
+	{
+		Clothing.Deserialize(ClothingString);
+		Clothing.DressEntity(this);
 	}
 
 	public override void OnKilled()
@@ -483,7 +487,7 @@ public partial class HomePlayer : AnimatedEntity
 		}
 
 		// Room interactions
-		if(Room != null)
+		if(Room != null && Input.Down("menu"))
 		{
 			if(IsPlacing)
 			{
@@ -817,6 +821,26 @@ public partial class HomePlayer : AnimatedEntity
 		{
 			LoadLayout(newRoom.Name);
 		}
+	}
+
+	[ConCmd.Server("home_outfit")]
+	public static void ChangeOutfit(string outfit)
+	{
+		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+		player.ClothingString = outfit;
+		Log.Info("NEW OUTFIT");
+		Log.Info(player.ClothingString);
+		player.Dress();
+	}
+
+	[ConCmd.Server("home_playermodel")]
+	public static void ChangePlayerModel(string name)
+	{
+		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+		HomePlayermodel plymodel = HomePlayermodel.Find(name);
+		if(plymodel == null) return;
+		player.SetModel(plymodel.Model);
+		player.Dress();
 	}
 
 }

@@ -1,0 +1,15 @@
+{
+  "Title": "",
+  "Subtitle": "",
+  "Category": "Hat",
+  "SubCategory": "Head",
+  "Parent": null,
+  "Model": "models/humans/heads/frank/frank.vmdl",
+  "SkinMaterial": null,
+  "EyesMaterial": null,
+  "MaterialGroup": "",
+  "SlotsUnder": 0,
+  "SlotsOver": 0,
+  "HideBody": "Head",
+  "Icon": {}
+}

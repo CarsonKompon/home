@@ -1,16 +1,16 @@
 {
-  "Id": "missing_id",
-  "Name": "Missingname.",
-  "Cost": 0,
+  "Id": "shopping_cart_01",
+  "Name": "Shopping Cart",
+  "Cost": 500,
   "State": "Visible",
   "Categories": [
     "hardware"
   ],
   "Type": "Prop",
   "PhysicsType": "Keyframed",
-  "Model": null,
+  "Model": "models/sbox_props/trolley/trolley.vmdl",
   "ClassName": "",
-  "PackageIdent": "",
+  "PackageIdent": "facepunch.trolley",
   "ThumbnailOverride": "",
   "PlaceSound": null,
   "StashSound": null

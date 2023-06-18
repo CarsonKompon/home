@@ -1,0 +1,17 @@
+{
+  "Title": "",
+  "Subtitle": "",
+  "Category": "Hat",
+  "SubCategory": "Head",
+  "Parent": null,
+  "Model": "models/humans/heads/adam/adam.vmdl",
+  "SkinMaterial": null,
+  "EyesMaterial": null,
+  "MaterialGroup": "",
+  "SlotsUnder": "HeadTop, HeadBottom, Face",
+  "SlotsOver": "HeadTop, HeadBottom, Face",
+  "HideBody": "Head",
+  "Icon": {
+    "Path": "/clothing_icons/mean_head_2.png"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "Title": "HH",
+  "Subtitle": "",
+  "Category": "Skin",
+  "SubCategory": "Playermodel",
+  "Parent": null,
+  "Model": "models/playermodels/hhgregg/hhgregg.vmdl",
+  "SkinMaterial": null,
+  "EyesMaterial": null,
+  "MaterialGroup": "",
+  "SlotsUnder": "Skin",
+  "SlotsOver": "Chest, LeftArm, RightArm, LeftWrist, RightWrist",
+  "HideBody": "Head, Chest, Legs, Hands, Feet",
+  "Icon": {}
+}

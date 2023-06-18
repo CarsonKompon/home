@@ -1,0 +1,17 @@
+{
+  "Id": "washing_machine_01",
+  "Name": "Washing Machine",
+  "Cost": 400,
+  "State": "Visible",
+  "Categories": [
+    "electronics"
+  ],
+  "Type": "Prop",
+  "PhysicsType": "Keyframed",
+  "Model": "models/electronics/washing_machine/washingmachine.vmdl",
+  "ClassName": "",
+  "PackageIdent": "frogpond.washingmachine",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

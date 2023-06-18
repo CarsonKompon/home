@@ -8,9 +8,10 @@
   ],
   "Type": "Prop",
   "PhysicsType": "Keyframed",
+  "Bottom": "ZNegative",
   "Model": "models/sbox_props/tv/tv.vmdl",
   "ClassName": "",
-  "PackageIdent": "facepunch.tv",
+  "EntityPackage": "",
   "ThumbnailOverride": "",
   "PlaceSound": null,
   "StashSound": null

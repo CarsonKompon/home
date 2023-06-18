@@ -11,6 +11,11 @@
         <TextEntry onsubmit=@CheckSite Value:bind=@MediaUrl Tooltip="Media URL" Placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"></TextEntry>
         <button @ref="ButtonSubmit" class="btn" onclick=@PlayMedia>Submit</button>
     </div>
+    <div class="websites">
+        <div class="header">Supported Websites:</div>
+        <div class="website" onclick=@OpenYoutube>Youtube</div>
+        @* <div class="website" onclick=@OpenKick>Kick</div> *@
+    </div>
     <div class="search">
         <WebPanel @ref="WebPanel"></WebPanel>
     </div>
@@ -43,6 +48,18 @@
         UpdateButton();
     }
 
+    public void OpenYoutube()
+    {
+        MediaUrl = "https://www.youtube.com/";
+        CheckSite();
+    }
+
+    public void OpenKick()
+    {
+        MediaUrl = "https://kick.com/";
+        CheckSite();
+    }
+
     public void PlayMedia()
     {
         if(!ButtonSubmit.HasClass("can-press")) return;
@@ -55,7 +72,7 @@
 
     public void CheckSite()
     {
-        if(!MediaUrl.StartsWith("https://")) MediaUrl = "https://" + MediaUrl;
+        if(!MediaUrl.StartsWith("https://") && !MediaUrl.StartsWith("http://")) MediaUrl = "https://" + MediaUrl;
         WebPanel.Surface.Url = MediaUrl;
         PreviousUrl = MediaUrl;
     }
@@ -63,6 +80,7 @@
     public bool IsButtonValid()
     {
         if(MediaHelper.IsYoutubeUrl(MediaUrl)) return true;
+        if(MediaHelper.IsKickUrl(MediaUrl)) return true;
         if(MediaUrl.EndsWith(".mp4")) return true;
         if(MediaUrl.EndsWith(".webm")) return true;
         return false;

@@ -65,11 +65,7 @@ public partial class RoomController : Entity
                 SetState(RoomState.Vacant);
 
                 // Delete all the props
-                foreach(var ent in Entities)
-                {
-                    ent.Delete();
-                }
-                Entities.Clear();
+                DeleteAllProps();
             }
 
             LastUpdate = 0f;
@@ -102,6 +98,24 @@ public partial class RoomController : Entity
         Name = RoomOwner.LastRoomName;
 
         SetState(RoomState.Open);
+    }
+
+    public void DeleteAllProps()
+    {
+        Game.AssertServer();
+        
+        foreach(var ent in Entities)
+        {
+            if(ent.Components.Get<PlaceableComponent>() is PlaceableComponent component)
+			{
+				component.Destroy();
+			}
+            else
+            {
+                ent.Delete();
+            }
+        }
+        Entities.Clear();
     }
 
     public void RemoveOwner()
@@ -173,10 +187,7 @@ public partial class RoomController : Entity
         player.Room.Name = layout.Name;
 
         // Delete all the entities
-        foreach(var ent in player.Room.Entities)
-        {
-            ent.Delete();
-        }
+        player.Room.DeleteAllProps();
 
         // Create new entities
         foreach(var entry in layout.Entries)
@@ -211,11 +222,7 @@ public partial class RoomController : Entity
         player.Room.SetState(RoomState.Vacant);
 
         // Delete all the props
-        foreach(var ent in player.Room.Entities)
-        {
-            ent.Delete();
-        }
-        player.Room.Entities.Clear();
+        player.Room.DeleteAllProps();
 
         player.Room = null;
     }

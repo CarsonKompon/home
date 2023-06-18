@@ -1,0 +1,185 @@
+
+outfittab {
+    flex-grow: 1;
+
+    .avatar-editor {
+
+        
+        padding: 12px;
+        flex-direction: row;
+
+        > .canvas {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+    
+            ModelViewer {
+                flex-grow: 1;
+                background-color: #888;
+            }
+        }
+    
+        .sidebar {
+            flex-grow: 1;
+            flex-shrink: 1;
+            flex-direction: column;
+            gap: 4px;
+
+            .btns {
+                gap: 4px;
+            }
+
+            .btn {
+                flex-grow: 1;
+                flex-shrink: 1;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px;
+                background-color: rgba(#eee, 1);
+                transition: all 0.1s ease-in-out;
+                cursor: pointer;
+                &:hover {
+                    transform: scale(1.05);
+                    background-color: rgba(#eee, 0)
+                }
+            }
+        }
+
+        .preview {
+            flex-grow: 1;
+            flex-shrink: 0;
+            width: 50%;
+
+            AvatarHud {
+                flex-grow: 1;
+                flex-shrink: 0;
+            }
+        }
+    
+        .category-button {
+            font-size: 25px;
+        }
+    
+        .clothing {
+            justify-content: flex-start;
+            flex-grow: 1;
+            flex-shrink: 1;
+            overflow: scroll;
+
+            .header {
+                font-family: Poppins;
+                font-size: 32px;
+                font-weight: 500;
+                font-style: italic;
+                align-items: center;
+                
+                .header-text {
+                    text-transform: uppercase;
+                }
+            }
+
+            row {
+                flex-shrink: 0;
+            }
+
+            wrap {
+                flex-direction: row;
+                flex-grow: 1;
+                flex-shrink: 0;
+                flex-wrap: wrap;
+                gap: 2px;
+            }
+        }
+    }
+
+    .categories {
+        justify-content: space-evenly;
+        gap: 12px;
+
+        cell {
+            padding-left: 4px;
+            padding-right: 4px;
+            padding-top: 4px;
+            padding-bottom: 8px;
+            border-radius: 0px;
+            transition: all 0.25s ease-in-out;
+            background-color: rgba(black, 0);
+            color: black;
+            &.active {
+                border-radius: 8px;
+                background-color: black;
+                color: white;
+            }
+        }
+    }
+    
+    ClothingButton, PlayermodelButton
+    {
+        background-color: rgba(#eee, 1);
+        flex-grow: 1;
+        flex-shrink: 0;
+        height: 32px;
+        min-width: 32%;
+        max-width: 33%;
+        aspect-ratio: 1;
+        transition: all 0.1s ease-in-out;
+    
+        .image
+        {
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: absolute;
+            left: 1px;
+            right: 1px;
+            top: 1px;
+            bottom: 1px;
+        }
+    
+        .variations-icon
+        {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+        }
+
+        &:hover {
+            transform: scale(1.05);
+        }
+
+        &.active {
+            background-color: #e5b9ff;
+        }
+    }
+    
+    .avatar-editor .clothing-detail {
+        margin-left: 45px;
+        margin-top: 50px;
+        flex-direction: column;
+        pointer-events: all;
+    
+        .title {
+            font-size: 30px;
+            font-weight: lighter;
+            letter-spacing: 1px;
+        }
+    }
+    
+}
+
+
+column {
+    flex-direction: column;
+}
+
+row {
+    flex-direction: row;
+}

@@ -3,12 +3,15 @@
   "Name": "Mattress",
   "Cost": 80,
   "State": "Visible",
-  "Category": "Furniture",
+  "Categories": [
+    "furniture"
+  ],
   "Type": "Prop",
   "PhysicsType": "Keyframed",
+  "Bottom": "ZNegative",
   "Model": "models/sbox_props/mattress/mattress.vmdl",
   "ClassName": "",
-  "PackageIdent": "facepunch.mattress",
+  "EntityPackage": "",
   "ThumbnailOverride": "",
   "PlaceSound": null,
   "StashSound": null

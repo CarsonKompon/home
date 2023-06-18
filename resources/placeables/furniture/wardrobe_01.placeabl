@@ -1,0 +1,18 @@
+{
+  "Id": "wardrobe_01",
+  "Name": "Fancy Wood Wardrobe",
+  "Cost": 200,
+  "State": "Visible",
+  "Categories": [
+    "furniture"
+  ],
+  "Type": "Prop",
+  "PhysicsType": "Keyframed",
+  "Bottom": "ZNegative",
+  "Model": "models/items/fancywooden_set/fancywood_wardrobe.vmdl",
+  "ClassName": "",
+  "PackageIdent": "",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

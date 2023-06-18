@@ -82,6 +82,18 @@ public partial class HomePlayer
 			}
 		}
 
+		foreach(HomePlayermodel playermodel in HomePlayermodel.All)
+		{
+			if(string.IsNullOrEmpty(playermodel.ThumbnailOverride) && !string.IsNullOrEmpty(playermodel.Model))
+			{
+				playermodel.Texture = SceneHelper.CreateModelThumbnail(playermodel.Model);
+			}
+			else
+			{
+				playermodel.Texture = Texture.Load(playermodel.ThumbnailOverride);
+			}
+		}
+
 		// Load player data from client data
 		HomeUploadData = FileSystem.Data.ReadAllText(Client.SteamId.ToString() + "/player.json");
 		if(HomeUploadData == null)

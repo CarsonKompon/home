@@ -84,10 +84,16 @@ public partial class PlaceableTV : ModelEntity, IUse
     {
         if(MediaHelper.IsYoutubeUrl(url))
         {
-            var whoa = await MediaHelper.GetUrlFromYoutubeUrl(url);
-            Video.Play(whoa);
+            var streamUrl = await MediaHelper.GetUrlFromYoutubeUrl(url);
+            Video.Play(streamUrl);
         }
-        else if(url.EndsWith(".mp4") || url.EndsWith(".webm"))
+        else if(MediaHelper.IsKickUrl(url))
+        {
+            var streamUrl = await MediaHelper.GetUrlFromKickUrl(url);
+            Log.Info(streamUrl);
+            Video.Play(streamUrl);
+        }
+        else
         {
             Video.Play(url);
         }

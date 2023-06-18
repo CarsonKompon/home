@@ -76,4 +76,23 @@ public partial class PlaceableComponent : EntityComponent
         }
     }
 
+    public void Destroy()
+    {
+        Game.AssertServer();
+
+        foreach(var child in Entity.Children)
+        {
+            if(child is HomePlayer player)
+            {
+                if(player.Controller is not HomeWalkController)
+                {
+                    player.Controller = new HomeWalkController();
+                }
+            }
+            child.SetParent(null, null, Transform.Zero);
+        }
+
+        Entity.Delete();
+    }
+
 }

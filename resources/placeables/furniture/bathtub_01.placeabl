@@ -3,12 +3,15 @@
   "Name": "Bathtub",
   "Cost": 100,
   "State": "Visible",
-  "Category": "Furniture",
+  "Categories": [
+    "furniture"
+  ],
   "Type": "Prop",
   "PhysicsType": "Keyframed",
+  "Bottom": "ZNegative",
   "Model": "models/sbox_props/bathtub_a/bathtub_a.vmdl",
   "ClassName": "",
-  "PackageIdent": "facepunch.bathtub",
+  "EntityPackage": "",
   "ThumbnailOverride": "",
   "PlaceSound": null,
   "StashSound": null

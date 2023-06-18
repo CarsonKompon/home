@@ -12,6 +12,7 @@ namespace Home;
 public class AvatarHud : ScenePanel
 {
     public bool FullBody {get;set;} = false;
+    public string ClothingString {get;set;} = "";
     private SceneModel AvatarModel;
     private List<SceneModel> ClothingObjects = new();
 
@@ -61,11 +62,23 @@ public class AvatarHud : ScenePanel
             return;
         }
 
-        AvatarModel.SetMaterialGroup("Skin01");
         foreach(var model in ClothingObjects)
         {
             model?.Delete();
         }
+
+        if(ClothingString != "")
+        {
+            ClothingContainer clothingFromString = new();
+            clothingFromString.Deserialize(ClothingString);
+            if(clothingFromString != null)
+            {
+                ClothingObjects = clothingFromString.DressSceneObject(AvatarModel);
+            }
+            return;
+        }
+
+        AvatarModel.SetMaterialGroup("Skin01");
 
         ClothingContainer clothing = new();
         clothing.Deserialize((Game.LocalPawn as HomePlayer)?.ClothingString ?? "");

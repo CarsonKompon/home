@@ -231,7 +231,7 @@ public partial class HomeGame : GameManager
 
             case PlaceableType.PackageEntity:
                 // Create the package entity
-				Entity packageEntity = await SpawnPackage(placeable.PackageIdent, position, rotation, scale);
+				Entity packageEntity = await SpawnPackage(placeable.EntityPackage, position, rotation, scale);
 				packageEntity.Transmit = TransmitType.Always;
 
 				// Add the component

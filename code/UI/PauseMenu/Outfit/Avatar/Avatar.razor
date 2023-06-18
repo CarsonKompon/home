@@ -1,0 +1,88 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Tests;
+@namespace Home
+
+<root class="avatar-editor grow page">
+
+    <column class="sidebar with-gaps">
+
+        <row class="categories with-gaps">
+
+            @foreach(var category in Categories)
+            {
+                var c = CurrentCategory == category.category ? "active" : "";
+                <cell class="glass with-grow with-centered with-click category-button @c" Tooltip=@category.title @onmousedown=@(() => ChangeCategory(category.category))>
+                    <i>@category.icon</i>
+                </cell>
+            }
+
+        </row>
+
+        <column @ref="ClothingCanvas" class="with-scrolling with-shrink with-grow with-gaps clothing" style="justify-content:flex-start;">
+
+            @foreach( var group in ItemGroups )
+            {
+                <row class="header with-gaps">
+                    @if ( displayingVariations )
+                    {
+                        <cell class="back glass with-centered with-click" style="width:80px;" @onmousedown=@(() => ChangeCategory(CurrentCategory))><i>arrow_back</i></cell>
+                    }
+                    <cell class="header-text glass with-grow is-heading"><div class="text-heading">@group.subcategory</div></cell>
+     
+                </row>
+
+                <wrap class="with-gaps">
+
+                    @foreach( var item in group.clothing )
+                    {
+                        <ClothingButton class="glass with-click" HasVariations=@(!displayingVariations && HasVariations(item)) Clothing=@item />
+                    }
+
+                </wrap>
+            }
+
+            @* PLAYERMODELS *@
+            @if(ItemGroups.Count > 0 && ItemGroups[0].subcategory == "Skin")
+            {
+                <row class="header with-gaps">
+                    <cell class="header-text glass with-grow is-heading"><div class="text-heading">Playermodel</div></cell>
+     
+                </row>
+
+                <wrap class="with-gaps">
+                    @foreach(var plymodel in HomePlayermodel.All)
+                    {
+                        <PlayermodelButton class="glass with-click" Playermodel=@plymodel />
+                    }
+                </wrap>
+            }
+
+        </column>
+
+        <row class="btns with-gaps">
+            <div class="btn glass with-click with-padding with-grow" @onclick=@SaveChanges>
+                <cell><i>exit_to_app</i></cell>
+                <cell class="text-title">Save Changes</cell>
+            </div>
+            <div class="btn glass with-click with-padding" @onclick=@CancelChanges>
+                <cell><i>restore</i></cell>
+                <cell>Revert Changes</cell>
+            </div>
+        </row>
+
+	</column>
+
+    @* @if(selectedClothing != null)
+    {
+        <div class="clothing-detail">
+            <panel class="title">@selectedClothing.Title</panel>
+            <panel class="subtitle">@selectedClothing.Subtitle</panel>
+        </div>
+    } *@
+
+    <column class="preview">
+        <AvatarHud FullBody=@(true) ClothingString=@PreviewClothing />
+    </column>
+
+</root>

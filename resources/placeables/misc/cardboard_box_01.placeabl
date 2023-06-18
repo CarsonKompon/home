@@ -8,9 +8,10 @@
   ],
   "Type": "Prop",
   "PhysicsType": "Keyframed",
+  "Bottom": "ZNegative",
   "Model": "models/sbox_props/cardboard_box/cardboard_box.vmdl",
   "ClassName": "",
-  "PackageIdent": "facepunch.cardboard_box",
+  "EntityPackage": "",
   "ThumbnailOverride": "",
   "PlaceSound": null,
   "StashSound": null

@@ -14,7 +14,7 @@ public partial class TestCrashNPC : BaseNPC
 {
 
     public override string DisplayName => "Press E to crash";
-    protected override string ClothingString => "[]";
+    protected override string ClothingString => "[{\"id\":-293856662}]";
 
     public override void Spawn()
     {

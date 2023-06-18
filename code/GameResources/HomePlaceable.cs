@@ -35,13 +35,14 @@ public partial class HomePlaceable : GameResource
 
     public PlaceableType Type { get; set; } = PlaceableType.Prop;
     public PhysicsMotionType PhysicsType { get; set; } = PhysicsMotionType.Keyframed;
+    public BottomDirection Bottom { get; set; } = BottomDirection.ZNegative;
 
     [ResourceType("vmdl")]
     public string Model { get; set; }
 
     public string ClassName { get; set; } = "";
 
-    public string PackageIdent { get; set; } = "";
+    public string EntityPackage { get; set; } = "";
 
     [ResourceType("png")]
     public string ThumbnailOverride { get; set; } = "";
@@ -54,9 +55,12 @@ public partial class HomePlaceable : GameResource
     [ResourceType("vsnd")]
     public string StashSound { get; set; }
 
+
+
     private string PackageThumbnail = "";
     [HideInEditor] public string RealModel = "";
     [HideInEditor] public Texture Texture;
+    [HideInEditor] public Vector3 OriginOffset = Vector3.Zero;
 
     private Package LoadedPackage;
 
@@ -72,51 +76,8 @@ public partial class HomePlaceable : GameResource
 	{
 		base.PostLoad();
 
-        // if(!_all.Contains(this) && State != PlaceableState.Disabled)
-        // {
-        //     _all.Add(this);
-        // }
-
-        InitFromPackage();
+        FindOriginOffset();
 	}
-    
-    public async void InitFromPackage()
-    {
-        if(string.IsNullOrEmpty(PackageIdent)) return;
-
-        LoadedPackage = await Package.FetchAsync(PackageIdent, false);
-        LoadedPackage.IsMounted();
-        //PackageThumbnail = LoadedPackage.Thumb;
-
-        if(string.IsNullOrEmpty(Model))
-        {
-            var model = LoadedPackage.GetMeta("SingleAssetSource", "");
-            if(!model.EndsWith(".vmdl")) model = LoadedPackage.GetMeta("PrimaryAsset", "");
-            if(model.EndsWith(".vmdl"))
-            {
-                RealModel = model;
-            }
-        }
-
-    
-        // if(string.IsNullOrWhiteSpace(Model))
-        // {
-        //     var className = LoadedPackage.GetMeta( "PrimaryAsset", "" );
-        //     if(string.IsNullOrEmpty(className)) return;
-            
-        //     await LoadedPackage.MountAsync( false );
-            
-        //     var entityType = TypeLibrary.GetType<Entity>( className )?.TargetType;
-        //     if(entityType == null) return;
-        //     var entity = TypeLibrary.Create<Entity>( entityType );
-        //     if(entity == null) return;
-        //     if(entity is ModelEntity modelEntity)
-        //     {
-        //         Model = modelEntity.GetModelName();
-        //     }
-        //     entity.Delete();
-        // }
-    }
 
     public static HomePlaceable Find(string id)
     {
@@ -136,5 +97,42 @@ public partial class HomePlaceable : GameResource
     public static HomePlaceable FindByCost(int cost)
     {
         return All.Find(p => p.Cost <= cost);
+    }
+
+    private void FindOriginOffset()
+    {
+        OriginOffset = Vector3.Zero;
+        Model model = Sandbox.Model.Load(Model);
+        switch(Bottom)
+        {
+            case BottomDirection.ZNegative:
+                OriginOffset = Vector3.Zero.WithZ(model.Bounds.Mins.z);
+                break;
+            case BottomDirection.ZPositive:
+                OriginOffset = Vector3.Zero.WithZ(model.Bounds.Maxs.z);
+                break;
+            case BottomDirection.XNegative:
+                OriginOffset = Vector3.Zero.WithX(model.Bounds.Mins.x);
+                break;
+            case BottomDirection.XPositive:
+                OriginOffset = Vector3.Zero.WithX(model.Bounds.Maxs.x);
+                break;
+            case BottomDirection.YNegative:
+                OriginOffset = Vector3.Zero.WithY(model.Bounds.Mins.y);
+                break;
+            case BottomDirection.YPositive:
+                OriginOffset = Vector3.Zero.WithY(model.Bounds.Maxs.y);
+                break;
+        }
+    }
+
+    public enum BottomDirection
+    {
+        XPositive,
+        XNegative,
+        YPositive,
+        YNegative,
+        ZPositive,
+        ZNegative
     }
 }
