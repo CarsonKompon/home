@@ -55,7 +55,6 @@
 
     public void OnPhysicsEnabledChanged(bool enabled)
     {
-        Log.Info("fr?");
         ConsoleSystem.Run("home_set_placeable_physics", Entity.NetworkIdent, enabled);
         
     }

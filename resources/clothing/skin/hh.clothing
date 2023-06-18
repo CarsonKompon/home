@@ -9,7 +9,7 @@
   "EyesMaterial": null,
   "MaterialGroup": "",
   "SlotsUnder": "Skin",
-  "SlotsOver": "Chest, LeftArm, RightArm, LeftWrist, RightWrist",
+  "SlotsOver": "HeadTop, HeadBottom, Face, Chest, LeftArm, RightArm, LeftWrist, RightWrist, LeftHand, RightHand, LeftFoot, RightFoot, EyeBrows, Eyes, Ears, Lips, Teeth",
   "HideBody": "Head, Chest, Legs, Hands, Feet",
   "Icon": {}
 }

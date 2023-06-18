@@ -833,8 +833,6 @@ public partial class HomePlayer : AnimatedEntity
 	{
 		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
 		player.ClothingString = outfit;
-		Log.Info("NEW OUTFIT");
-		Log.Info(player.ClothingString);
 		player.Dress();
 	}
 

@@ -8,8 +8,8 @@
   "SkinMaterial": null,
   "EyesMaterial": null,
   "MaterialGroup": "",
-  "SlotsUnder": 0,
-  "SlotsOver": 0,
+  "SlotsUnder": "HeadTop, HeadBottom, Face",
+  "SlotsOver": "HeadTop, HeadBottom, Face, Glasses, EyeBrows, Eyes, Ears, Lips, Chin, Teeth",
   "HideBody": "Head",
   "Icon": {}
 }

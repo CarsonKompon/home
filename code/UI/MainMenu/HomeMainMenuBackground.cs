@@ -7,13 +7,16 @@ namespace Home;
 public partial class HomeMainMenuBackground : Panel
 {
     public int CurrentImage = 0;
-    public int ImageCount = 3;
+    public int ImageCount = 4;
 
     public RealTimeSince TimeUntilNext = 5;
 
     public HomeMainMenuBackground()
     {
         AddClass( "background" );
+
+        Random rand = new Random();
+        CurrentImage = rand.Int(0, ImageCount);
     }
 
     public override void Tick()
@@ -22,7 +25,6 @@ public partial class HomeMainMenuBackground : Panel
 
         if(TimeUntilNext >= 5f)
         {
-            Log.Info("wooop");
             foreach(var child in Children)
             {
                 child.Delete();

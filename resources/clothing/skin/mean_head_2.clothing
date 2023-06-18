@@ -9,7 +9,7 @@
   "EyesMaterial": null,
   "MaterialGroup": "",
   "SlotsUnder": "HeadTop, HeadBottom, Face",
-  "SlotsOver": "HeadTop, HeadBottom, Face",
+  "SlotsOver": "HeadTop, HeadBottom, Face, Glasses, EyeBrows, Eyes, Ears, Lips, Chin, Teeth",
   "HideBody": "Head",
   "Icon": {
     "Path": "/clothing_icons/mean_head_2.png"

@@ -90,7 +90,6 @@ public partial class PlaceableTV : ModelEntity, IUse
         else if(MediaHelper.IsKickUrl(url))
         {
             var streamUrl = await MediaHelper.GetUrlFromKickUrl(url);
-            Log.Info(streamUrl);
             Video.Play(streamUrl);
         }
         else

@@ -6,7 +6,7 @@ ArcadeScreenTetris
     align-items: center;
     gap: 10px;
 
-    .score-panel, .high-score-panel
+    .score-panel, .level-panel, .high-score-panel
     {
         position: absolute;
         font-family: Poppins;
@@ -16,6 +16,15 @@ ArcadeScreenTetris
     .score-panel
     {
         bottom: 6px;
+        left: 6px;
+        gap: 2px;
+        font-size: 10px;
+    }
+
+    .level-panel
+    {
+        bottom: 6px;
+        right: 6px;
         gap: 2px;
         font-size: 10px;
     }
@@ -66,7 +75,7 @@ ArcadeScreenTetris
             opacity: 0;
         }
 
-        &.active
+        &.active, &.current
         {
             &.t-1
             {

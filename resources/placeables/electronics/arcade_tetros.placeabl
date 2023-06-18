@@ -1,7 +1,7 @@
 {
   "Id": "arcade_tetros",
   "Name": "Tetros Arcade Machine",
-  "Cost": 10000000,
+  "Cost": 1000000,
   "State": "Visible",
   "Categories": [
     "electronics",

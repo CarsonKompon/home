@@ -22,7 +22,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     const int QUEUE_LENGTH = 5;
     [Net] public BlockType HeldPiece {get; set;} = BlockType.Empty;
     [Net] public int Level {get; set;} = 1;
-
+    [Net] public int LinesNeeded {get; set;} = 10;
     [Net] private List<BlockType> GrabBag {get; set;} = new List<BlockType>();
     [Net] private List<BlockType> Queue {get; set;}
     
@@ -37,7 +37,6 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     [Net, Predicted] public bool JustHeld {get; set;} = false;
     [Net, Predicted] public int Combo {get; set;} = -1;
     private RealTimeSince LastUpdate = 0f;
-    public float UpdateInterval = 0.2f;
 
     public ArcadeMachineTetris()
     {
@@ -79,6 +78,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
         Score = 0;
         Combo = -1;
         Level = 1;
+        LinesNeeded = 10;
 
         ShowAll();
 
@@ -112,8 +112,8 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     [GameEvent.Tick.Server]
     public void Tick()
     {
-        var interval = UpdateInterval;
-        if(FastDrop) interval /= 4f;
+        var interval = GetWaitTime();
+        if(FastDrop) interval = MathF.Min(0.04f, interval / 4f);
         if(InUse && LastUpdate > interval)
         {
             if(CurrentPiece == BlockType.Empty)
@@ -142,7 +142,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
             LastUpdate = 0f;
             if(CheckPieceCollision(CurrentPiece, CurrentPieceRotation, new Vector2(CurrentPieceX, CurrentPieceY + 1)))
             {
-                LastUpdate = -UpdateInterval/4;
+                LastUpdate = -GetWaitTime()/4;
             }
         }
     }
@@ -158,12 +158,6 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
 
         var block = GrabBag[0];
         GrabBag.RemoveAt(0);
-
-        Log.Info("grab bag:");
-        foreach(var b in GrabBag)
-        {
-            Log.Info(b.ToString());
-        }
 
         UpdateNextPieces();
         return block;
@@ -357,6 +351,14 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
             {
                 Score += 50 * (Combo * Level);
             }
+            LinesNeeded -= lines;
+            if(LinesNeeded <= 0 && Level < 20)
+            {
+                Level += 1;
+                if(Level >= 10 && Level <= 15) LinesNeeded += 100;
+                else if(Level > 15) LinesNeeded += 100 + ((Level - 15) * 10);
+                else LinesNeeded += Level * 10;
+            }
         }
         else
         {
@@ -403,6 +405,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
         }
         CurrentPieceY -= 1;
         PlacePiece();
+        LastUpdate = GetWaitTime()/4f * 3f;
     }
 
     public void Hold()
@@ -426,6 +429,39 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
         JustHeld = true;
         Sound.FromEntity("tetros_hold", this);
         UpdateHeldPiece();
+        UpdatePlayer();
+    }
+
+    public float GetWaitTime()
+    {
+        switch(Level)
+        {
+            case 0: return 0.85f;
+            case 1: return 0.8f;
+            case 2: return 0.72f;
+            case 3: return 0.63f;
+            case 4: return 0.55f;
+            case 5: return 0.47f;
+            case 6: return 0.38f;
+            case 7: return 0.3f;
+            case 8: return 0.22f;
+            case 9: return 0.13f;
+            case 10:
+            case 11:
+            case 12:
+                return 0.1f;
+            case 13:
+            case 14:
+            case 15:
+                return 0.08f;
+            case 16:
+            case 17:
+            case 18:
+                return 0.07f;
+            case 19: return 0.06f;
+            case 20: return 0.05f;
+            default: return 0.01f;
+        }
     }
 
 }

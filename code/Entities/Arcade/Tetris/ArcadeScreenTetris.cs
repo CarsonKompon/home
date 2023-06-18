@@ -11,6 +11,7 @@ public partial class ArcadeScreenTetris : WorldPanel
 {
     public Label ScoreLabel;
     public Label HighScoreLabel;
+    public Label LevelLabel;
 
     public Panel Board {get; set;}
     public Panel[] Blocks {get; set;} = new Panel[200];
@@ -31,6 +32,10 @@ public partial class ArcadeScreenTetris : WorldPanel
         var scorePanel = Add.Panel("score-panel");
         scorePanel.Add.Label("Score:", "header");
         ScoreLabel = scorePanel.Add.Label("0", "score");
+
+        var levelPanel = Add.Panel("level-panel");
+        levelPanel.Add.Label("Level:", "header");
+        LevelLabel = levelPanel.Add.Label("0", "level");
 
         var highScorePanel = Add.Panel("high-score-panel");
         highScorePanel.Add.Label("High Score:", "header");
@@ -112,6 +117,7 @@ public partial class ArcadeScreenTetris : WorldPanel
             Blocks[i].SetClass("active t-" + val.ToString(), val != 0);
         }
         ScoreLabel.Text = Machine.Score.ToString();
+        LevelLabel.Text = Machine.Level.ToString();
     }
 
     public void UpdatePlayer(ArcadeMachineTetris.BlockType blockType, Vector2 pos, int rotation)
@@ -196,7 +202,6 @@ public partial class ArcadeScreenTetris : WorldPanel
 
     public void HideAll()
     {
-        Log.Info("Hiding all");
         var panelList = new List<Panel>();
         panelList.AddRange(CurrentBlocks);
         panelList.AddRange(GhostBlocks);
