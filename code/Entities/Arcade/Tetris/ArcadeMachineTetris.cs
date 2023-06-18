@@ -20,11 +20,12 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     public enum BlockType { Empty, I, O, T, S, Z, J, L };
     const int BOARD_WIDTH = 10;
     const int QUEUE_LENGTH = 5;
-    [Net, Predicted]  List<BlockType> Queue {get; set;} = new List<BlockType>();
     [Net] public BlockType HeldPiece {get; set;} = BlockType.Empty;
+    [Net] public int Level {get; set;} = 1;
 
     [Net] private List<BlockType> GrabBag {get; set;} = new List<BlockType>();
-
+    [Net] private List<BlockType> Queue {get; set;}
+    
     [Net] public List<BlockType> Board {get; set;}
     [Net] public BlockType CurrentPiece {get; set;} = new BlockType();
     [Net] public long Score {get; set;} = 0;
@@ -33,6 +34,8 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     [Net, Predicted] public int CurrentPieceY {get; set;}
     [Net, Predicted] public int CurrentPieceRotation {get; set;} = 0;
     [Net, Predicted] public bool FastDrop {get; set;} = false;
+    [Net, Predicted] public bool JustHeld {get; set;} = false;
+    [Net, Predicted] public int Combo {get; set;} = -1;
     private RealTimeSince LastUpdate = 0f;
     public float UpdateInterval = 0.2f;
 
@@ -59,6 +62,12 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
         Screen.Transform = screenPos;
     }
 
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        if(Game.IsClient) Screen?.Delete();
+    }
+
     public override void StartGame()
     {
         base.StartGame();
@@ -67,8 +76,15 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
             Queue.Add(GetRandomBlock());
         }
 
+        Score = 0;
+        Combo = -1;
+        Level = 1;
+
+        ShowAll();
+
         UpdateBoard();
         UpdateNextPieces();
+        UpdateHeldPiece();
     }
 
     public override void EndGame()
@@ -82,10 +98,13 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
         {
             Board.Add(BlockType.Empty);
         }
+        GrabBag = new List<BlockType>();
         Queue = new List<BlockType>();
         HeldPiece = BlockType.Empty;
         Score = 0;
         UpdateBoard();
+
+        HideAll();
 
         base.EndGame();
     }
@@ -99,7 +118,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
         {
             if(CurrentPiece == BlockType.Empty)
             {
-                CurrentPiece = GetRandomBlock();
+                CurrentPiece = GetPieceFromQueue();
                 CurrentPieceX = 5;
                 CurrentPieceY = -2;
                 CurrentPieceRotation = 0;
@@ -116,16 +135,21 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
                 else if(FastDrop)
                 {
                     Sound.FromEntity("tetros_move", this).SetPitch(1.5f);
+                    Score += 1;
                 }
                 UpdatePlayer();
             }
             LastUpdate = 0f;
+            if(CheckPieceCollision(CurrentPiece, CurrentPieceRotation, new Vector2(CurrentPieceX, CurrentPieceY + 1)))
+            {
+                LastUpdate = -UpdateInterval/4;
+            }
         }
     }
 
     public BlockType GetRandomBlock()
     {
-        if(GrabBag.Count == 0)
+        if(GrabBag.Count < QUEUE_LENGTH)
         {
             GrabBag = new List<BlockType> { BlockType.I, BlockType.O, BlockType.T, BlockType.S, BlockType.Z, BlockType.J, BlockType.L };
             // Shuffle the grab bag
@@ -134,7 +158,22 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
 
         var block = GrabBag[0];
         GrabBag.RemoveAt(0);
+
+        Log.Info("grab bag:");
+        foreach(var b in GrabBag)
+        {
+            Log.Info(b.ToString());
+        }
+
         UpdateNextPieces();
+        return block;
+    }
+
+    public BlockType GetPieceFromQueue()
+    {
+        var block = Queue[0];
+        Queue.RemoveAt(0);
+        Queue.Add(GetRandomBlock());
         return block;
     }
 
@@ -194,6 +233,18 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
         }
     }
 
+    [ClientRpc]
+    public void HideAll()
+    {
+        Screen?.HideAll();
+    }
+
+    [ClientRpc]
+    public void ShowAll()
+    {
+        Screen?.ShowAll();
+    }
+
     public bool CheckPieceCollision(BlockType block, int rot, Vector2 pos)
     {
         var piece = TetrisShapes.GetShape(block, rot);
@@ -242,6 +293,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
                 }
             }
         }
+        JustHeld = false;
         Sound.FromEntity("tetros_place", this);
         CurrentPiece = BlockType.Empty;
         CheckLine();
@@ -249,6 +301,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
 
     private void CheckLine()
     {
+        int lines = 0;
         for(int y=0; y<20; y++)
         {
             bool line = true;
@@ -277,8 +330,37 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
                         Board[pos] = Board[prevPos];
                     }
                 }
-                Score += 100;
+                lines++;
             }
+        }
+        if(lines > 0)
+        {
+            Sound.FromEntity("tetros_line", this).SetPitch(1f + (MathF.Max(0, Combo) * (1.0f/12.0f)));
+            Combo += 1;
+            switch(lines)
+            {
+                case 1:
+                    Score += 100 * Level;
+                    break;
+                case 2:
+                    Score += 300 * Level;
+                    break;
+                case 3:
+                    Score += 500 * Level;
+                    break;
+                case 4:
+                    Sound.FromEntity("tetros_tetros", this);
+                    Score += 800 * Level;
+                    break;
+            }
+            if(Combo > 0)
+            {
+                Score += 50 * (Combo * Level);
+            }
+        }
+        else
+        {
+            Combo = -1;
         }
         UpdateBoard();
     }
@@ -317,6 +399,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
         while(!CheckPieceCollision(CurrentPiece, CurrentPieceRotation, new Vector2(CurrentPieceX, CurrentPieceY)))
         {
             CurrentPieceY += 1;
+            Score += 2;
         }
         CurrentPieceY -= 1;
         PlacePiece();
@@ -324,6 +407,8 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
 
     public void Hold()
     {
+        if(JustHeld) return;
+
         if(HeldPiece == BlockType.Empty)
         {
             HeldPiece = CurrentPiece;
@@ -338,6 +423,8 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
         CurrentPieceX = 5;
         CurrentPieceY = -2;
         CurrentPieceRotation = 0;
+        JustHeld = true;
+        Sound.FromEntity("tetros_hold", this);
         UpdateHeldPiece();
     }
 

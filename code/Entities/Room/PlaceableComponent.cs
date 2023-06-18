@@ -45,7 +45,7 @@ public partial class PlaceableComponent : EntityComponent
         if(Game.IsServer && Game.Clients.FirstOrDefault(x => x.SteamId == OwnerId)?.Pawn is HomePlayer player)
         {
             StashEntry entry = player.Stash.FirstOrDefault(x => x.Id == PlaceableId);
-            entry.Used--;
+            if(entry.Used > 0) entry.Used--;
         }
 
         base.OnDeactivate();

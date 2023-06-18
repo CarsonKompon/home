@@ -103,7 +103,7 @@ public partial class RoomController : Entity
     public void DeleteAllProps()
     {
         Game.AssertServer();
-        
+
         foreach(var ent in Entities)
         {
             if(ent.Components.Get<PlaceableComponent>() is PlaceableComponent component)
@@ -116,6 +116,12 @@ public partial class RoomController : Entity
             }
         }
         Entities.Clear();
+
+        if(RoomOwner == null) return;
+        foreach(var item in RoomOwner.Stash)
+        {
+            item.Used = 0;
+        }
     }
 
     public void RemoveOwner()
