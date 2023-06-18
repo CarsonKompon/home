@@ -4,13 +4,47 @@ ArcadeScreenTetris
     background-color: pink;
     justify-content: center;
     align-items: center;
+    gap: 10px;
+
+    .score-panel, .high-score-panel
+    {
+        position: absolute;
+        font-family: Poppins;
+    }
+
 
     .score-panel
     {
-        position: absolute;
-        top: 6px;
-        left: 6px;
+        bottom: 6px;
         gap: 2px;
+        font-size: 10px;
+    }
+
+    .high-score-panel
+    {
+        top: 10px;
+        gap: 2px;
+        font-size: 8px;
+    }
+
+    .left-panel, .right-panel
+    {
+        width: 64px;
+        height: 80%;
+        background-color: #0000004b;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding-top: 2px;
+        padding-bottom: 4px;
+
+        .header
+        {
+            width: 100%;
+            text-align: center;
+            font-family: Poppins;
+            font-size: 10px;
+        }
     }
 
     .board
@@ -19,16 +53,108 @@ ArcadeScreenTetris
         height: 200px;
         background-color: mediumaquamarine;
         flex-wrap: wrap;
+    }
 
-        .block
+    .block
+    {
+        width: 10px;
+        height: 10px;
+        border: solid 1px rgba(black, 0.05);
+
+        &.active
         {
-            width: 10px;
-            height: 10px;
-
-            &.occupied
+            &.t-1
             {
                 background: radial-gradient(rgb(255, 255, 255) 0%, rgb(100, 155, 255) 100%);
                 border: solid 1px rgb(100, 155, 255);
+            }
+
+            &.t-2
+            {
+                background: radial-gradient(rgb(255, 255, 255) 0%, rgb(167, 100, 255) 100%);
+                border: solid 1px rgb(167, 100, 255);
+            }
+
+            &.t-3
+            {
+                background: radial-gradient(rgb(255, 255, 255) 0%, rgb(255, 100, 159) 100%);
+                border: solid 1px rgb(255, 100, 159);
+            }
+
+            &.t-4
+            {
+                background: radial-gradient(rgb(255, 255, 255) 0%, rgb(100, 255, 255) 100%);
+                border: solid 1px rgb(100, 255, 255);
+            }
+
+            &.t-5
+            {
+                background: radial-gradient(rgb(255, 255, 255) 0%, rgb(100, 255, 113) 100%);
+                border: solid 1px rgb(100, 255, 113);
+            }
+
+            &.t-6
+            {
+                background: radial-gradient(rgb(255, 255, 255) 0%, rgb(200, 211, 104) 100%);
+                border: solid 1px rgb(200, 211, 104);
+            }
+
+            &.t-7
+            {
+                background: radial-gradient(rgb(255, 255, 255) 0%, rgb(255, 131, 100) 100%);
+                border: solid 1px rgb(255, 131, 100);
+            }
+        }
+
+        &.current
+        {
+            position: absolute;
+            background: radial-gradient(rgb(255, 255, 255) 0%, #64ffff);
+            border: solid 1px #64ffff;
+        }
+
+        &.ghost
+        {
+            position: absolute;
+            background: radial-gradient(rgb(255, 255, 255) 0%, #868686 100%);
+            border: solid 1px #868686;
+            opacity: 0.5;
+        }
+
+        &.held
+        {
+            transform: translate(20px 20px);
+        }
+    }
+
+    .holding
+    {
+        aspect-ratio: 1;
+        width: 80%;
+        background-color: rgba(black, 0.5);
+    }
+
+    .next
+    {
+        aspect-ratio: 1;
+        width: 80%;
+        background-color: rgba(black, 0.5);
+        
+
+        .block
+        {
+            position: absolute;
+            transform: translate(15px 15px);
+        }
+
+        &.small
+        {
+            width: 50%;
+            background-color: rgba(black, 0.5);
+
+            .block
+            {
+                transform: translate(5px 5px);
             }
         }
     }

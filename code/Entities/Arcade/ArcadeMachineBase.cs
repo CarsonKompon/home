@@ -47,6 +47,7 @@ public partial class ArcadeMachineBase : ModelEntity, IUse
         var arcadeController = TypeLibrary.Create<ArcadeControllerBase>(type);
         arcadeController.ArcadeMachine = this;
         player.Controller = arcadeController;
+        Log.Info(arcadeController);
         StartGame();
     }
 
@@ -54,12 +55,13 @@ public partial class ArcadeMachineBase : ModelEntity, IUse
     {
         if(CurrentUser == null) return;
         
+        EndGame();
+
         if(CurrentUser.Controller is ArcadeControllerBase)
         {
             CurrentUser.Controller = new HomeWalkController();
         }
         CurrentUser = null;
-        EndGame();
     }
 
     public virtual bool OnUse(Entity user)

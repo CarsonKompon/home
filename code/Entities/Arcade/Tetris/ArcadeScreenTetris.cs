@@ -7,21 +7,20 @@ using Sandbox.UI.Construct;
 
 namespace Home;
 
-public class ArcadeScreenTetris : WorldPanel
+public partial class ArcadeScreenTetris : WorldPanel
 {
-    public enum BlockType { Empty, I, O, T, S, Z, J, L };
-    const int BOARD_WIDTH = 10;
-    const int QUEUE_LENGTH = 5;
-
     public Label ScoreLabel;
+    public Label HighScoreLabel;
 
     public Panel Board {get; set;}
     public Panel[] Blocks {get; set;} = new Panel[200];
-    public List<BlockType> Queue {get; set;} = new List<BlockType>();
-    public BlockType Holding {get; set;} = BlockType.Empty;
-
-    private List<BlockType> GrabBag {get; set;} = new List<BlockType>();
+    public Panel[] CurrentBlocks {get; set;} = new Panel[4];
+    public Panel[][] NextBlocks {get; set;} = new Panel[5][];
+    public Panel[] HoldBlocks {get; set;} = new Panel[4];
+    public Panel[] GhostBlocks {get; set;} = new Panel[4];
+    RealTimeSince TimeSinceLastUpdate = 0f;
     
+    public ArcadeMachineTetris Machine;
 
     public ArcadeScreenTetris()
     {
@@ -33,6 +32,18 @@ public class ArcadeScreenTetris : WorldPanel
         scorePanel.Add.Label("Score:", "header");
         ScoreLabel = scorePanel.Add.Label("0", "score");
 
+        var highScorePanel = Add.Panel("high-score-panel");
+        highScorePanel.Add.Label("High Score:", "header");
+        HighScoreLabel = highScorePanel.Add.Label("0", "score");
+
+        var leftPanel = Add.Panel("left-panel");
+        leftPanel.Add.Label("Holding:", "header");
+        var holding = leftPanel.Add.Panel("holding");
+        for(int i=0; i<4; i++)
+        {
+            HoldBlocks[i] = holding.Add.Panel("block held current");
+        }
+
         Board = Add.Panel("board");
 
         for(int i=0; i<200; i++)
@@ -40,33 +51,135 @@ public class ArcadeScreenTetris : WorldPanel
             Blocks[i] = Board.Add.Panel("block");
         }
 
+        for(int i=0; i<4; i++)
+        {
+            CurrentBlocks[i] = Board.Add.Panel("block current");
+        }
+
+        for(int i=0; i<4; i++)
+        {
+            GhostBlocks[i] = Board.Add.Panel("block ghost");
+        }
+
+        var rightPanel = Add.Panel("right-panel");
+        rightPanel.Add.Label("Next:", "header");
+        var next = rightPanel.Add.Panel("next");
+        for(int i=0; i<5; i++)
+        {
+            NextBlocks[i] = new Panel[4];
+        }
+        for(int i=0; i<4; i++)
+        {
+            NextBlocks[0][i] = next.Add.Panel("block");
+        }
+
+        for(int i=1; i<5; i++)
+        {
+            var nextRow = rightPanel.Add.Panel("next small");
+            for(int j=0; j<4; j++)
+            {
+                NextBlocks[i][j] = nextRow.Add.Panel("block current");
+            }
+        }
+
         float width = 600f;
         float height = 500f;
         PanelBounds = new Rect(-width/2, -height/2, width, height);
-
-
     }
 
-    public void StartGame()
+    public ArcadeScreenTetris(ArcadeMachineTetris machine) : this()
     {
-        for(int i=0; i<QUEUE_LENGTH; i++)
+        Machine = machine;
+    }
+
+    public void UpdateBoard(int[] board)
+    {
+        for(int i=0; i<200; i++)
         {
-            Queue.Add(GetRandomBlock());
+            int val = board[i];
+            Blocks[i].SetClass("t-1 t-2 t-3 t-4 t-5 t-6 t-7", false);
+            Blocks[i].SetClass("active t-" + val.ToString(), val != 0);
+        }
+        ScoreLabel.Text = Machine.Score.ToString();
+    }
+
+    public void UpdatePlayer(ArcadeMachineTetris.BlockType blockType, Vector2 pos, int rotation)
+    {
+        if(blockType == ArcadeMachineTetris.BlockType.Empty)
+        {
+            for(int i=0; i<4; i++)
+            {
+                CurrentBlocks[i].Style.Left = -200;
+                CurrentBlocks[i].Style.Top = -200;
+            }
+            return;
+        }
+        SetPositionFromPiece(CurrentBlocks, blockType, pos, rotation);
+
+        // Calculate ghost position
+        int ghostY = (int)pos.y;
+        while(!Machine.CheckPieceCollision(blockType, rotation, new Vector2(pos.x, ghostY)))
+        {
+            ghostY++;
+        }
+        ghostY--;
+        SetPositionFromPiece(GhostBlocks, blockType, new Vector2(pos.x, ghostY), rotation);
+
+        TimeSinceLastUpdate = 0f;
+    }
+
+    public void UpdateHeldPiece(ArcadeMachineTetris.BlockType blockType)
+    {
+        for(int i=0; i<4; i++)
+        {
+            HoldBlocks[i].SetClass("t-1 t-2 t-3 t-4 t-5 t-6 t-7", false);
+            HoldBlocks[i].SetClass("current t-" + ((int)blockType).ToString(), blockType != ArcadeMachineTetris.BlockType.Empty);
+        }
+        SetPositionFromPiece(HoldBlocks, blockType, new Vector2(0, 0), 0);
+    }
+
+    public void UpdateNextPieces(ArcadeMachineTetris.BlockType[] blockTypes)
+    {
+        for(int i=0; i<blockTypes.Count(); i++)
+        {
+            for(int j=0; j<NextBlocks[i].Count(); j++)
+            {
+                NextBlocks[i][j].SetClass("t-1 t-2 t-3 t-4 t-5 t-6 t-7", false);
+                NextBlocks[i][j].SetClass("current t-" + ((int)blockTypes[i]).ToString(), blockTypes[i] != ArcadeMachineTetris.BlockType.Empty);
+            }
+            SetPositionFromPiece(NextBlocks[i], blockTypes[i], new Vector2(0, 0), 0);
         }
     }
 
-    public BlockType GetRandomBlock()
+    public void UpdateHighScore(long score)
     {
-        if(GrabBag.Count == 0)
-        {
-            GrabBag = new List<BlockType> { BlockType.I, BlockType.O, BlockType.T, BlockType.S, BlockType.Z, BlockType.J, BlockType.L };
-            // Shuffle the grab bag
-            GrabBag = GrabBag.OrderBy(x => Guid.NewGuid()).ToList();
-        }
-
-        var block = GrabBag[0];
-        GrabBag.RemoveAt(0);
-        return block;
+        HighScoreLabel.Text = score.ToString();
     }
+
+    public void SetPositionFromPiece(Panel[] panel, ArcadeMachineTetris.BlockType blockType, Vector2 pos, int rotation)
+    {
+        TetrisShape shape = TetrisShapes.GetShape(blockType, rotation);
+        int index = 0;
+        for(int i=0; i<16; i++)
+        {
+            int x = i % 4;
+            int y = i / 4;
+            int x2 = x - 1;
+            int y2 = y - 1;
+            int x3 = (int)pos.x + x2;
+            int y3 = (int)pos.y + y2;
+            if(shape.Blocks.Contains(i))
+            {
+                panel[index].Style.Left = x3 * 10f;
+                panel[index].Style.Top = y3 * 10f;
+                index++;
+            }
+        }
+    }
+
+	protected override int BuildHash()
+	{
+        return HashCode.Combine(base.BuildHash(), TimeSinceLastUpdate < 0.25f);
+	}
 
 }

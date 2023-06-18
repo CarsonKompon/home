@@ -13,7 +13,7 @@
 						_class = "RenderMeshFile"
 						filename = "models\\arcade\\dmx\\mesh\\arcade_machine_dev_01.dmx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
-						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 180.0, 0.0 ]
 						import_scale = 1.0
 						align_origin_x_type = "None"
 						align_origin_y_type = "None"
@@ -62,8 +62,8 @@
 						_class = "Attachment"
 						name = "ScreenPos"
 						parent_bone = ""
-						relative_origin = [ -13.796968, 0.0, 58.153446 ]
-						relative_angles = [ -8.949255, -180.0, 0.0 ]
+						relative_origin = [ 13.78614, 0.0, 58.15345 ]
+						relative_angles = [ -8.94926, 0.0, 0.0 ]
 						weight = 1.0
 						ignore_rotation = false
 					},

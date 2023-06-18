@@ -5,73 +5,102 @@ using Sandbox.UI;
 
 namespace Home;
 
-public static class TetrisShape
+public class TetrisShape
 {
-    public static readonly int[,] I = new int[4, 4] {
-        {4,5,6,7},
-        {2,6,10,14},
-        {8,9,10,11},
-        {1,5,9,13}
-    };
+    public int[] Blocks {get; set;}
 
-    public static readonly int[,] O = new int[4, 4] {
-        {5,6,9,10},
-        {5,6,9,10},
-        {5,6,9,10},
-        {5,6,9,10}
-    };
-
-    public static readonly int[,] T = new int[4, 4] {
-        {1,4,5,6},
-        {1,5,6,9},
-        {4,5,6,9},
-        {1,4,5,9}
-    };
-
-    public static readonly int[,] S = new int[4, 4] {
-        {1,2,4,5},
-        {1,5,6,10},
-        {5,6,8,9},
-        {2,6,5,9}
-    };
-
-    public static readonly int[,] Z = new int[4, 4] {
-        {0,1,5,6},
-        {2,5,6,9},
-        {4,5,9,10},
-        {1,5,4,8}
-    };
-
-    public static readonly int[,] J = new int[4, 4] {
-        {0,4,5,6},
-        {1,2,5,9},
-        {4,5,6,10},
-        {1,5,9,8}
-    };
-
-    public static readonly int[,] L = new int[4, 4] {
-        {2,4,5,6},
-        {1,5,9,10},
-        {4,5,6,8},
-        {0,1,5,9}
-    };
-
-    // public static int[] GetBlockLayout(ArcadeScreenTetris.BlockType type, int rotation = 0)
-    // {
-    //     // switch(type)
-    //     // {
-    //     //     ArcadeScreenTetris.BlockType.I:
-    //     //         return GetRow(I, rotation);
-    //     // }
-    // }
-
-    private static int[] GetRow(int[,] block, int row)
+    public int[] GetGrid()
     {
-        int[] result = new int[4];
-        for(int i=0; i<4; i++)
+        var grid = new int[16];
+        for(int i=0; i<16; i++)
         {
-            result[i] = block[row, i];
+            var x = i % 4;
+            var y = i / 4;
+            if(Blocks.Contains(i))
+            {
+                grid[i] = 1;
+            }
+            else
+            {
+                grid[i] = 0;
+            }
         }
-        return result;
+        return grid;
+    }
+}
+
+public static class TetrisShapes
+{
+    public static readonly TetrisShape[] I = new TetrisShape[4] {
+        new TetrisShape {Blocks = new int[4] {4,5,6,7}},
+        new TetrisShape {Blocks = new int[4] {2,6,10,14}},
+        new TetrisShape {Blocks = new int[4] {8,9,10,11}},
+        new TetrisShape {Blocks = new int[4] {1,5,9,13}}
+    };
+
+    public static readonly TetrisShape[] O = new TetrisShape[4] {
+        new TetrisShape {Blocks = new int[4] {5,6,9,10}},
+        new TetrisShape {Blocks = new int[4] {5,6,9,10}},
+        new TetrisShape {Blocks = new int[4] {5,6,9,10}},
+        new TetrisShape {Blocks = new int[4] {5,6,9,10}}
+    };
+
+    public static readonly TetrisShape[] T = new TetrisShape[4] {
+        new TetrisShape {Blocks = new int[4] {1,4,5,6}},
+        new TetrisShape {Blocks = new int[4] {1,5,6,9}},
+        new TetrisShape {Blocks = new int[4] {4,5,6,9}},
+        new TetrisShape {Blocks = new int[4] {1,4,5,9}}
+    };
+
+    public static readonly TetrisShape[] S = new TetrisShape[4] {
+        new TetrisShape {Blocks = new int[4] {1,2,4,5}},
+        new TetrisShape {Blocks = new int[4] {0,4,5,9}},
+        new TetrisShape {Blocks = new int[4] {1,2,4,5}},
+        new TetrisShape {Blocks = new int[4] {0,4,5,9}}
+    };
+
+    public static readonly TetrisShape[] Z = new TetrisShape[4] {
+        new TetrisShape {Blocks = new int[4] {0,1,5,6}},
+        new TetrisShape {Blocks = new int[4] {1,5,4,8}},
+        new TetrisShape {Blocks = new int[4] {0,1,5,6}},
+        new TetrisShape {Blocks = new int[4] {1,5,4,8}}
+    };
+
+    public static readonly TetrisShape[] J = new TetrisShape[4] {
+        new TetrisShape {Blocks = new int[4] {0,4,5,6}},
+        new TetrisShape {Blocks = new int[4] {1,2,5,9}},
+        new TetrisShape {Blocks = new int[4] {4,5,6,10}},
+        new TetrisShape {Blocks = new int[4] {1,5,9,8}}
+    };
+
+    public static readonly TetrisShape[] L = new TetrisShape[4] {
+        new TetrisShape {Blocks = new int[4] {2,4,5,6}},
+        new TetrisShape {Blocks = new int[4] {1,5,9,10}},
+        new TetrisShape {Blocks = new int[4] {4,5,6,8}},
+        new TetrisShape {Blocks = new int[4] {0,1,5,9}}
+    };
+
+    public static TetrisShape GetShape(ArcadeMachineTetris.BlockType blockType, int rotation)
+    {
+        if(rotation < 0) rotation += 4;
+        switch(blockType)
+        {
+            case ArcadeMachineTetris.BlockType.I:
+                return I[rotation];
+            case ArcadeMachineTetris.BlockType.O:
+                return O[rotation];
+            case ArcadeMachineTetris.BlockType.T:
+                return T[rotation];
+            case ArcadeMachineTetris.BlockType.S:
+                return S[rotation];
+            case ArcadeMachineTetris.BlockType.Z:
+                return Z[rotation];
+            case ArcadeMachineTetris.BlockType.J:
+                return J[rotation];
+            case ArcadeMachineTetris.BlockType.L:
+                return L[rotation];
+            default:
+                return I[rotation];
+        }
     }
 }

@@ -75,7 +75,7 @@ public class HomeVoiceEntry : Panel
 			Style.BackgroundColor = Color.Lerp(Color.Black, rainbow, 0.8f);
 			for(int i=0; i<NameLetters.Count; i++)
 			{
-				NameLetters[i].Style.Top = MathF.Sin(Time.Now*20f + i) * level;
+				NameLetters[i].Style.Top = MathF.Sin(Time.Now*20f + i) * level / 3f;
 			}
 			NameContainer.Style.FontColor = rainbow.WithSaturation(0.2f).WithValue(1f).WithAlpha(1f);
 		}

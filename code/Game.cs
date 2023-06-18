@@ -58,6 +58,10 @@ public partial class HomeGame : GameManager
 	public override void OnVoicePlayed( IClient cl )
 	{
 		HomeVoiceList.Current?.OnVoicePlayed( cl.SteamId, cl.Voice.CurrentLevel );
+		// if(cl.Pawn is HomePlayer player)
+		// {
+		// 	player.OnVoicePlayed(cl.Voice.CurrentLevel);
+		// }
 	}
 
 	[Event.Hotload]
@@ -158,9 +162,31 @@ public partial class HomeGame : GameManager
 		player.GivePlaceable(placeable.Id);
 	}
 
-	[ConCmd.Admin("home_give_placeable", Help = "Gives a placeable to a player")]
-	public static void GivePlaceable(string id)
+	[ConCmd.Admin("home_give_money", Help = "Gives money to a player")]
+	public static void GiveMoney(int amount, string target = "")
 	{
+		if(target != "")
+		{
+			Game.Clients.Where(x => x.Name.ToLower().Contains(target.ToLower())).ToList().ForEach(x => GiveMoney(amount, x.SteamId.ToString()));
+			return;
+		}
+
+		// Check the player and their variables
+		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+
+		// Give the money to the player
+		player.GiveMoney(amount);
+	}
+
+	[ConCmd.Admin("home_give_placeable", Help = "Gives a placeable to a player")]
+	public static void GivePlaceable(string id, string target = "")
+	{
+		if(target != "")
+		{
+			Game.Clients.Where(x => x.Name.ToLower().Contains(target.ToLower())).ToList().ForEach(x => GivePlaceable(id, x.SteamId.ToString()));
+			return;
+		}
+		
 		// Check the player and their variables
 		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
 

@@ -14,12 +14,14 @@ public class ArcadeControllerBase : HomePawnController
 
         WishVelocity = Vector3.Zero;
         Velocity = Vector3.Zero;
-        Position = ArcadeMachine.Position + Vector3.Down * 10 + ArcadeMachine.Rotation.Backward * 50f + Vector3.Up * 10f;
+        Position = ArcadeMachine.Position + Vector3.Down * 10 + ArcadeMachine.Rotation.Forward * 40f + Vector3.Up * 10f;
     
         if(Input.Pressed("crouch"))
         {
             ArcadeMachine.RemoveUser();
         }
+
+        BuildInput();
     }
 
 

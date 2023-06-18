@@ -1,0 +1,12 @@
+{
+  "UI": false,
+  "Volume": "1.00,1.00,0",
+  "Pitch": "1.00,1.00,0",
+  "Decibels": 35,
+  "SelectionMode": "Random",
+  "Sounds": [
+    "sounds/arcade/tetros/tetros_place.vsnd"
+  ],
+  "MaximumDistance": 309.98337,
+  "MinimumDistance": 15.499168
+}

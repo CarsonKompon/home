@@ -56,6 +56,9 @@ public partial class HomePlayer
 		{
 			FileSystem.Data.CreateDirectory(Client.SteamId.ToString());
 		}
+		
+		if(Stash == null) return;
+
 		// Save player data to client data
 		FileSystem.Data.WriteJson(Client.SteamId.ToString() + "/player.json", new PlayerData(Client.SteamId)
 		{
@@ -126,6 +129,10 @@ public partial class HomePlayer
 		long steamId = long.Parse(steamIdString);
 		IClient client = Game.Clients.FirstOrDefault(c => c.SteamId == steamId);
 		PlayerData data = JsonSerializer.Deserialize<PlayerData>(client.GetClientData<string>("HomeUploadData"));
+		if(data == null)
+		{
+			data = new PlayerData(steamId);
+		}
 		if(client.Pawn is HomePlayer player)
 		{
 			for(int i = 0; i < data.Stash.Count; i++)
