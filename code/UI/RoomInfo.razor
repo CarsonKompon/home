@@ -1,0 +1,49 @@
+@using System;
+@using System.Collections.Generic;
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@attribute [StyleSheet]
+
+@namespace Home
+
+<root>
+    <label class="room" text=@GetRoom() />
+</root>
+
+@code
+{
+
+    public RoomInfo()
+    {
+        BindClass("inmainmenu", () => Game.IsMainMenuVisible);
+    }
+
+    string GetRoom()
+    {
+        if(Game.LocalPawn is HomePlayer player)
+        {
+            if(player.Room == null) return "";
+            return "Checked in to Room #" + player.Room.Id.ToString();
+        }
+        return "";
+    }
+
+    [GameEvent.Client.BuildInput]
+    public void OnBuildInput()
+    {
+        if(Input.Pressed("menu"))
+        {
+            AddClass("hide");
+        }
+        else if(Input.Released("menu"))
+        {
+            RemoveClass("hide");
+        }
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(GetRoom());
+    }
+}

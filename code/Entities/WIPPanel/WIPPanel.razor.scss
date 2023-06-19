@@ -14,8 +14,18 @@ wippanel {
     padding: 32px;
 
     h2 {
-        font-size: 48px;
+        font-size: 64px;
         text-align: center;
         font-weight: 900;
+        color: #5865F2;
+    }
+
+    .link {
+        font-size: 32px;
+        text-align: center;
+        font-weight: 600;
+//        color: #5865F2;
+        font-style: oblique;
+        text-decoration: underline;
     }
 }

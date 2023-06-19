@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Sandbox;
 using Editor;
 
@@ -22,6 +23,7 @@ public partial class RoomFrontDoor : DoorEntity
 
     public Transform StartTransform;
     public RoomFrontDoorNumber Number;
+    RealTimeSince TimeSinceLastUpdate = 0f;
 
     public override void Spawn()
     {
@@ -42,6 +44,17 @@ public partial class RoomFrontDoor : DoorEntity
         Number.Position = Position + Rotation.Backward * 2.125f + Rotation.Right * 24f + Rotation.Up * 4f;
         Number.Rotation = Rotation * Rotation.From( new Angles( 0, 180, 0 ) );
         SetNumberState(RoomState.Vacant);
+    }
+
+    [GameEvent.Tick.Server]
+    public void OnTick()
+    {
+        if ( TimeSinceLastUpdate > 8f )
+        {
+            RoomController room = Entity.All.OfType<RoomController>().FirstOrDefault( x => x.Id == RoomId );
+            SetNumberState(room.State);
+            TimeSinceLastUpdate = 0f;
+        }
     }
 
     public void SetState(RoomState state)
