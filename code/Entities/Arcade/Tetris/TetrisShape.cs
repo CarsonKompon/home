@@ -80,24 +80,24 @@ public static class TetrisShapes
         new TetrisShape {Blocks = new int[4] {0,1,5,9}}
     };
 
-    public static TetrisShape GetShape(ArcadeMachineTetris.BlockType blockType, int rotation)
+    public static TetrisShape GetShape(ArcadeScreenTetris.BlockType blockType, int rotation)
     {
         if(rotation < 0) rotation += 4;
         switch(blockType)
         {
-            case ArcadeMachineTetris.BlockType.I:
+            case ArcadeScreenTetris.BlockType.I:
                 return I[rotation];
-            case ArcadeMachineTetris.BlockType.O:
+            case ArcadeScreenTetris.BlockType.O:
                 return O[rotation];
-            case ArcadeMachineTetris.BlockType.T:
+            case ArcadeScreenTetris.BlockType.T:
                 return T[rotation];
-            case ArcadeMachineTetris.BlockType.S:
+            case ArcadeScreenTetris.BlockType.S:
                 return S[rotation];
-            case ArcadeMachineTetris.BlockType.Z:
+            case ArcadeScreenTetris.BlockType.Z:
                 return Z[rotation];
-            case ArcadeMachineTetris.BlockType.J:
+            case ArcadeScreenTetris.BlockType.J:
                 return J[rotation];
-            case ArcadeMachineTetris.BlockType.L:
+            case ArcadeScreenTetris.BlockType.L:
                 return L[rotation];
             default:
                 return I[rotation];
