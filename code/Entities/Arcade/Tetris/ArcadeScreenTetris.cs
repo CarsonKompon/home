@@ -20,6 +20,8 @@ public partial class ArcadeScreenTetris : WorldPanel
     public Panel[] HoldBlocks {get; set;} = new Panel[4];
     public Panel[] GhostBlocks {get; set;} = new Panel[4];
     RealTimeSince TimeSinceLastUpdate = 0f;
+
+    
     
     public ArcadeMachineTetris Machine;
 
