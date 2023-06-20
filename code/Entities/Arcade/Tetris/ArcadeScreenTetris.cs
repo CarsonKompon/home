@@ -190,6 +190,8 @@ public partial class ArcadeScreenTetris : WorldPanel
     [GameEvent.Client.Frame]
     public void OnFrame()
     {
+        Style.Opacity = MathX.Clamp(1.25f - (Vector3.DistanceBetween( Camera.Position, Position ) * 0.004f), 0f, 1f);
+
         var interval = GetWaitTime();
         if(FastDrop) interval = MathF.Min(0.04f, interval / 4f);
         if(Playing && LastUpdate > interval)
