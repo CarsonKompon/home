@@ -83,7 +83,21 @@ public partial class HomePlayer : AnimatedEntity
         // Load clothing from client data
         Clothing.LoadFromClient(client);
 		ClothingString = Clothing.Serialize();
+
+		LoadOutfitRpc(To.Single(client));
     }
+
+	[ClientRpc]
+	public void LoadOutfitRpc()
+	{
+		string clothing = Cookie.GetString("home.outfit", "");
+		if(clothing != "")
+		{
+			ClothingString = clothing;
+			ConsoleSystem.Run("home_outfit", clothing);
+			HomeGUI.UpdateAvatar(clothing);
+		}
+	}
 
     /// <summary>
 	/// Return the controller to use. Remember any logic you use here needs to match

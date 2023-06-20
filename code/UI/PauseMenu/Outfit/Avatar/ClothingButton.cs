@@ -24,7 +24,17 @@ public class ClothingButton : Panel
 		DeleteChildren( true );
 
 		ImagePanel = new Panel( this, "image" );
-		ImagePanel.Style.SetBackgroundImage( Clothing.Icon.Path );
+		Log.Info(Clothing.ResourceName);
+		Log.Info(Clothing.Icon.Path);
+		
+		if(FileSystem.Mounted.FileExists(Clothing.Icon.Path))
+		{
+			ImagePanel.Style.SetBackgroundImage( Clothing.Icon.Path );
+		}
+		else
+		{
+			ImagePanel.Style.SetBackgroundImage( Clothing.ResourcePath + ".png" );	
+		}
 
 		if( HasVariations )
 		{

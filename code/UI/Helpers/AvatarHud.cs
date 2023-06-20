@@ -13,6 +13,7 @@ public class AvatarHud : ScenePanel
 {
     public bool FullBody {get;set;} = false;
     public string ClothingString {get;set;} = "";
+    public float Zoom {get;set;} = 1f;
     private SceneModel AvatarModel;
     private List<SceneModel> ClothingObjects = new();
 
@@ -71,7 +72,7 @@ public class AvatarHud : ScenePanel
         {
             ClothingContainer clothingFromString = new();
             clothingFromString.Deserialize(ClothingString);
-            if(clothingFromString != null)
+            if(clothingFromString != null && AvatarModel != null)
             {
                 ClothingObjects = clothingFromString.DressSceneObject(AvatarModel);
             }
@@ -81,7 +82,12 @@ public class AvatarHud : ScenePanel
         AvatarModel.SetMaterialGroup("Skin01");
 
         ClothingContainer clothing = new();
-        clothing.Deserialize((Game.LocalPawn as HomePlayer)?.ClothingString ?? "");
+        if(Game.LocalPawn is HomePlayer player)
+        {
+            string outfit = Cookie.GetString("home.outfit", "");
+            if(outfit == "") outfit = player.ClothingString;
+            clothing.Deserialize(outfit);
+        }
         if(clothing != null)
         {
             Log.Info("CLOTHING:");
@@ -190,7 +196,7 @@ public class AvatarHud : ScenePanel
         Vector3 pos = Vector3.Zero;
         if(FullBody)
         {
-            pos = AvatarModel.Position + angles.Forward * -125f + Vector3.Up * 40f;
+            pos = AvatarModel.Position + angles.Forward * -125f * Zoom + Vector3.Up * 40f;
         }
         else
         {
@@ -220,5 +226,16 @@ public class AvatarHud : ScenePanel
 		LightBlue.Rotation = Rotation.LookAt( -LightBlue.Position );
 		LightBlue.ConeInner = 70;
 		LightBlue.ConeOuter = 70;
+    }
+
+    public void Update(string clothingString)
+    {
+        ClothingString = clothingString;
+        DressAvatar();
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(ClothingString);
     }
 }

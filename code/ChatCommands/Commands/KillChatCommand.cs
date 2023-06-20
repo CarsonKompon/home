@@ -17,6 +17,6 @@ public class KillChatCommand : ChatCommandAttribute
 
     public override void Run(IClient client)
     {
-        client.SendCommandToClient("kill");
+        ConsoleSystem.Run("kill");
     }
 }

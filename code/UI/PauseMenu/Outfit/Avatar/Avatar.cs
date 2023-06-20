@@ -15,6 +15,8 @@ public partial class Avatar : Panel
 	record struct ItemGroup( string subcategory, List<Clothing> clothing );
 	record struct ClothingCategory( Clothing.ClothingCategory category, string title, string icon, Vector3? position = default );
 
+	public AvatarHud AvatarHud { get; set; }
+
 	List<ClothingCategory> Categories = new( new[]
 	{
 		new ClothingCategory( Clothing.ClothingCategory.Skin, "Skin", "emoji_people" ),
@@ -136,10 +138,8 @@ public partial class Avatar : Panel
 
 	void DressModel()
 	{
-		// if(Game.LocalPawn is not HomePlayer player) return;
-		// player.ClothingString = Container.Serialize();
 		PreviewClothing = Container.Serialize();
-		Log.Info(PreviewClothing);
+		AvatarHud.Update(PreviewClothing);
 
 		timeSinceSave = 0;
 	}
@@ -175,7 +175,10 @@ public partial class Avatar : Panel
 	{
 		if(Game.LocalPawn is not HomePlayer player) return;
 		var str = Container.Serialize();
+		Cookie.SetString("home.outfit", str);
 		ConsoleSystem.Run( "home_outfit", str);
+
+		HomeGUI.UpdateAvatar(str);
 
 		SetClass( "is-dirty", false );
 		timeSinceSave = 0;

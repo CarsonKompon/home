@@ -42,7 +42,7 @@
                 </wrap>
             }
 
-            @* PLAYERMODELS *@
+            @* PLAYERMODELS
             @if(ItemGroups.Count > 0 && ItemGroups[0].subcategory == "Skin")
             {
                 <row class="header with-gaps">
@@ -56,7 +56,7 @@
                         <PlayermodelButton class="glass with-click" Playermodel=@plymodel />
                     }
                 </wrap>
-            }
+            } *@
 
         </column>
 
@@ -82,7 +82,7 @@
     } *@
 
     <column class="preview">
-        <AvatarHud FullBody=@(true) ClothingString=@PreviewClothing />
+        <AvatarHud @ref="AvatarHud" FullBody=@(true) Zoom=@(2) />
     </column>
 
 </root>

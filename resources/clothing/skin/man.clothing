@@ -11,5 +11,7 @@
   "SlotsUnder": "Skin",
   "SlotsOver": "Chest, LeftArm, RightArm, LeftWrist, RightWrist, LeftHand, RightHand, Groin, LeftThigh, RightThigh, LeftKnee, RightKnee, LeftShin, RightShin, LeftFoot, RightFoot, Waist",
   "HideBody": "Head, Chest, Legs, Hands, Feet",
-  "Icon": {}
+  "Icon": {
+    "Path": "/clothing_icons/man.png"
+  }
 }

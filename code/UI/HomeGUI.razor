@@ -10,7 +10,7 @@
 <root>
     <panel class="bottom-line" />
     <div class="avatar-container">
-        <AvatarHud />
+        <AvatarHud @ref="AvatarHud" />
     </div>
     <panel class="canvas">
         <label class="money" text=@GetMoney() />
@@ -27,7 +27,7 @@
 @code
 {
     public static HomeGUI Current;
-    public AvatarHud AvatarHud;
+    public AvatarHud AvatarHud {get; set;}
     public Panel MoneyChangesPanel { get; set; }
 
     public HomeGUI()
@@ -72,6 +72,13 @@
         {
             RemoveClass("hide");
         }
+    }
+
+    public static void UpdateAvatar(string str = "")
+    {
+        if(Current == null) return;
+        if(Game.LocalPawn is not HomePlayer player) return;
+        Current.AvatarHud.Update(str == "" ? player.ClothingString : str);
     }
 
     protected override int BuildHash()
