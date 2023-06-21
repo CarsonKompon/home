@@ -43,7 +43,7 @@
 
     async Task CreateNewLobby()
     {
-        await Game.Menu.CreateLobbyAsync();
+        await Game.Menu.CreateLobbyAsync(16, null, true);
         // we will navigate to lobby when it's ready
     }
 }

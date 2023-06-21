@@ -102,7 +102,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     {
         var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
         if(machine == null) return;
-        var clients = Game.Clients.Where(c => c.SteamId != machine.CurrentUser.Client.SteamId).ToArray();
+        var clients = Game.Clients.Where(c => c.SteamId != machine.CurrentUser.Client.SteamId);
         machine.UpdateBoardRpc(To.Multiple(clients), board);
     }
 
@@ -117,7 +117,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     {
         var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
         if(machine == null) return;
-        var clients = Game.Clients.Where(c => c.SteamId != machine.CurrentUser.Client.SteamId).ToArray();
+        var clients = Game.Clients.Where(c => c.SteamId != machine.CurrentUser.Client.SteamId);
         machine.UpdatePlayerRpc(To.Multiple(clients), blockType, x, y, rot);
     }
 
@@ -132,7 +132,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     {
         var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
         if(machine == null) return;
-        var clients = Game.Clients.Where(c => c.SteamId != machine.CurrentUser.Client.SteamId).ToArray();
+        var clients = Game.Clients.Where(c => c.SteamId != machine.CurrentUser.Client.SteamId);
         machine.UpdateHeldPieceRpc(To.Multiple(clients), blockType);
     }
 
@@ -148,7 +148,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
         var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
         if(machine == null) return;
         var queue = ArcadeScreenTetris.StringToBoard(queueStr);
-        var clients = Game.Clients.Where(c => c.SteamId != machine.CurrentUser.Client.SteamId).ToArray();
+        var clients = Game.Clients.Where(c => c.SteamId != machine.CurrentUser.Client.SteamId);
         machine.UpdateNextPiecesRpc(queue);
     }
 

@@ -13,7 +13,7 @@ namespace Home;
 public partial class TestCrashNPC : BaseNPC
 {
 
-    public override string DisplayName => "Press E to crash";
+    public override string DisplayName => "Fix MediaPlayers";
     protected override string ClothingString => "[{\"id\":-293856662}]";
 
     public override void Spawn()
@@ -32,12 +32,11 @@ public partial class TestCrashNPC : BaseNPC
     }
 
     [ClientRpc]
-    public void TestCrash()
+    public async void TestCrash()
     {
-        var test = SceneHelper.TestCrash("models/citizen/citizen.vmdl");
-        var test2 = SceneHelper.TestCrash("models/citizen/citizen.vmdl");
-        var test3 = SceneHelper.TestCrash("models/citizen/citizen.vmdl");
-        NotificationPanel.AddEntry("your computer survived the crash :)", "", 5);
+        NotificationPanel.AddEntry("Upvote the github issue in console so Facepunch can fix", "", 30);
+        Log.Info("UPVOTE THIS ISSUE:");
+        Log.Info("https://github.com/sboxgame/issues/issues/3448");
     }
 
 }

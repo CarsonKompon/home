@@ -114,9 +114,24 @@ public partial class HomePlayer
 		{
 			FileSystem.Data.CreateDirectory(steamId + "/layouts");
 		}
-		foreach(string file in FileSystem.Data.FindFile(steamId + "/layouts", "*.json"))
+		if(!FileSystem.Data.DirectoryExists(steamId + "/layouts/" + Game.Server.MapIdent))
 		{
-			RoomLayout layout = FileSystem.Data.ReadJson<RoomLayout>(steamId + "/layouts/" + file);
+			FileSystem.Data.CreateDirectory(steamId + "/layouts/" + Game.Server.MapIdent);
+		}
+
+		// TODO: Remove this early compatibility code
+		if(Game.Server.MapIdent.Contains("home_staycation_strip"))
+		{
+			foreach(string file in FileSystem.Data.FindFile(steamId + "/layouts", "*.json"))
+			{
+				RoomLayout layout = FileSystem.Data.ReadJson<RoomLayout>(steamId + "/layouts/" + file);
+				FileSystem.Data.DeleteFile(steamId + "/layouts/" + file);
+				FileSystem.Data.WriteJson(steamId + "/layouts/" + Game.Server.MapIdent + "/" + file, layout);
+			}
+		}
+		foreach(string file in FileSystem.Data.FindFile(steamId + "/layouts/" + Game.Server.MapIdent, "*.json"))
+		{
+			RoomLayout layout = FileSystem.Data.ReadJson<RoomLayout>(steamId + "/layouts/" + Game.Server.MapIdent + "/" + file);
 			player.RoomLayouts.Add(layout);
 		}
 
