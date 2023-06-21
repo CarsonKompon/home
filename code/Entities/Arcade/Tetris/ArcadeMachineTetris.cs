@@ -81,7 +81,8 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     {
         var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
         if(machine == null) return;
-        machine.EndGame();
+        if(machine.CurrentUser == null) return;
+        machine.RemoveUser();
     }
 
     public override void EndGame()
@@ -102,6 +103,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     {
         var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
         if(machine == null) return;
+        if(machine.CurrentUser == null) return;
         var clients = Game.Clients.Where(c => c.SteamId != machine.CurrentUser.Client.SteamId);
         machine.UpdateBoardRpc(To.Multiple(clients), board);
     }

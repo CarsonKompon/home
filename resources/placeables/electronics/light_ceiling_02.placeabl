@@ -1,0 +1,19 @@
+{
+  "Id": "light_ceiling_02",
+  "Name": "Halogen Ceiling Light",
+  "Cost": 75,
+  "State": "Visible",
+  "Categories": [
+    "electronics"
+  ],
+  "Type": "Prop",
+  "PhysicsType": "Keyframed",
+  "Bottom": "ZNegative",
+  "Model": "models/sbox_props/ceiling_halogen/ceiling_halogen.vmdl",
+  "ClassName": "",
+  "EntityPackage": "",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null,
+  "OriginOffset": "0,0,0.001718403"
+}

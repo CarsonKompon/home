@@ -59,8 +59,36 @@ public partial class HomePlaceable : GameResource
 
     private string PackageThumbnail = "";
     [HideInEditor] public string RealModel = "";
-    [HideInEditor] public Texture Texture;
-    [HideInEditor] public Vector3 OriginOffset = Vector3.Zero;
+    [HideInEditor] public Texture Texture
+    {
+        get
+        {
+            if(_Texture == null) _Texture = SceneHelper.CreateModelThumbnail(GetModel());
+            return _Texture;
+        }
+        set
+        {
+            _Texture = value;
+        }
+    }
+    [HideInEditor] private Texture _Texture;
+    [HideInEditor] public Vector3 OriginOffset
+    {
+        get
+        {
+            if(!OriginLoaded)
+            {
+                FindOriginOffset();
+            }
+            return _OriginOffset;
+        }
+        set
+        {
+            _OriginOffset = value;
+        }
+    }
+    [HideInEditor] private Vector3 _OriginOffset;
+    [HideInEditor] private bool OriginLoaded = false;
 
     private Package LoadedPackage;
 
@@ -71,13 +99,6 @@ public partial class HomePlaceable : GameResource
 
 
     public static List<HomePlaceable> All => ResourceLibrary.GetAll<HomePlaceable>().ToList();
-
-	protected override void PostLoad()
-	{
-		base.PostLoad();
-
-        FindOriginOffset();
-	}
 
     public static HomePlaceable Find(string id)
     {

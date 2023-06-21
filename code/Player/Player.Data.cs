@@ -73,29 +73,29 @@ public partial class HomePlayer
 	{
 		if(Game.LocalPawn is not HomePlayer player) return;
 
-		foreach(HomePlaceable placeable in HomePlaceable.All)
-		{
-			if(string.IsNullOrEmpty(placeable.ThumbnailOverride) && !string.IsNullOrEmpty(placeable.Model))
-			{
-				placeable.Texture = SceneHelper.CreateModelThumbnail(placeable.Model);
-			}
-			else
-			{
-				placeable.Texture = Texture.Load(placeable.ThumbnailOverride);
-			}
-		}
+		// foreach(HomePlaceable placeable in HomePlaceable.All)
+		// {
+		// 	if(string.IsNullOrEmpty(placeable.ThumbnailOverride) && !string.IsNullOrEmpty(placeable.Model))
+		// 	{
+		// 		placeable.Texture = SceneHelper.CreateModelThumbnail(placeable.Model);
+		// 	}
+		// 	else
+		// 	{
+		// 		placeable.Texture = Texture.Load(placeable.ThumbnailOverride);
+		// 	}
+		// }
 
-		foreach(HomePlayermodel playermodel in HomePlayermodel.All)
-		{
-			if(string.IsNullOrEmpty(playermodel.ThumbnailOverride) && !string.IsNullOrEmpty(playermodel.Model))
-			{
-				playermodel.Texture = SceneHelper.CreateModelThumbnail(playermodel.Model);
-			}
-			else
-			{
-				playermodel.Texture = Texture.Load(playermodel.ThumbnailOverride);
-			}
-		}
+		// foreach(HomePlayermodel playermodel in HomePlayermodel.All)
+		// {
+		// 	if(string.IsNullOrEmpty(playermodel.ThumbnailOverride) && !string.IsNullOrEmpty(playermodel.Model))
+		// 	{
+		// 		playermodel.Texture = SceneHelper.CreateModelThumbnail(playermodel.Model);
+		// 	}
+		// 	else
+		// 	{
+		// 		playermodel.Texture = Texture.Load(playermodel.ThumbnailOverride);
+		// 	}
+		// }
 
 		// Load player data from client data
 		HomeUploadData = FileSystem.Data.ReadAllText(Client.SteamId.ToString() + "/player.json");

@@ -41,6 +41,8 @@ public partial class ArcadeScreenTetris : WorldPanel
     public int Combo {get; set;} = -1;
     public bool Playing {get; set;} = false;
     private RealTimeSince LastUpdate = 0f;
+    private RealTimeSince LeftTimer = 0f;
+    private RealTimeSince RightTimer = 0f;
     
     public ArcadeMachineTetris Machine;
 
@@ -192,17 +194,16 @@ public partial class ArcadeScreenTetris : WorldPanel
     {
         Style.Opacity = MathX.Clamp(1.25f - (Vector3.DistanceBetween( Camera.Position, Position ) * 0.004f), 0f, 1f);
 
+        if(!Playing) return;
+        if(Game.LocalClient.SteamId != Machine.CurrentUser.Client.SteamId) return;
+
         var interval = GetWaitTime();
         if(FastDrop) interval = MathF.Min(0.04f, interval / 4f);
         if(Playing && LastUpdate > interval)
         {
             if(CurrentPiece == BlockType.Empty)
             {
-                CurrentPiece = GetPieceFromQueue();
-                CurrentPieceX = 5;
-                CurrentPieceY = -2;
-                CurrentPieceRotation = 0;
-                RequestUpdatePlayer();
+                GetNewBlock();
             }
             else
             {
@@ -245,12 +246,26 @@ public partial class ArcadeScreenTetris : WorldPanel
         {
             if(Input.Pressed("Left"))
             {
+                LeftTimer = 0f;
                 Move(-1);
             }
+            else if(Input.Down("Left") && LeftTimer > 0.2f)
+            {
+                LeftTimer = 0.1f;
+                Move(-1);
+            }
+
             if(Input.Pressed("Right"))
             {
+                RightTimer = 0f;
                 Move(1);
             }
+            else if(Input.Down("Right") && RightTimer > 0.2f)
+            {
+                RightTimer = 0.1f;
+                Move(1);
+            }
+
             if(Input.Pressed("Forward"))
             {
                 Rotate();
@@ -292,6 +307,8 @@ public partial class ArcadeScreenTetris : WorldPanel
 
         public void UpdateScore(long score)
         {
+            if(Style.Opacity == 0f) return;
+            
             ScoreLabel.Text = score.ToString();
         }
 
@@ -303,6 +320,8 @@ public partial class ArcadeScreenTetris : WorldPanel
 
         public void UpdatePlayer(BlockType blockType, Vector2 pos, int rotation)
         {
+            if(Style.Opacity == 0f) return;
+
             if(blockType == BlockType.Empty)
             {
                 for(int i=0; i<4; i++)
@@ -312,6 +331,13 @@ public partial class ArcadeScreenTetris : WorldPanel
                 }
                 return;
             }
+
+            for(int i=0; i<4; i++)
+            {
+                CurrentBlocks[i].SetClass("t-1 t-2 t-3 t-4 t-5 t-6 t-7", false);
+                CurrentBlocks[i].SetClass("t-" + blockType.ToString(), blockType != BlockType.Empty);
+            }
+
             SetPositionFromPiece(CurrentBlocks, blockType, pos, rotation);
 
             // Calculate ghost position
@@ -332,6 +358,8 @@ public partial class ArcadeScreenTetris : WorldPanel
 
         public void UpdateHeldPiece(BlockType blockType)
         {
+            if(Style.Opacity == 0f) return;
+
             if(blockType == BlockType.Empty)
             {
                 for(int i=0; i<4; i++)
@@ -363,6 +391,8 @@ public partial class ArcadeScreenTetris : WorldPanel
 
         public void UpdateNextPieces(BlockType[] blockTypes)
         {
+            if(Style.Opacity == 0f) return;
+
             for(int i=0; i<blockTypes.Count(); i++)
             {
                 if(i >= NextBlocks.Count()) break;
@@ -377,6 +407,8 @@ public partial class ArcadeScreenTetris : WorldPanel
 
         public void UpdateHighScore(long score)
         {
+            if(Style.Opacity == 0f) return;
+
             HighScoreLabel.Text = score.ToString();
         }
 
@@ -415,6 +447,15 @@ public partial class ArcadeScreenTetris : WorldPanel
     #endregion
 
     #region GRAB BAG / QUEUE
+
+        public void GetNewBlock()
+        {
+            CurrentPiece = GetPieceFromQueue();
+            CurrentPieceX = 5;
+            CurrentPieceY = -2;
+            CurrentPieceRotation = 0;
+            RequestUpdatePlayer();
+        }
 
         public BlockType GetRandomBlock()
         {
@@ -498,6 +539,7 @@ public partial class ArcadeScreenTetris : WorldPanel
         JustHeld = false;
         Sound.FromEntity("tetros_place", Machine);
         CurrentPiece = BlockType.Empty;
+        GetNewBlock();
         
         RequestUpdateBoard();
         CheckLine();
@@ -629,6 +671,7 @@ public partial class ArcadeScreenTetris : WorldPanel
             {
                 HeldPiece = CurrentPiece;
                 CurrentPiece = BlockType.Empty;
+                GetNewBlock();
             }
             else
             {
@@ -641,6 +684,7 @@ public partial class ArcadeScreenTetris : WorldPanel
             CurrentPieceRotation = 0;
             JustHeld = true;
             Sound.FromEntity("tetros_hold", Machine);
+
             RequestHeldPiece();
             RequestUpdatePlayer();
         }
@@ -674,30 +718,30 @@ public partial class ArcadeScreenTetris : WorldPanel
         {
             switch(Level)
             {
-                case 0: return 0.85f;
-                case 1: return 0.8f;
-                case 2: return 0.72f;
-                case 3: return 0.63f;
-                case 4: return 0.55f;
-                case 5: return 0.47f;
-                case 6: return 0.38f;
-                case 7: return 0.3f;
-                case 8: return 0.22f;
-                case 9: return 0.13f;
+                case 0: return 36f/60f;
+                case 1: return 32f/60f;
+                case 2: return 29f/60f;
+                case 3: return 25f/60f;
+                case 4: return 22f/60f;
+                case 5: return 18f/60f;
+                case 6: return 15f/60f;
+                case 7: return 11f/60f;
+                case 8: return 7f/60f;
+                case 9: return 5f/60f;
                 case 10:
                 case 11:
                 case 12:
-                    return 0.1f;
+                    return 4f/60f;
                 case 13:
                 case 14:
                 case 15:
-                    return 0.08f;
+                    return 3f/60f;
                 case 16:
                 case 17:
                 case 18:
-                    return 0.07f;
-                case 19: return 0.06f;
-                case 20: return 0.05f;
+                    return 2f/60f;
+                case 19: return 1f/60f;
+                case 20: return 1f/60f;
                 default: return 0.01f;
             }
         }

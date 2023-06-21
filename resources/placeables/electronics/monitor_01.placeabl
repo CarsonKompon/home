@@ -1,0 +1,18 @@
+{
+  "Id": "monitor_01",
+  "Name": "Computer Monitor",
+  "Cost": 150,
+  "State": "Visible",
+  "Categories": [
+    "electronics"
+  ],
+  "Type": "Prop",
+  "PhysicsType": "Keyframed",
+  "Bottom": "ZNegative",
+  "Model": "models/others/monitor/monitor.vmdl",
+  "ClassName": "",
+  "EntityPackage": "",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

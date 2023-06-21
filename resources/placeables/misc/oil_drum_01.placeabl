@@ -1,0 +1,18 @@
+{
+  "Id": "oil_drum_01",
+  "Name": "Oil Drum",
+  "Cost": 500,
+  "State": "Visible",
+  "Categories": [
+    "misc"
+  ],
+  "Type": "Prop",
+  "PhysicsType": "Keyframed",
+  "Bottom": "ZNegative",
+  "Model": "models/sbox_props/oil_drum/oil_drum_a.vmdl",
+  "ClassName": "",
+  "EntityPackage": "",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

@@ -1,0 +1,18 @@
+{
+  "Id": "street_bin_02",
+  "Name": "Star Bin",
+  "Cost": 50,
+  "State": "Visible",
+  "Categories": [
+    "misc"
+  ],
+  "Type": "Prop",
+  "PhysicsType": "Keyframed",
+  "Bottom": "ZNegative",
+  "Model": "models/sbox_props/star_bin/star_bin.vmdl",
+  "ClassName": "",
+  "EntityPackage": "",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

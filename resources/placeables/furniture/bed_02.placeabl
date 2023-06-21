@@ -1,0 +1,18 @@
+{
+  "Id": "bed_02",
+  "Name": "Plain Wooden Bed",
+  "Cost": 200,
+  "State": "Visible",
+  "Categories": [
+    "furniture"
+  ],
+  "Type": "Prop",
+  "PhysicsType": "Keyframed",
+  "Bottom": "ZNegative",
+  "Model": "models/items/plain_set/plain_bed.vmdl",
+  "ClassName": "",
+  "EntityPackage": "",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}

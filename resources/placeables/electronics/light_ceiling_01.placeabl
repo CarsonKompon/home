@@ -1,0 +1,18 @@
+{
+  "Id": "light_ceiling_01",
+  "Name": "Ceiling Light",
+  "Cost": 75,
+  "State": "Visible",
+  "Categories": [
+    "electronics"
+  ],
+  "Type": "Prop",
+  "PhysicsType": "Keyframed",
+  "Bottom": "ZNegative",
+  "Model": "models/sbox_props/ceiling_light/ceiling_light.vmdl",
+  "ClassName": "",
+  "EntityPackage": "",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null
+}
