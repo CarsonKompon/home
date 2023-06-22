@@ -59,19 +59,7 @@ public partial class HomePlaceable : GameResource
 
     private string PackageThumbnail = "";
     [HideInEditor] public string RealModel = "";
-    [HideInEditor] public Texture Texture
-    {
-        get
-        {
-            if(_Texture == null) _Texture = SceneHelper.CreateModelThumbnail(GetModel());
-            return _Texture;
-        }
-        set
-        {
-            _Texture = value;
-        }
-    }
-    [HideInEditor] private Texture _Texture;
+    [HideInEditor] public Texture Texture;
     [HideInEditor] public Vector3 OriginOffset
     {
         get
