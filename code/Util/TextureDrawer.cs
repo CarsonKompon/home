@@ -167,7 +167,6 @@ public class TextureDrawer
     public void DrawTexture(Texture texture, int x, int y)
     {
         var colors = texture.GetPixels();
-        var pos = 0;
 
         var xx = 0;
         var yy = 0;
