@@ -60,23 +60,24 @@ public partial class HomePlaceable : GameResource
     private string PackageThumbnail = "";
     [HideInEditor] public string RealModel = "";
     [HideInEditor] public Texture Texture;
-    [HideInEditor] public Vector3 OriginOffset
+    [HideInEditor] public Transform TransformOffset
     {
         get
         {
-            if(!OriginLoaded)
+            if(!TransformOffsetLoaded)
             {
-                FindOriginOffset();
+                FindTransformOffset();
+                TransformOffsetLoaded = true;
             }
-            return _OriginOffset;
+            return _TransformOffset;
         }
         set
         {
-            _OriginOffset = value;
+            _TransformOffset = value;
         }
     }
-    [HideInEditor] private Vector3 _OriginOffset;
-    [HideInEditor] private bool OriginLoaded = false;
+    [HideInEditor] private Transform _TransformOffset;
+    [HideInEditor] private bool TransformOffsetLoaded = false;
 
     private Package LoadedPackage;
 
@@ -108,29 +109,35 @@ public partial class HomePlaceable : GameResource
         return All.Find(p => p.Cost <= cost);
     }
 
-    private void FindOriginOffset()
+    private void FindTransformOffset()
     {
-        OriginOffset = Vector3.Zero;
+        _TransformOffset = Transform.Zero;
         Model model = Sandbox.Model.Load(Model);
         switch(Bottom)
         {
             case BottomDirection.ZNegative:
-                OriginOffset = Vector3.Zero.WithZ(model.Bounds.Mins.z);
+                _TransformOffset.Position = Vector3.Zero.WithZ(model.Bounds.Mins.z);
+                _TransformOffset.Rotation = Rotation.LookAt(Vector3.Forward, Vector3.Up);
                 break;
             case BottomDirection.ZPositive:
-                OriginOffset = Vector3.Zero.WithZ(model.Bounds.Maxs.z);
+                _TransformOffset.Position = Vector3.Zero.WithZ(model.Bounds.Maxs.z);
+                _TransformOffset.Rotation = Rotation.LookAt(Vector3.Backward, Vector3.Up);
                 break;
             case BottomDirection.XNegative:
-                OriginOffset = Vector3.Zero.WithX(model.Bounds.Mins.x);
+                _TransformOffset.Position = Vector3.Zero.WithX(model.Bounds.Mins.x);
+                _TransformOffset.Rotation = Rotation.LookAt(Vector3.Left, Vector3.Up);
                 break;
             case BottomDirection.XPositive:
-                OriginOffset = Vector3.Zero.WithX(model.Bounds.Maxs.x);
+                _TransformOffset.Position = Vector3.Zero.WithX(model.Bounds.Maxs.x);
+                _TransformOffset.Rotation = Rotation.LookAt(Vector3.Right, Vector3.Up);
                 break;
             case BottomDirection.YNegative:
-                OriginOffset = Vector3.Zero.WithY(model.Bounds.Mins.y);
+                _TransformOffset.Position = Vector3.Zero.WithY(model.Bounds.Mins.y);
+                _TransformOffset.Rotation = Rotation.LookAt(Vector3.Down, Vector3.Up);
                 break;
             case BottomDirection.YPositive:
-                OriginOffset = Vector3.Zero.WithY(model.Bounds.Maxs.y);
+                _TransformOffset.Position = Vector3.Zero.WithY(model.Bounds.Maxs.y);
+                _TransformOffset.Rotation = Rotation.LookAt(Vector3.Up, Vector3.Up);
                 break;
         }
     }

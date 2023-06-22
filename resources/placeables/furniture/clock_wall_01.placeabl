@@ -8,11 +8,12 @@
   ],
   "Type": "Prop",
   "PhysicsType": "Keyframed",
-  "Bottom": "ZNegative",
+  "Bottom": "YPositive",
   "Model": "models/indoor/wall_clock/wallclock.vmdl",
   "ClassName": "",
   "EntityPackage": "",
   "ThumbnailOverride": "",
   "PlaceSound": null,
-  "StashSound": null
+  "StashSound": null,
+  "TransformOffset": {}
 }
