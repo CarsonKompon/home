@@ -59,8 +59,6 @@ public partial class ArcadeMachineBase : ModelEntity, IUse
             CurrentUser.Controller = new HomeWalkController();
         }
         CurrentUser = null;
-
-        Log.Info("removed");
     }
 
     public virtual bool OnUse(Entity user)
