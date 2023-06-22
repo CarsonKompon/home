@@ -176,6 +176,53 @@
           "Name": "Zoom",
           "KeyboardCode": "MOUSE3",
           "GroupName": "Other"
+        },
+        {
+          "Name": "Puke",
+          "KeyboardCode": "G",
+          "GroupName": "Other"
+        },
+        {
+          "Name": "TetrosMoveLeft",
+          "KeyboardCode": "A",
+          "GamepadCode": "DpadEast",
+          "GroupName": "Arcade - Tetros"
+        },
+        {
+          "Name": "TetrosMoveRight",
+          "KeyboardCode": "D",
+          "GamepadCode": "DpadWest",
+          "GroupName": "Arcade - Tetros"
+        },
+        {
+          "Name": "TetrosSoftDrop",
+          "KeyboardCode": "S",
+          "GamepadCode": "DpadSouth",
+          "GroupName": "Arcade - Tetros"
+        },
+        {
+          "Name": "TetrosHardDrop",
+          "KeyboardCode": "SPACE",
+          "GamepadCode": "DpadNorth",
+          "GroupName": "Arcade - Tetros"
+        },
+        {
+          "Name": "TetrosRotateRight",
+          "KeyboardCode": "W",
+          "GamepadCode": "Y",
+          "GroupName": "Arcade - Tetros"
+        },
+        {
+          "Name": "TetrosRotateLeft",
+          "KeyboardCode": "",
+          "GamepadCode": "X",
+          "GroupName": "Arcade - Tetros"
+        },
+        {
+          "Name": "TetrosHold",
+          "KeyboardCode": "SHIFT",
+          "GamepadCode": "SwitchLeftBumper",
+          "GroupName": "Arcade - Tetros"
         }
       ]
     },

@@ -189,11 +189,15 @@ public partial class ArcadeScreenTetris : WorldPanel
         }
     }
 
+    [GameEvent.Tick.Client]
+    public void OnTick()
+    {
+        Style.Opacity = MathX.Clamp(1.25f - (Vector3.DistanceBetween( Camera.Position, Position ) * 0.004f), 0f, 1f);
+    }
+
     [GameEvent.Client.Frame]
     public void OnFrame()
     {
-        Style.Opacity = MathX.Clamp(1.25f - (Vector3.DistanceBetween( Camera.Position, Position ) * 0.004f), 0f, 1f);
-
         if(!Playing) return;
         if(Game.LocalClient.SteamId != Machine.CurrentUser.Client.SteamId) return;
 
@@ -234,43 +238,47 @@ public partial class ArcadeScreenTetris : WorldPanel
         if(!Playing) return;
         if(Game.LocalClient.SteamId != Machine.CurrentUser.Client.SteamId) return;
 
-        if(Input.Pressed("Jump"))
+        if(Input.Pressed("TetrosHardDrop"))
         {
             HardDrop();
         }
-        else if(Input.Pressed("Run"))
+        else if(Input.Pressed("TetrosHold"))
         {
             Hold();
         }
         else
         {
-            if(Input.Pressed("Left"))
+            if(Input.Pressed("TetrosMoveLeft"))
             {
                 LeftTimer = 0f;
                 Move(-1);
             }
-            else if(Input.Down("Left") && LeftTimer > 0.2f)
+            else if(Input.Down("TetrosMoveLeft") && LeftTimer > 0.2f)
             {
                 LeftTimer = 0.1f;
                 Move(-1);
             }
 
-            if(Input.Pressed("Right"))
+            if(Input.Pressed("TetrosMoveRight"))
             {
                 RightTimer = 0f;
                 Move(1);
             }
-            else if(Input.Down("Right") && RightTimer > 0.2f)
+            else if(Input.Down("TetrosMoveRight") && RightTimer > 0.2f)
             {
                 RightTimer = 0.1f;
                 Move(1);
             }
 
-            if(Input.Pressed("Forward"))
+            if(Input.Pressed("TetrosRotateRight"))
             {
                 Rotate();
             }
-            FastDrop = Input.Down("Backward");
+            if(Input.Pressed("TetrosRotateLeft"))
+            {
+                Rotate(-1);
+            }
+            FastDrop = Input.Down("TetrosSoftDrop");
         }
     }
 
@@ -637,12 +645,15 @@ public partial class ArcadeScreenTetris : WorldPanel
             RequestUpdatePlayer();
         }
 
-        public void Rotate()
+        public void Rotate(int dir = 1)
         {
-            CurrentPieceRotation = (CurrentPieceRotation + 1) % 4;
+            int prevRot = CurrentPieceRotation;
+            CurrentPieceRotation += dir;
+            while(CurrentPieceRotation < 0) CurrentPieceRotation += 4;
+            CurrentPieceRotation = CurrentPieceRotation % 4;
             if(CheckPieceCollision(CurrentPiece, CurrentPieceRotation, new Vector2(CurrentPieceX, CurrentPieceY)))
             {
-                CurrentPieceRotation = (CurrentPieceRotation - 1) % 4;
+                CurrentPieceRotation = prevRot;
             }
             LastUpdate /= 2;
             Sound.FromEntity("tetros_rotate", Machine);

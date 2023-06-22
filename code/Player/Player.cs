@@ -54,6 +54,7 @@ public partial class HomePlayer : AnimatedEntity
 	[ClientInput] private bool FlashlightEnabled { get; set; } = false;
 	private SpotLightEntity ViewFlashlight;
 	private SpotLightEntity WorldFlashlight;
+	private Particles PukeParticle = null;
 
 	[ClientInput] public string LastRoomName { get; set; }
 
@@ -162,6 +163,16 @@ public partial class HomePlayer : AnimatedEntity
 		{
 			if(ThirdPersonZoom > 0f) ThirdPersonZoom = 0f;
 			else ThirdPersonZoom = 130f;
+		}
+
+		if(Input.Down("puke") && PukeParticle == null)
+		{
+			PukeParticle = Particles.Create("particles/puke.vpcf", this, "hat");
+		}
+		else if(!Input.Down("puke") && PukeParticle != null)
+		{
+			PukeParticle.Destroy();
+			PukeParticle = null;
 		}
 	}
 
