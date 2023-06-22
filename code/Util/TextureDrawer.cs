@@ -8,7 +8,7 @@ namespace Home.Util;
 public class TextureDrawer
 {
 
-	private readonly Texture Texture;
+	public readonly Texture Texture;
 	private readonly byte[] Data;
 	private readonly int Width;
 	private readonly int Height;
@@ -39,6 +39,17 @@ public class TextureDrawer
 	{
 		Texture.Update( Data );
 	}
+
+    public void Clear(Color color)
+    {
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                DrawPixel(x, y, color);
+            }
+        }
+    }
 
 	public void DrawCircle( int x, int y, int radius, Color color, bool filled = false )
 	{
