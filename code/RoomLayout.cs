@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Collections.Generic;
 using System.Text.Json;
 using Sandbox;
@@ -11,11 +12,12 @@ public partial class RoomLayout : BaseNetworkable
     public List<RoomLayoutEntry> Entries { get; set; } = new List<RoomLayoutEntry>();
 }
 
-public partial class RoomLayoutEntry : BaseNetworkable
+public class RoomLayoutEntry
 {
-    [Net] public string Id { get; set; }
-    [Net] public Vector3 Position { get; set; }
-    [Net] public Rotation Rotation { get; set; }
-    [Net] public float Scale { get; set; }
-    [Net] public bool HasPhysics { get; set; } = false;
+    public string Id { get; set; }
+    public Vector3 Position { get; set; }
+    public Rotation Rotation { get; set; }
+    public float Scale { get; set; }
+    public bool HasPhysics { get; set; } = false;
+    public float[] Color { get; set; } = new float[] { 1f, 1f, 1f };
 }

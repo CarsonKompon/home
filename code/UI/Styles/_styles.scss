@@ -431,37 +431,6 @@ ShopPlaceableButton {
     }
 }
 
-PlaceableContextMenu {
-    position: absolute;
-    width: 192px;
-    height: 192px;
-    border-radius: 8px;
-    background-color: white;
-    pointer-events: all;
-    flex-direction: column;
-    padding: 8px;
-    font-family: Poppins;
-    font-size: 16px;
-    font-weight: 700;
-
-    .option-switch {
-        justify-content: space-between;
-        align-items: center;
-
-        .name {
-            flex-grow: 1;
-        }
-
-        switchcontrol {
-            flex-shrink: 0;
-        }
-    }
-
-    label {
-        color: black;
-    }
-}
-
 .nametag {
     font-family: Ubuntu;
     font-size: 48px;

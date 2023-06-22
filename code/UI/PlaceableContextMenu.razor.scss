@@ -1,0 +1,31 @@
+PlaceableContextMenu {
+    position: absolute;
+    flex-grow: 1;
+    border-radius: 8px;
+    background-color: white;
+    pointer-events: all;
+    flex-direction: column;
+    padding: 8px;
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 700;
+    gap: 8px;
+
+    .option {
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+
+        .name {
+            flex-grow: 1;
+        }
+
+        switchcontrol {
+            flex-shrink: 0;
+        }
+    }
+
+    label {
+        color: black;
+    }
+}

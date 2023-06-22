@@ -170,6 +170,10 @@ public partial class RoomController : Entity
             entry.Rotation = localTransform.Rotation;
             entry.Scale = ent.Scale;
             entry.HasPhysics = component.HasPhysics;
+            if(ent is ModelEntity modelEnt)
+            {
+                entry.Color = new float[] {modelEnt.RenderColor.r, modelEnt.RenderColor.g, modelEnt.RenderColor.b};
+            }
 
             layout.Entries.Add(entry);
         }
@@ -202,6 +206,10 @@ public partial class RoomController : Entity
             Transform localTransform = player.Room.GetFrontDoor().StartTransform.ToWorld(new Transform(entry.Position, entry.Rotation));
             Entity ent = await HomeGame.SpawnPlaceable(entry.Id, player.Client.SteamId, localTransform.Position, localTransform.Rotation, entry.Scale);
             HomeGame.SetPlaceablePhysics(ent.NetworkIdent, entry.HasPhysics);
+            if(ent is ModelEntity modelEnt)
+            {
+                modelEnt.RenderColor = new Color(entry.Color[0], entry.Color[1], entry.Color[2]);
+            }
         }
     }
 

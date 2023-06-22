@@ -76,6 +76,17 @@ public partial class PlaceableComponent : EntityComponent
         }
     }
 
+    [ConCmd.Server]
+    public static void SetColor(int ident, float r, float g, float b)
+    {
+        Game.AssertServer();
+
+        if(Entity.FindByIndex(ident) is ModelEntity model)
+        {
+            model.RenderColor = new Color(r, g, b);
+        }
+    }
+
     public void Destroy()
     {
         Game.AssertServer();

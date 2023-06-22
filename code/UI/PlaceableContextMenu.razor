@@ -3,26 +3,46 @@
 @using Sandbox.UI.Construct;
 @using System;
 @using System.Collections.Generic;
+@attribute [StyleSheet]
 
 @namespace Home
 
 <root>
-    <div class="option-switch">
+    <div class="option switch">
         <div class="name">Physics Enabled</div>
         <switchcontrol Value="@HasPhysics()" @ref="SwitchPhysics" ></switchcontrol>
     </div>
+    <ColorEditor class="option color" @ref="ColorPicker" />
 </root>
 
 @code
 {
     public Entity Entity { get; set; }
     public SwitchControl SwitchPhysics { get; set; }
+    public ColorEditor ColorPicker { get; set; }
+    private RealTimeSince LastColorUpdate = 0;
 
     protected override void OnAfterTreeRender(bool firstTime)
     {
         base.OnAfterTreeRender(firstTime);
+        
+        if(firstTime)
+        {
+            if(Entity is ModelEntity modelEnt)
+            {
+                ColorPicker.Value = modelEnt.RenderColor;
+            }
+        }
+
         SwitchPhysics.OnValueChanged += (value) => {
             OnPhysicsEnabledChanged(value);
+        };
+
+        ColorPicker.OnColorChanged += (color) => {
+            if(Entity.Components.Get<PlaceableComponent>() is PlaceableComponent component)
+            {
+                PlaceableComponent.SetColor(Entity.NetworkIdent, color.r, color.g, color.b);
+            }
         };
     }
 
@@ -37,6 +57,16 @@
         Entity = entity;
     }
 
+    [GameEvent.Tick.Client]
+    public void Tick()
+    {
+        if(LastColorUpdate > 0.5f)
+        {
+            UpdateColor();
+            LastColorUpdate = 0;
+        }
+    }
+
     [GameEvent.Client.BuildInput]
     public void OnBuildInput()
     {
@@ -44,12 +74,12 @@
         {
             if(!PseudoClass.HasFlag(PseudoClass.Hover))
             {
-                Delete();
+                Close();
             }  
         }
         else if(Input.Released("menu"))
         {
-            Delete();
+            Close();
         }
     }
 
@@ -57,6 +87,20 @@
     {
         ConsoleSystem.Run("home_set_placeable_physics", Entity.NetworkIdent, enabled);
         
+    }
+
+    private void UpdateColor()
+    {
+        if(Entity.Components.Get<PlaceableComponent>() is PlaceableComponent component)
+        {
+            var color = ColorPicker.Value.ToColor();
+            PlaceableComponent.SetColor(Entity.NetworkIdent, color.r, color.g, color.b);
+        }
+    }
+
+    private void Close()
+    {
+        Delete();
     }
 
     @* protected override int BuildHash()
