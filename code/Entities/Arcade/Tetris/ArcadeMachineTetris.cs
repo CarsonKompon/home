@@ -119,6 +119,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     {
         var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
         if(machine == null) return;
+        if(machine.CurrentUser == null) return;
         var clients = Game.Clients.Where(c => c.SteamId != machine.CurrentUser.Client.SteamId);
         machine.UpdatePlayerRpc(To.Multiple(clients), blockType, x, y, rot);
     }

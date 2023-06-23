@@ -7,6 +7,12 @@ using Home.Util;
 
 namespace Home;
 
+public class AchievementProgress
+{
+    public string Name {get; set;}
+    public int Progress {get; set;}
+    public bool Unlocked {get; set;}
+}
 
 [GameResource("Home Achievement", "achieve", "Describes a Home achievement.", Icon = "emoji_events" )]
 public partial class HomeAchievement : GameResource

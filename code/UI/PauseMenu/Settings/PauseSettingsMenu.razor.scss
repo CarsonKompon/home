@@ -1,0 +1,37 @@
+HomeSettingsPage
+{
+    gap: 4px;
+    .navbar
+    {
+        height: 10%;
+
+        .left, .right
+        {
+            padding: 0px;
+            margin: 0px;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(black, 0);
+            width: 50%;
+        }
+
+        &.top
+        {
+            display: none;
+        }
+    }
+
+    .settings
+    {
+        height: 90%;
+        flex-direction: column;
+        background-color: rgba(black, 0);
+        overflow: scroll;
+
+        .category
+        {
+            height: auto;
+            flex-shrink: 0;
+        }
+    }
+}

@@ -44,7 +44,7 @@
         AddDestination("/", typeof(PauseGameMenu));
         AddDestination("/inventory", typeof(HomeInventory));
         AddDestination("/outfit", typeof(PauseOutfitMenu));
-        AddDestination("/settings", typeof(HomeSettingsPage));
+        AddDestination("/settings", typeof(PauseSettingsMenu));
 
         BindClass( "ingame", () => Game.InGame );
         BindClass( "inlobby", () => Game.Menu.Lobby != null );

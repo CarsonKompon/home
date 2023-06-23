@@ -176,27 +176,5 @@
                 height: 96%;
             }
         }
-
-        HomeSettingsPage
-        {
-            .navbar
-            {
-                display: none;
-            }
-
-            .settings
-            {
-                height: 100%;
-                flex-direction: column;
-                background-color: rgba(black, 0);
-                overflow: scroll;
-
-                .category
-                {
-                    height: auto;
-                    flex-shrink: 0;
-                }
-            }
-        }
     }
 }

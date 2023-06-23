@@ -15,11 +15,13 @@ public class PlayerData
 	public long SteamId { get; set; }
 	public long Money { get; set; }
 	public List<StashEntry> Stash { get; set; }
+	public List<AchievementProgress> Achievements {get; set;}
 
 	public PlayerData()
 	{
 		Money = 0;
 		Stash = new List<StashEntry>();
+		Achievements = new List<AchievementProgress>();
 	}
 
 	public PlayerData(long steamId) : this()
@@ -45,6 +47,7 @@ public partial class HomePlayer
 {
     [Net, Change] public long Money { get; set; }
 	[Net] public IList<StashEntry> Stash { get; set; }
+	public List<AchievementProgress> Achievements {get; set;}
 	public List<RoomLayout> RoomLayouts = new List<RoomLayout>();
 
 	[ConVar.ClientData] public string HomeUploadData { get; set; } = "";
@@ -63,7 +66,8 @@ public partial class HomePlayer
 		FileSystem.Data.WriteJson(Client.SteamId.ToString() + "/player.json", new PlayerData(Client.SteamId)
 		{
 			Money = Money,
-			Stash = Stash.ToList()
+			Stash = Stash.ToList(),
+			Achievements = Achievements
 		});
 		
 	}
@@ -169,6 +173,69 @@ public partial class HomePlayer
 			player.Money = data.Money;
 			player.Stash = data.Stash;
 		}
+	}
+
+	public void SetAchievementProgress(string name, int progress)
+	{
+		var list = Achievements.Where(x => x.Name == name).ToList();
+		AchievementProgress achievement;
+		if(list.Count() == 0)
+		{
+			achievement = new AchievementProgress()
+			{
+				Name = name,
+				Progress = progress,
+				Unlocked = false
+			};
+			if(achievement.Progress >= HomeAchievement.Find(name).Goal)
+			{
+				AchievementUnlock(name);
+			}
+		}
+		else
+		{
+			achievement = list[0];
+			achievement.Progress = progress;
+			if(achievement.Progress >= HomeAchievement.Find(name).Goal)
+			{
+				AchievementUnlock(name);
+			}
+		}
+	}
+
+	public void AddAchievementProgress(string name, int amount)
+	{
+		var list = Achievements.Where(x => x.Name == name).ToList();
+		AchievementProgress achievement;
+		if(list.Count() == 0)
+		{
+			achievement = new AchievementProgress()
+			{
+				Name = name,
+				Progress = amount,
+				Unlocked = false
+			};
+			if(achievement.Progress >= HomeAchievement.Find(name).Goal)
+			{
+				AchievementUnlock(name);
+			}
+		}
+		else
+		{
+			achievement = list[0];
+			achievement.Progress += amount;
+			int _goal = HomeAchievement.Find(name).Goal;
+			if(achievement.Progress >= _goal)
+			{
+				achievement.Progress = _goal;
+				AchievementUnlock(name);
+			}
+		}
+	}
+
+	private void AchievementUnlock(string name)
+	{
+
 	}
 
 	public bool HasMoney(long amount)
