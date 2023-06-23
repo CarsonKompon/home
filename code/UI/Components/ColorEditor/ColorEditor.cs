@@ -30,35 +30,42 @@ public class ColorEditor : Panel
 
 		Presets = Add.Panel( "presets" );
 
-		AddColorPreset( 0, Color.Parse( "#f44336" ) );
-		AddColorPreset( 1, Color.Parse( "#e91e63" ) );
-		AddColorPreset( 2, Color.Parse( "#9c27b0" ) );
-		AddColorPreset( 3, Color.Parse( "#673ab7" ) );
-		AddColorPreset( 4, Color.Parse( "#3f51b5" ) );
-		AddColorPreset( 5, Color.Parse( "#2196f3" ) );
-		AddColorPreset( 6, Color.Parse( "#03a9f4" ) );
-		AddColorPreset( 7, Color.Parse( "#00bcd4" ) );
-		AddColorPreset( 8, Color.Parse( "#009688" ) );
-		AddColorPreset( 9, Color.Parse( "#4caf50" ) );
-		AddColorPreset( 10, Color.Parse( "#8bc34a" ) );
-		AddColorPreset( 11, Color.Parse( "#cddc39" ) );
-		AddColorPreset( 12, Color.Parse( "#ffeb3b" ) );
-		AddColorPreset( 13, Color.Parse( "#ffc107" ) );
-		AddColorPreset( 14, Color.Parse( "#ff9800" ) );
-		AddColorPreset( 15, Color.Parse( "#ff5722" ) );
-		AddColorPreset( 16, Color.Parse( "#795548" ) );
-		AddColorPreset( 17, Color.Parse( "#9e9e9e" ) );
-		AddColorPreset( 18, Color.Parse( "#607d8b" ) );
-		AddColorPreset( 19, Color.White );
-		AddColorPreset( 20, Color.Gray );
-		AddColorPreset( 21, Color.Black );
+		AddColorPreset( 0, Color.Parse( "#eb0e59" ) );
+		AddColorPreset( 1, Color.Parse( "#ff5722" ) );
+		AddColorPreset( 2, Color.Parse( "#ffc107" ) );
+		AddColorPreset( 3, Color.Parse( "#4caf50" ) );
+		AddColorPreset( 4, Color.Parse( "#4c90af" ) );
+		AddColorPreset( 5, Color.Parse( "#4c4caf" ) );
+		AddColorPreset( 6, Color.Parse( "#7c4caf" ) );
+		AddColorPreset( 7, Color.White );
+		AddColorPreset( 8, Color.Black );
+
+		// AddColorPreset( 4, Color.Parse( "#673ab7" ) );
+		// AddColorPreset( 4, Color.Parse( "#3f51b5" ) );
+		// AddColorPreset( 5, Color.Parse( "#2196f3" ) );
+		// AddColorPreset( 6, Color.Parse( "#03a9f4" ) );
+		// AddColorPreset( 7, Color.Parse( "#00bcd4" ) );
+		// AddColorPreset( 8, Color.Parse( "#009688" ) );
+		// AddColorPreset( 9, Color.Parse( "#4caf50" ) );
+
+		// AddColorPreset( 11, Color.Parse( "#cddc39" ) );
+		// AddColorPreset( 12, Color.Parse( "#ffeb3b" ) );
+		// AddColorPreset( 13, Color.Parse( "#ffc107" ) );
+		// AddColorPreset( 14, Color.Parse( "#ff9800" ) );
+
+		// AddColorPreset( 16, Color.Parse( "#795548" ) );
+		// AddColorPreset( 17, Color.Parse( "#9e9e9e" ) );
+		// AddColorPreset( 18, Color.Parse( "#607d8b" ) );
+		// AddColorPreset( 19, Color.White );
+		// AddColorPreset( 20, Color.Gray );
+		// AddColorPreset( 21, Color.Black );
 
 		// If you add more it's gonna wrap and look like shit so leave it here
 	}
 
 	void AddColorPreset( int num, Color? defVal )
 	{
-		defVal = Cookie.Get<Color>( $"color_preset_{num}", defVal ?? Color.White );
+		defVal = Cookie.Get<Color>( $"colorpicker_preset_{num}", defVal ?? Color.White );
 		var p = Presets.Add.Panel( "preset" );
 		p.AddEventListener( "onmousedown", e =>
 		{
@@ -77,7 +84,7 @@ public class ColorEditor : Panel
 					p.Style.BackgroundColor = Value;
 					p.Style.Dirty();
 
-					Cookie.Set<Color>( $"color_preset_{num}", Value );
+					Cookie.Set<Color>( $"colorpicker_preset_{num}", Value );
 				}
 			}
 		} );

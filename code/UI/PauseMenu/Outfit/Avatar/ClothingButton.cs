@@ -24,8 +24,6 @@ public class ClothingButton : Panel
 		DeleteChildren( true );
 
 		ImagePanel = new Panel( this, "image" );
-		Log.Info(Clothing.ResourceName);
-		Log.Info(Clothing.Icon.Path);
 		
 		if(FileSystem.Mounted.FileExists(Clothing.Icon.Path))
 		{

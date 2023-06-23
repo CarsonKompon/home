@@ -113,7 +113,8 @@
     {
         WebPanel.Style.Display = DisplayMode.None;
         WebPanel.Surface.InBackgroundMode = true;
-        RemoveClass("open");
+        Delete(true);
+        Current = null;
     }
 
     protected override int BuildHash()
