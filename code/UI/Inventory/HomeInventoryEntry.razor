@@ -57,6 +57,7 @@
     protected override void OnMouseDown(MousePanelEvent e)
     {
         base.OnMouseDown(e);
+        Log.Info("MOUSE DOWN");
         if(!HasClass("dragging"))
         {
             AddClass("dragging");
@@ -74,6 +75,7 @@
     protected override void OnMouseUp( MousePanelEvent e )
     {
         base.OnMouseUp( e );
+        Log.Info("MOUSE UP");
         if(HasClass("dragging"))
         {
             RemoveClass("dragging");

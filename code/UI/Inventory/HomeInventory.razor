@@ -10,18 +10,24 @@
 
 <root>
     <label class="inventory-header">#inventory.inventory</label>
-    <div class="inventory-container">
-        @foreach (StashEntry item in GetInventory())
-        {
-            @if(item == null || item.Amount == 0) continue;
-            <HomeInventoryEntry Entry="@item" />
-        }
+    <div @ref="ContainterContainer" class="inventory-container">
+        <div @ref="InventoryContainer" class="container-offset">
+            @foreach (StashEntry item in GetInventory())
+            {
+                @if(item == null || item.Amount == 0) continue;
+                <HomeInventoryEntry Entry="@item" />
+            }
+        </div>
     </div>
 </root>
 
 @code
 {
     private static HomeInventory Instance;
+    public Panel InventoryContainer {get; set;}
+    public Panel ContainterContainer {get; set;}
+    private float ScrollY = 0;
+    private float ScrollVel = 0;
 
     public HomeInventory()
     {
@@ -50,9 +56,50 @@
     {
         if(Game.LocalPawn is HomePlayer player)
         {
-            Log.Info(e.Target);
             player.TryPickup();
         }
+    }
+
+    public override void OnMouseWheel(float value)
+    {
+        if(value != 0)
+        {
+            ScrollVel = -value * 1000;
+            InventoryContainer.Style.Top = Length.Pixels(ScrollY);
+            InventoryContainer.Style.Dirty();
+        }
+    }
+
+    [GameEvent.Client.Frame]
+    public void OnFrame()
+    {
+        if(InventoryContainer == null) return;
+        ScrollVel = ScrollVel.LerpTo(0, Time.Delta * 10f);
+        if(Math.Abs(ScrollVel) < 0.1f) ScrollVel = 0;
+        if(ScrollVel != 0)
+        {
+            ScrollY += ScrollVel * Time.Delta;
+            UpdateScroll();
+        }
+        if(ScrollY > 0f)
+        {
+            ScrollVel = -ScrollY * 10f;
+            UpdateScroll();
+        }
+        float height = (InventoryContainer.Box.Rect.Height - ContainterContainer.Box.Rect.Height) * ScaleFromScreen;
+        Log.Info(height);
+        if(ScrollY < -height)
+        {
+            ScrollVel = -(ScrollY + height) * 10f;
+            UpdateScroll();
+        }
+        //Log.Info(ScrollY);
+    }
+
+    public void UpdateScroll()
+    {
+        InventoryContainer.Style.Top = Length.Pixels(ScrollY);
+        InventoryContainer.Style.Dirty();
     }
 
     [GameEvent.Tick.Client]

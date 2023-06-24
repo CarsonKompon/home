@@ -21,13 +21,20 @@ HomeInventory {
     }
 
     .inventory-container {
+        position: relative;
         flex-grow: 1;
         margin: 2%;
         padding: 8px;
         background-color: lightgrey;
         border-radius: 16px;
-        //overflow-y: scroll;
-        flex-wrap: wrap;
+        overflow: hidden;
+        justify-content: center;
+
+        .container-offset {
+            width: 98%;
+            position: absolute;
+            flex-wrap: wrap;
+        }
     }
 
     &.open {

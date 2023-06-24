@@ -15,6 +15,12 @@
     public Panel Background {get; set;}
     public HomePlaceable Placeable { get; set; }
     public Vector2 DragOffset { get; set; } = new Vector2(25, 25);
+    public Vector2 StartingPosition { get; set; }
+
+    public HomeInventoryDragging()
+    {
+        StartingPosition = Mouse.Position;
+    }
 
     public override void OnMouseWheel( float value )
     {
