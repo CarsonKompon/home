@@ -343,7 +343,7 @@ public partial class ArcadeScreenTetris : WorldPanel
             for(int i=0; i<4; i++)
             {
                 CurrentBlocks[i].SetClass("t-1 t-2 t-3 t-4 t-5 t-6 t-7", false);
-                CurrentBlocks[i].SetClass("t-" + blockType.ToString(), blockType != BlockType.Empty);
+                CurrentBlocks[i].SetClass("t-" + ((int)blockType).ToString(), blockType != BlockType.Empty);
             }
 
             SetPositionFromPiece(CurrentBlocks, blockType, pos, rotation);

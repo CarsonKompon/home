@@ -278,8 +278,12 @@ public partial class HomeGame : GameManager
     {
         var package = await Package.FetchAsync( ident, false );
         var className = package.GetMeta( "PrimaryAsset", "" );
-        if(string.IsNullOrEmpty(className)) return null;
-        
+        if(string.IsNullOrEmpty(className))
+		{
+			Log.Warning( $"PrimaryAsset wasn't found for {package.FullIdent}");
+			return null;
+		}
+
         var thing = await package.MountAsync( true );
 
 		var type = TypeLibrary.GetType( className );

@@ -68,7 +68,6 @@ ArcadeScreenTetris
     {
         width: 10px;
         height: 10px;
-        border: solid 1px rgba(black, 0.05);
         
         &.hide
         {
@@ -77,54 +76,50 @@ ArcadeScreenTetris
 
         &.active, &.current
         {
+            background-image: url("/ui/tetros/block.png");
+            background-size: contain;
+
             &.t-1
             {
-                background: radial-gradient(rgb(255, 255, 255) 0%, rgb(100, 155, 255) 100%);
-                border: solid 1px rgb(100, 155, 255);
+                background-image: url("/ui/tetros/block-1.png");
             }
 
             &.t-2
             {
-                background: radial-gradient(rgb(255, 255, 255) 0%, rgb(167, 100, 255) 100%);
-                border: solid 1px rgb(167, 100, 255);
+                background-image: url("/ui/tetros/block-2.png");
             }
 
             &.t-3
             {
-                background: radial-gradient(rgb(255, 255, 255) 0%, rgb(255, 100, 159) 100%);
-                border: solid 1px rgb(255, 100, 159);
+                background-image: url("/ui/tetros/block-3.png");
             }
-
             &.t-4
+
             {
-                background: radial-gradient(rgb(255, 255, 255) 0%, rgb(100, 255, 255) 100%);
-                border: solid 1px rgb(100, 255, 255);
+                background-image: url("/ui/tetros/block-4.png");
             }
 
             &.t-5
             {
-                background: radial-gradient(rgb(255, 255, 255) 0%, rgb(100, 255, 113) 100%);
-                border: solid 1px rgb(100, 255, 113);
+                background-image: url("/ui/tetros/block-5.png");
             }
 
             &.t-6
             {
-                background: radial-gradient(rgb(255, 255, 255) 0%, rgb(200, 211, 104) 100%);
-                border: solid 1px rgb(200, 211, 104);
+                background-image: url("/ui/tetros/block-6.png");
             }
 
             &.t-7
             {
-                background: radial-gradient(rgb(255, 255, 255) 0%, rgb(255, 131, 100) 100%);
-                border: solid 1px rgb(255, 131, 100);
+                background-image: url("/ui/tetros/block-7.png");
             }
         }
 
         &.current
         {
             position: absolute;
-            background: radial-gradient(rgb(255, 255, 255) 0%, #64ffff);
-            border: solid 1px #64ffff;
+            // background: radial-gradient(rgb(255, 255, 255) 0%, #64ffff);
+            // border: solid 1px #64ffff;
         }
 
         &.ghost

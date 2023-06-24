@@ -6,12 +6,14 @@
   "Categories": [
     "electronics"
   ],
-  "Type": "Entity",
+  "Type": "PackageEntity",
   "PhysicsType": "Keyframed",
+  "Bottom": "ZNegative",
   "Model": "models/entities/tv_floor_01.vmdl",
-  "ClassName": "PlaceableTV",
-  "PackageIdent": "carsonk.mediahelpers",
+  "ClassName": "",
+  "EntityPackage": "carsonk.mediaplayer",
   "ThumbnailOverride": null,
   "PlaceSound": null,
-  "StashSound": null
+  "StashSound": null,
+  "TransformOffset": {}
 }
