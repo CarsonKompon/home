@@ -223,6 +223,30 @@
           "KeyboardCode": "SHIFT",
           "GamepadCode": "SwitchLeftBumper",
           "GroupName": "Arcade - Tetros"
+        },
+        {
+          "Name": "RhythmLeft",
+          "KeyboardCode": "LEFTARROW",
+          "GamepadCode": "DpadEast",
+          "GroupName": "Arcade - Rhythm4K"
+        },
+        {
+          "Name": "RhythmDown",
+          "KeyboardCode": "DOWNARROW",
+          "GamepadCode": "DpadSouth",
+          "GroupName": "Arcade - Rhythm4K"
+        },
+        {
+          "Name": "RhythmUp",
+          "KeyboardCode": "UPARROW",
+          "GamepadCode": "DpadNorth",
+          "GroupName": "Arcade - Rhythm4K"
+        },
+        {
+          "Name": "RhythmRight",
+          "KeyboardCode": "RIGHTARROW",
+          "GamepadCode": "DpadWest",
+          "GroupName": "Arcade - Rhythm4K"
         }
       ]
     },

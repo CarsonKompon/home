@@ -20,12 +20,6 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
 
     public override void Spawn()
     {
-        // TODO: Remove this hack once map uploading is fixed
-        if(IsFromMap)
-        {
-            Rotation = Rotation.FromYaw(180);
-        }
-
         base.Spawn();
     }
 

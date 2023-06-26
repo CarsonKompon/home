@@ -497,6 +497,8 @@ public partial class HomePlayer : AnimatedEntity
 		EnableHitboxes = true;
 	}
 
+	public WorldInput WorldInput = new();
+
     /// <summary>
 	/// Called from the gamemode, clientside only.
 	/// </summary>
@@ -507,6 +509,10 @@ public partial class HomePlayer : AnimatedEntity
 
 		if ( Input.StopProcessing )
 			return;
+
+		WorldInput.Ray = new Ray(Camera.Position, Camera.Rotation.Forward);
+		WorldInput.MouseLeftPressed = Input.Down( "click" );
+		WorldInput.MouseRightPressed = Input.Down( "rightclick" );
 
 		Angles look = Input.AnalogLook;
 

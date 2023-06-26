@@ -1,0 +1,149 @@
+.hidden
+{
+    display: none;
+}
+
+.game-rhythm4k
+{
+    rhythm4ksinglemenu
+    {
+        width: 100%;
+        height: 100%;
+        pointer-events: all;
+
+        background-image: url("/sprites/arcade/rhythm4k/menu/background-1.png");
+        background-size: 128px;
+        background-repeat: repeat;
+
+        animation-name: scroll;
+        animation-duration: 500s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+
+        mainmenupage
+        {
+            color: white;
+
+            .logo
+            {
+                width: 100%;
+            }
+        }
+
+        singleplayerpage
+        {
+            * .songs
+            {
+                lobbysongbutton
+                {
+                    width: 130px;
+
+                    .song-info
+                    {
+                        h1
+                        {
+                            font-size: 20px;
+                            white-space: nowrap;
+                            text-overflow: ellipsis;
+                        }
+                        
+                        h2
+                        {
+                            font-size: 16px;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                    }
+                } 
+            }
+        }
+
+        settingspage
+        {
+            .form-label
+            {
+                flex-grow: 1;
+            }
+        }
+
+        gamepage
+        {
+            .song-info
+            {
+                width: 200px;
+                height: 600px;
+                flex-direction: column;
+                
+                .info-left
+                {
+                    flex-direction: column;
+                    align-items: center;
+                    width: 100%;
+
+                    .difficulty-container
+                    {
+                        width: 200px;
+                        margin: 0px;
+                    }                    
+                }
+
+
+                .info-right
+                {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 16px;
+                    flex-grow: 1;
+
+                    .song-progress
+                    {
+                        width: 100%;
+
+                        
+                    }
+                }
+            }
+
+            .score-info
+            {
+                right: 0px;
+                width: 225px;
+                height: 600px;
+                font-size: 32px;
+
+                .score-big
+                {
+                    font-size: 42px;
+                }
+
+                .score-small
+                {
+
+                }
+            }
+            
+        }
+
+        // &.ingame
+        // {
+        //     background-color: blue;
+        // }
+    }
+}
+
+.block-input
+{
+    pointer-events: none;
+}
+
+@keyframes scroll
+{
+    from
+    {
+        background-position: 0px 0px;
+    }
+    to
+    {
+        background-position: 5000px 5000px;
+    }
+}

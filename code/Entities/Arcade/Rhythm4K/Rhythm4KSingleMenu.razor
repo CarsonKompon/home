@@ -1,0 +1,35 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@using Home;
+
+@inherits Sandbox.UI.NavHostPanel
+@namespace Rhythm4K
+
+<root>
+
+</root>
+
+@code
+{
+    public ArcadeMachineRhythm4K Machine {get; set;}
+
+    public Rhythm4KSingleMenu()
+    {
+        DefaultUrl = "/";
+
+        AddDestination("/", typeof(MainMenuPage));
+        AddDestination("/songs", typeof(SingleplayerPage));
+        AddDestination("/addons", typeof(AddonPage));
+        AddDestination("/game", typeof(GamePage));
+        AddDestination("/settings", typeof(SettingsPage));
+    }
+
+    public override bool WantsMouseInput()
+    {
+        return Machine?.CurrentUser == Game.LocalPawn; 
+    }
+}

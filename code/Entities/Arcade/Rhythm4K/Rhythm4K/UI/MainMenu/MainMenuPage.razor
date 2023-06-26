@@ -1,0 +1,37 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+@inherits Panel
+@using Home;
+@attribute [StyleSheet]
+
+@namespace Rhythm4K
+
+<root>
+    <div class="logo-container">
+        <img class="logo" src="/sprites/arcade/rhythm4k/logo.png" />
+        <div class="author">By Carson Kompon</div>
+    </div>
+
+    @* <div class="menu">
+        <button onclick=@Singleplayer>Play</button>
+        <button onclick=@GotoOptions>Options</button>
+    </div> *@
+
+    <div class="start-text">
+        Press <InputHint name="Use" /> to play
+    </div>
+</root>
+
+@code
+{
+    public async void Singleplayer()
+    {
+        this.Navigate("/songs");
+    }
+
+    public void GotoOptions()
+    {
+        this.Navigate("/settings");
+    }
+}

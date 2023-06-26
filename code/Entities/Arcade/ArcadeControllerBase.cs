@@ -24,6 +24,18 @@ public class ArcadeControllerBase : HomePawnController
         BuildInput();
     }
 
+    // public override void BuildInput()
+    // {
+    //     base.BuildInput();
+
+    //     if(Pawn is HomePlayer player)
+    //     {
+    //         player.WorldInput.Ray = player.AimRay;
+    //         player.WorldInput.MouseLeftPressed = Input.Down( "click" );
+    //         player.WorldInput.MouseRightPressed = Input.Down( "rightclick" );
+    //     }
+    // }
+
 
 
 }

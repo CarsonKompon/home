@@ -87,7 +87,6 @@
             UpdateScroll();
         }
         float height = (InventoryContainer.Box.Rect.Height - ContainterContainer.Box.Rect.Height) * ScaleFromScreen;
-        Log.Info(height);
         if(ScrollY < -height)
         {
             ScrollVel = -(ScrollY + height) * 10f;
