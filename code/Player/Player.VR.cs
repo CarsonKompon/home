@@ -13,6 +13,8 @@ public partial class HomePlayer
     {
         DeleteHands();
 
+		if(!Input.VR.IsActive) return;
+
         LeftHand = new LeftHandVR() { Owner = this };
         RightHand = new RightHandVR() { Owner = this };
 
