@@ -23,8 +23,8 @@ public partial class ArcadeScreenRhythm4K : WorldPanel
         
         Menu = AddChild<Rhythm4KSingleMenu>();
 
-        float width = 600f;
-        float height = 500f;
+        float width = 765f;
+        float height = 425f;
         PanelBounds = new Rect(-width/2, -height/2, width, height);
         Scale = 0.5f;
     }

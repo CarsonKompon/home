@@ -1,0 +1,20 @@
+{
+  "Id": "arcade_rhythm4k",
+  "Name": "Rhythm4K Arcade Cabinet",
+  "Cost": 1000000,
+  "State": "Visible",
+  "Categories": [
+    "electronics",
+    "arcade"
+  ],
+  "Type": "Entity",
+  "PhysicsType": "Keyframed",
+  "Bottom": "ZNegative",
+  "Model": "models/carsonhome/ddrmachine.vmdl",
+  "ClassName": "ArcadeMachineRhythm4K",
+  "EntityPackage": "",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null,
+  "TransformOffset": {}
+}

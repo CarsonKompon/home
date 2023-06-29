@@ -14,6 +14,7 @@ namespace Home;
 /// </summary>
 [Library("home_arcade_rhythm"), HammerEntity]
 [Title("rhythm4K Arcade Cabinet"), Category("Arcade"), Icon("gamepad")]
+[EditorModel("models/carsonhome/ddrmachine.vmdl")]
 public partial class ArcadeMachineRhythm4K : ArcadeMachineBase
 {
     public ArcadeScreenRhythm4K Screen { get; set; }
@@ -21,6 +22,15 @@ public partial class ArcadeMachineRhythm4K : ArcadeMachineBase
     public override void Spawn()
     {
         base.Spawn();
+
+        SetModel("models/carsonhome/ddrmachine.vmdl");
+        SetupPhysicsFromModel(PhysicsMotionType.Static);
+
+        if(IsFromMap)
+        {
+            Random rand = new Random();
+            RenderColor = new ColorHsv(rand.Next(0, 360), 0.85f, 1).ToColor();
+        }
     }
 
     public override void ClientSpawn()

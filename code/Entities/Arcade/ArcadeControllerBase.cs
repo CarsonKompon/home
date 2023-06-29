@@ -14,7 +14,16 @@ public class ArcadeControllerBase : HomePawnController
 
         WishVelocity = Vector3.Zero;
         Velocity = Vector3.Zero;
-        Position = ArcadeMachine.Position + Vector3.Down * 10 + ArcadeMachine.Rotation.Forward * 40f + Vector3.Up * 10f;
+
+        var attachment = ArcadeMachine.GetAttachment("PlayerPos");
+        if(attachment != null)
+        {
+            Position = attachment.Value.Position;
+        }
+        else
+        {
+            Position = ArcadeMachine.Position + Vector3.Down * 10 + ArcadeMachine.Rotation.Forward * 40f + Vector3.Up * 10f;
+        }
     
         if(Input.Pressed("crouch"))
         {

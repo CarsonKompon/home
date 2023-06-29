@@ -537,8 +537,8 @@ namespace Home
             Velocity -= BaseVelocity;
         }
 
-        bool IsTouchingLadder = false;
-        Vector3 LadderNormal;
+        protected bool IsTouchingLadder = false;
+        protected Vector3 LadderNormal;
 
         public virtual void CheckLadder()
         {
@@ -734,7 +734,7 @@ namespace Home
             Position = trace.EndPosition;
         }
 
-        void RestoreGroundPos()
+        protected void RestoreGroundPos()
         {
             if (GroundEntity == null || GroundEntity.IsWorld)
                 return;
@@ -743,7 +743,7 @@ namespace Home
             //Pos = Position.Position;
         }
 
-        void SaveGroundPos()
+        protected void SaveGroundPos()
         {
             if (GroundEntity == null || GroundEntity.IsWorld)
                 return;

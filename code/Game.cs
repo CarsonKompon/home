@@ -257,7 +257,7 @@ public partial class HomeGame : GameManager
 
             case PlaceableType.PackageEntity:
                 // Create the package entity
-				Entity packageEntity = await SpawnPackage(placeable.EntityPackage, position, rotation, scale);
+				Entity packageEntity = await SpawnPackage(placeable.EntityPackage, position, rotation, scale, placeable.ClassName);
 				packageEntity.Transmit = TransmitType.Always;
 
 				// Add the component
@@ -274,11 +274,14 @@ public partial class HomeGame : GameManager
 		return null;
 	}
 
-	public static async Task<Entity> SpawnPackage(string ident, Vector3 position, Rotation rotation, float scale)
+	public static async Task<Entity> SpawnPackage(string ident, Vector3 position, Rotation rotation, float scale, string className = "")
     {
         var package = await Package.FetchAsync( ident, false );
-        var className = package.GetMeta( "PrimaryAsset", "" );
-        if(string.IsNullOrEmpty(className))
+        if(className == "")
+		{
+			className = package.GetMeta( "PrimaryAsset", "" );
+		}
+		if(string.IsNullOrEmpty(className))
 		{
 			Log.Warning( $"PrimaryAsset wasn't found for {package.FullIdent}");
 			return null;

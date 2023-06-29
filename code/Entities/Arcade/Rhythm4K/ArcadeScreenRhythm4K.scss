@@ -32,11 +32,51 @@
 
         singleplayerpage
         {
+            .body
+            {
+                .right
+                {
+                    .info
+                    {
+                        gap: 2px;
+
+                        lobbysongbutton
+                        {
+                            height: 300px;
+
+                            .song-info
+                            {
+                                gap: 12px;
+                            }
+                        }
+
+                        .difficulties
+                        {
+                            background-color: rgba(white, 0.08);
+
+                            // difficultybutton .button
+                            // {
+                            //     background-color: rgb(168, 168, 168);
+                            //     &.active
+                            //     {
+                            //         background-color: white
+                            //     }
+                            // }
+                        }
+                    }
+
+                    .buttons
+                    {
+                        flex-shrink: 0;
+                    }
+                }
+            }
+
             * .songs
             {
                 lobbysongbutton
                 {
-                    width: 130px;
+                    //width: 130px;
 
                     .song-info
                     {
@@ -70,7 +110,7 @@
         {
             .song-info
             {
-                width: 200px;
+                width: 400px;
                 height: 600px;
                 flex-direction: column;
                 
@@ -107,19 +147,19 @@
             .score-info
             {
                 right: 0px;
-                width: 225px;
+                width: 330px;
                 height: 600px;
-                font-size: 32px;
+                // font-size: 32px;
 
-                .score-big
-                {
-                    font-size: 42px;
-                }
+                // .score-big
+                // {
+                //     font-size: 42px;
+                // }
 
-                .score-small
-                {
+                // .score-small
+                // {
 
-                }
+                // }
             }
             
         }

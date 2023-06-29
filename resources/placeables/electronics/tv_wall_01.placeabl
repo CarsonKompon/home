@@ -1,7 +1,7 @@
 {
-  "Id": "tv_floor_01",
-  "Name": "Media Player TV",
-  "Cost": 8000,
+  "Id": "tv_wall_01",
+  "Name": "Media Player Wall TV",
+  "Cost": 7000,
   "State": "Visible",
   "Categories": [
     "electronics"
@@ -9,10 +9,10 @@
   "Type": "PackageEntity",
   "PhysicsType": "Keyframed",
   "Bottom": "ZNegative",
-  "Model": "models/items/electronics/tv_medium_onstand.vmdl",
-  "ClassName": "",
+  "Model": "models/items/electronics/tv_medium.vmdl",
+  "ClassName": "CarsonK.MediaPlayerWall",
   "EntityPackage": "carsonk.mediaplayer",
-  "ThumbnailOverride": null,
+  "ThumbnailOverride": "",
   "PlaceSound": null,
   "StashSound": null,
   "TransformOffset": {}

@@ -148,6 +148,9 @@ public partial class HomePlayer : AnimatedEntity
 		TickPlayerUse();
 		SimulateActiveChild(cl, ActiveChild);
 
+		CheckRotate();
+		SetVrAnimProperties();
+
 		// Flashlight
 		if(WorldFlashlight.IsValid())
 		{
@@ -174,6 +177,9 @@ public partial class HomePlayer : AnimatedEntity
 			PukeParticle.Destroy();
 			PukeParticle = null;
 		}
+
+		LeftHand?.Simulate(cl);
+		RightHand?.Simulate(cl);
 	}
 
 	[ConCmd.Admin("noclip")]
@@ -341,6 +347,9 @@ public partial class HomePlayer : AnimatedEntity
 			Camera.FirstPersonViewer = this;
 			Camera.Main.SetViewModelCamera( 90f );
 		}
+
+		LeftHand?.FrameSimulate(cl);
+		RightHand?.FrameSimulate(cl);
 	}
 
     /// <summary>
@@ -421,7 +430,15 @@ public partial class HomePlayer : AnimatedEntity
 
 		TimeSinceSpawned = 0;
 
-        Controller = new HomeWalkController();
+		if(Input.VR.IsActive)
+		{
+			Controller = new WalkControllerVR();
+		}
+		else
+		{
+        	Controller = new HomeWalkController();
+		}
+
 
         if(DevController is HomeNoclipController)
         {
@@ -443,6 +460,11 @@ public partial class HomePlayer : AnimatedEntity
 		Velocity = Vector3.Zero;
 
 		CreateHull();
+
+		CreateHands();
+
+		if(Input.VR.IsActive)
+			SetBodyGroup("Hands", 1); // Hide hands
 
 		GameManager.Current?.MoveToSpawnpoint( this );
 		ResetInterpolation();
@@ -475,6 +497,8 @@ public partial class HomePlayer : AnimatedEntity
 		{
 			child.EnableDrawing = false;
 		}
+
+		DeleteHands();
 	}
 
     /// <summary>

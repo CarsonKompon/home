@@ -48,7 +48,14 @@
     public void OnServerLeave() => Navigate("/");
 
     [GameEvent.Menu.LobbyJoined]
-    public void OnLobbyJoined() => Navigate("/lobby");
+    public void OnLobbyJoined()
+    {
+        Navigate("/lobby");
+        if(Game.Menu.Lobby.Owner.IsMe)
+        {
+            Game.Menu.Lobby.Addons = Game.Menu.Lobby.Addons.Add("carsonk.home_base_content");
+        }
+    }
 
     [GameEvent.Menu.LobbyLeave]
     public void OnLobbyLeave() => Navigate("/");

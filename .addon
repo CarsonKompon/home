@@ -12,52 +12,11 @@
   "HasCode": true,
   "CodePath": "/code/",
   "PackageReferences": [
-    "facepunch.beer_cask",
-    "facepunch.beer_keg_a2",
-    "facepunch.bathtub",
-    "facepunch.cardboard_box",
-    "facepunch.office_chair",
-    "facepunch.office_desk",
-    "facepunch.mattress",
-    "randkassets.wetfloor_sign",
-    "facepunch.tv",
-    "facepunch.wooden_crate",
-    "facepunch.pallet",
-    "facepunch.toilet_a",
-    "facepunch.binbag_a1",
-    "facepunch.trolley",
-    "facepunch.bench_plastic",
-    "luke.office_flowers_1",
-    "luke.office_flowers_2",
-    "luke.office_plant",
-    "titanovsky.christmas_tree",
     "alex.lcd",
-    "facepunch.trolley",
     "carsonk.mediahelpers",
-    "frogpond.washingmachine",
-    "dan.froggychair",
-    "luke.plain_wardrobe",
-    "luke.minimal_wardrobe",
-    "facepunch.beer_keg_a1",
-    "facepunch.sprinkler_a",
-    "facepunch.smoke_detector_a",
-    "facepunch.studio_light_projector",
-    "facepunch.tv_aerial",
-    "facepunch.street_bin",
-    "facepunch.star_bin",
-    "facepunch.blackbin",
-    "jammie.metal_bin",
-    "facepunch.ceiling_light",
-    "facepunch.ceiling_halogen",
-    "facepunch.fireextinguisher",
-    "eurorp.monitor",
-    "frogpond.speaker",
-    "luke.minimal_bed",
-    "luke.plain_bed",
-    "luke.fwnbed",
-    "facepunch.oil_drum",
-    "facepunch.beer_bottle",
-    "frogpond.wallclock"
+    "shadb.ddrmachine",
+    "shadb.hand_toon_left",
+    "shadb.hand_toon_right"
   ],
   "EditorReferences": null,
   "Metadata": {
@@ -72,7 +31,8 @@
     "ProjectTemplate": null,
     "CsProjName": "",
     "ControlModes": {
-      "Keyboard": true
+      "Keyboard": true,
+      "VR": true
     },
     "InputSettings": {
       "Actions": [
@@ -299,6 +259,7 @@
         }
       ]
     },
-    "ReplaceTags": "chill life simulation sandbox community living"
+    "ReplaceTags": "chill life simulation sandbox community living",
+    "ParentPackage": ""
   }
 }

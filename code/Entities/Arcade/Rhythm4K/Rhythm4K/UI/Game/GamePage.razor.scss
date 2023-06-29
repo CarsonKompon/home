@@ -14,13 +14,13 @@ GamePage
     .game-section
     {
         position: absolute;
-        left: 25%;
+        left: 50%;
         background-color: black;
         border-left: 4px solid white;
         border-right: 4px solid white;
         width: 600px;
         height: 100%;
-        // transform: translateX(-50%, 0%);
+        transform: translateX(-50%, 0%);
 
         .lane-container
         {
@@ -50,7 +50,7 @@ GamePage
 
                     &.pressing
                     {
-                        transform: scale(0.9);
+                        transform: translate(-23% 0%) scale(0.9);
                     }
 
                     .receptor-arrow

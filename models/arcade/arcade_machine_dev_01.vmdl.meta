@@ -1,0 +1,28 @@
+{
+  "publish": {
+    "Enabled": true,
+    "ProjectConfig": {
+      "Title": "Dev Arcade Cabinet #1",
+      "Type": "model",
+      "Org": "carsonk",
+      "Ident": "arcade_machine_dev_01",
+      "Tags": "arcade machine cabinet",
+      "Schema": 0,
+      "HasAssets": false,
+      "AssetsPath": null,
+      "Resources": null,
+      "MenuResources": null,
+      "HasCode": false,
+      "CodePath": null,
+      "PackageReferences": null,
+      "EditorReferences": null,
+      "Metadata": {
+        "SingleAssetSource": "models/arcade/arcade_machine_dev_01.vmdl",
+        "Summary": "",
+        "Description": "",
+        "Public": true,
+        "ReplaceTags": "arcade machine cabinet"
+      }
+    }
+  }
+}
