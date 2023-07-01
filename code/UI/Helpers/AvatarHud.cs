@@ -6,6 +6,7 @@ using Sandbox.UI;
 using Sandbox.Utility;
 using Sandbox.UI.Construct;
 using System.Collections.Generic;
+using Home.Util;
 
 namespace Home;
 
@@ -74,7 +75,7 @@ public class AvatarHud : ScenePanel
             clothingFromString.Deserialize(ClothingString);
             if(clothingFromString != null && AvatarModel != null)
             {
-                ClothingObjects = clothingFromString.DressSceneObject(AvatarModel);
+                ClothingObjects = ClothingHelper.DressSceneObject(AvatarModel, clothingFromString);
             }
             return;
         }
@@ -92,7 +93,7 @@ public class AvatarHud : ScenePanel
         {
             Log.Info("CLOTHING:");
             Log.Info(clothing.Serialize());
-            ClothingObjects = clothing.DressSceneObject(AvatarModel);
+            ClothingObjects = ClothingHelper.DressSceneObject(AvatarModel, clothing);
         }
     }
 

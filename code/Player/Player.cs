@@ -8,6 +8,7 @@ using Sandbox.Component;
 using System.ComponentModel;
 using System.Text.Json;
 using System.Collections.Generic;
+using Home.Util;
 
 namespace Home;
 
@@ -473,7 +474,7 @@ public partial class HomePlayer : AnimatedEntity
 	public void Dress()
 	{
 		Clothing.Deserialize(ClothingString);
-		Clothing.DressEntity(this);
+		ClothingHelper.DressEntity(this, Clothing);
 	}
 
 	public override void OnKilled()

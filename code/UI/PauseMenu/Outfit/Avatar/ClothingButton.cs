@@ -25,13 +25,13 @@ public class ClothingButton : Panel
 
 		ImagePanel = new Panel( this, "image" );
 		
-		if(FileSystem.Mounted.FileExists(Clothing.Icon.Path))
+		if(Clothing.Icon.Path != null && FileSystem.Mounted.FileExists(Clothing.Icon.Path))
 		{
 			ImagePanel.Style.SetBackgroundImage( Clothing.Icon.Path );
 		}
 		else
 		{
-			ImagePanel.Style.SetBackgroundImage( Clothing.ResourcePath + ".png" );	
+			ImagePanel.Style.SetBackgroundImage( Clothing.ResourcePath.Replace(".clothing", ".png").Replace(".hcloth", ".png") );
 		}
 
 		if( HasVariations )

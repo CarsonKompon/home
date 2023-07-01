@@ -2,6 +2,7 @@ using Sandbox;
 using Editor;
 using System.Collections.Generic;
 using System.Linq;
+using Home.Util;
 
 namespace Home;
 
@@ -33,7 +34,7 @@ public partial class BaseNPC : AnimatedEntity, IUse
         // Set the model and dress it
         SetModel("models/citizen/citizen.vmdl");
         Clothing.Deserialize(ClothingString);
-        Clothing.DressEntity( this );
+        ClothingHelper.DressEntity(this, Clothing);
     }
 
     public override void ClientSpawn()

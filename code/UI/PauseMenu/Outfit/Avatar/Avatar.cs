@@ -62,7 +62,7 @@ public partial class Avatar : Panel
 
 		ItemGroups.Clear();
 
-		var subcategoryGroups = ResourceLibrary.GetAll<Clothing>()
+		var subcategoryGroups = HomeClothing.All
 			.Where( x => x.Category == category && x.Parent == null )
 			.OrderBy( x => x.SubCategory )
 			.GroupBy( x => x.SubCategory?.Trim() ?? string.Empty );
