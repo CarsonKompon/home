@@ -43,22 +43,28 @@
     </div>
 
     <div class="news">
-        <h1>WORK IN PROGRESS</h1>
+        <h1>JUNE 2023 ROUNDUP</h1>
     
+        <WebPanel @ref="WebPanel" />
+
         <div class="content">
-            Please note that this game is a heavy work in progress and is currently only being made by one person (myself) in my spare time.
-            <span style="height: 8px;" />
-            The goal for Home is that anyone will be able to create their own sub-communities with servers that host different maps/content via addons. If you wish to create your own content, please reach out. 
-            <span style="height: 8px;" />
-            My main project at the moment is my full-time job working on Turnip Boy Robs a Bank. Please consider checking it out!
+            Here's what was added in the month of June:
         </div>
 
-        <div class="subheader">NEW 6/28/2023</div>
-
-        <div class="content">
-            - New Rhythm4K Arcade Cabinets model from ShadowBrain
+        <div class="content bullets">
+            - Added the Construction Yard shop to the test map
             <span />
-            - Tons of new furniture items courtesy of Luke and others from asset.party
+            - Added tons of new Furniture items from NotGaylien and other creators
+            <span />
+            - Added MediaPlayers (Youtube functionality is still awaiting a fix from facepunch)
+            <span />
+            - Added an Avatar Editor to the TAB menu featuring clothing from Sugma Gaming and ShadowBrain
+            <span />
+            - Added the Tetros Arcade Game. 
+            <span />
+            - Added the Rhythm4K Arcade Game. Thanks ShadowBrain for making the custom cabinet model!
+            <span />
+            - Added VR support! You can walk and flail your arms around, but cannot interact with anything just yet.
         </div>
     </div>
 
@@ -70,6 +76,17 @@
 
 @code
 {
+    public WebPanel WebPanel { get; set; }
+
+    protected override void OnAfterTreeRender(bool firstTime)
+    {
+        base.OnAfterTreeRender(firstTime);
+        
+        if(firstTime)
+        {
+            WebPanel.Surface.Url = "https://www.youtube.com/embed/tgoyb3oR9mU";
+        }
+    }
 
     public async void PlayGame()
     {

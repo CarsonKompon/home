@@ -100,6 +100,11 @@
             animation-timing-function: ease-in-out;
         }
 
+        WebPanel {
+            aspect-ratio: 1.77777777778;
+            width: 100%;
+        }
+
         .subheader {
             width: 100%;
             justify-content: center;
@@ -117,10 +122,10 @@
         .content {
             font-size: 19px;
             flex-direction: column;
+        }
 
-            bold {
-                display: 
-            }
+        .bullets {
+            font-size: 14px;
         }
     }
 
