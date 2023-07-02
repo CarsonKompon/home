@@ -13,7 +13,7 @@ public partial class ArcadeScreenRhythm4K : WorldPanel
     
     public ArcadeMachineRhythm4K Machine;
     public Rhythm4KSingleMenu Menu;
-    public SingleplayerPage GamePage;
+    public SongSelectPage GamePage;
 
     public ArcadeScreenRhythm4K()
     {

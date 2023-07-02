@@ -6,7 +6,7 @@
 @using Sandbox.UI.Construct;
 @using Home;
 
-@inherits Sandbox.UI.NavHostPanel
+@inherits Rhythm4KMenu
 @namespace Rhythm4K
 
 <root>
@@ -21,10 +21,10 @@
     {
         DefaultUrl = "/";
 
-        AddDestination("/", typeof(MainMenuPage));
-        AddDestination("/songs", typeof(SingleplayerPage));
+        AddDestination("/", typeof(AttractMenuPage));
+        AddDestination("/songs", typeof(SongSelectPage));
         AddDestination("/addons", typeof(AddonPage));
-        AddDestination("/game", typeof(GamePage));
+        AddDestination("/game", typeof(RhythmGamePage));
         AddDestination("/settings", typeof(SettingsPage));
     }
 

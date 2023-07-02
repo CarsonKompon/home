@@ -20,7 +20,7 @@
         animation-iteration-count: infinite;
         animation-timing-function: linear;
 
-        mainmenupage
+        AttractMenuPage
         {
             color: white;
 
@@ -30,7 +30,7 @@
             }
         }
 
-        singleplayerpage
+        SongSelectPage
         {
             .body
             {
@@ -106,8 +106,13 @@
             }
         }
 
-        gamepage
+        rhythmgamepage
         {
+            .game-section
+            {
+                transform: translateX(-50%);
+            }
+
             .song-info
             {
                 width: 400px;
