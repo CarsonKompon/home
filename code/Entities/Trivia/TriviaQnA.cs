@@ -112,14 +112,16 @@ public static class QnASheet
 		}
 	*/
 
-	public static QuestionStruct[] GamingQuestions = new QuestionStruct[]
+	public static QuestionStruct[] Questions = new QuestionStruct[]
 	{
+		//Gaming
+		#region
 		new QuestionStruct()
 		{
 			Question = "Which person did not program DOOM (1993)",
 			Subject = QuestionStruct.SubjectEnum.Gaming,
 			QuestionType = QuestionStruct.TypeEnum.Standard,
-			Answers = new AnswerStruct[] 
+			Answers = new AnswerStruct[]
 			{
 				new AnswerStruct("John Carmack", AnswerStruct.OptionEnum.A),
 				new AnswerStruct("Jonh Romero", AnswerStruct.OptionEnum.B),
@@ -140,11 +142,11 @@ public static class QnASheet
 				new AnswerStruct("Mike Harrington", AnswerStruct.OptionEnum.C, true),
 				new AnswerStruct("David Speyrer", AnswerStruct.OptionEnum.D),
 			}
-		}
-	};
+		},
+		#endregion
 
-	public static QuestionStruct[] WildlifeQuestions = new QuestionStruct[]
-	{
+		//Wildlife
+		#region
 		new QuestionStruct()
 		{
 			Question = "Do polar bears have black skin underneath its fur",
@@ -169,6 +171,51 @@ public static class QnASheet
 				new AnswerStruct("Hissing", AnswerStruct.OptionEnum.C, true),
 				new AnswerStruct("Squealing", AnswerStruct.OptionEnum.D),
 			}
-		}
+		},
+		#endregion
+
+		//Nature
+		#region
+		new QuestionStruct()
+		{
+			Question = "How long can oak trees live for",
+			Subject = QuestionStruct.SubjectEnum.Nature,
+			QuestionType = QuestionStruct.TypeEnum.Standard,
+			Answers = new AnswerStruct[]
+			{
+				new AnswerStruct("1,000", AnswerStruct.OptionEnum.A, true),
+				new AnswerStruct("100", AnswerStruct.OptionEnum.B),
+				new AnswerStruct("10,000", AnswerStruct.OptionEnum.C),
+				new AnswerStruct("10", AnswerStruct.OptionEnum.D),
+			}
+		},
+
+		new QuestionStruct()
+		{
+			Question = "Which is not a type of plant",
+			Subject = QuestionStruct.SubjectEnum.Nature,
+			QuestionType = QuestionStruct.TypeEnum.Standard,
+			Answers = new AnswerStruct[]
+			{
+				new AnswerStruct("Moss", AnswerStruct.OptionEnum.A),
+				new AnswerStruct("Mushroom", AnswerStruct.OptionEnum.B, true),
+				new AnswerStruct("Water lily", AnswerStruct.OptionEnum.C),
+				new AnswerStruct("Potato", AnswerStruct.OptionEnum.D),
+			}
+		},
+		#endregion
 	};
+
+	public static List<QuestionStruct> QuestionsArray = Questions.ToList();
+
+	public static void ResetQuestions() => QuestionsArray = Questions.ToList();
+
+	public static QuestionStruct TakeQuestion()
+	{
+		QuestionStruct question = QuestionsArray[Game.Random.Int( 0, QuestionsArray.Count - 1 )];
+
+		QuestionsArray.Remove( question );
+
+		return question;
+	}
 }
