@@ -35,8 +35,17 @@ AboutTab
     .left, .right
     {
         flex-direction: column;
-        width: 50%;
         gap: 4px;
+    }
+
+    .left
+    {
+        width: 60%;
+    }
+
+    .right
+    {
+        width: 40%;
     }
 
     .content
