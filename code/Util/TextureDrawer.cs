@@ -1,6 +1,3 @@
-using Sandbox;
-using System;
-
 namespace Home.Util;
 
 // ported from https://github.com/ProtoTurtle/UnityBitmapDrawing/blob/d73a977ad918ef1c6b3fa820432291dbed388e54/src/BitmapDrawing.cs

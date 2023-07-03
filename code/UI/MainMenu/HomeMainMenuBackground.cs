@@ -1,7 +1,3 @@
-using System;
-using Sandbox;
-using Sandbox.UI;
-
 namespace Home;
 
 public partial class HomeMainMenuBackground : Panel

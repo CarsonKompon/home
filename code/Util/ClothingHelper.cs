@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Sandbox;
-
 namespace Home.Util;
 
 public static class ClothingHelper

@@ -1,4 +1,4 @@
-﻿using Sandbox;
+﻿/*using Sandbox;
 using System;
 using System.Linq;
 
@@ -86,3 +86,4 @@ partial class Pawn : AnimatedEntity
 		Camera.FirstPersonViewer = this;
 	}
 }
+*/

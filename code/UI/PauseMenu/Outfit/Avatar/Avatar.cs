@@ -1,14 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Sandbox;
-using Sandbox.Razor;
-using Sandbox.UI;
-using Sandbox.UI.Construct;
-using Sandbox.Utility;
-
-namespace Home;
+﻿namespace Home;
 
 public partial class Avatar : Panel
 {

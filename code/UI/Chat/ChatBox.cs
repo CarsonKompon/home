@@ -1,10 +1,3 @@
-using System.Drawing;
-using Sandbox;
-using Sandbox.Diagnostics;
-using Sandbox.UI;
-using Sandbox.UI.Construct;
-using System;
-
 namespace Home
 {
 	public partial class HomeChatBox : Panel

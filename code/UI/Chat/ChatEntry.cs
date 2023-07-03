@@ -1,10 +1,4 @@
-﻿using Sandbox;
-using Sandbox.UI;
-using Sandbox.UI.Construct;
-
-
-
-namespace Home
+﻿namespace Home
 {
 	public partial class HomeChatEntry : Panel
 	{

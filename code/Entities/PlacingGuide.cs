@@ -1,6 +1,3 @@
-using System;
-using Sandbox;
-
 namespace Home;
 
 public class PlacingGuide : Entity

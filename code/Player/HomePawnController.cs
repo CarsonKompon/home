@@ -1,6 +1,3 @@
-using Sandbox;
-using System.Collections.Generic;
-
 namespace Home
 {
 	public class HomePawnController : BaseNetworkable

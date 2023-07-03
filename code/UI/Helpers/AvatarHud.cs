@@ -1,15 +1,4 @@
-using System.Diagnostics;
-using System.ComponentModel;
-using System;
-using Sandbox;
-using Sandbox.UI;
-using Sandbox.Utility;
-using Sandbox.UI.Construct;
-using System.Collections.Generic;
-using Home.Util;
-
 namespace Home;
-
 public class AvatarHud : ScenePanel
 {
     public bool FullBody {get;set;} = false;

@@ -1,12 +1,3 @@
-using System.Diagnostics;
-using System.ComponentModel;
-using System;
-using Sandbox;
-using Sandbox.UI;
-using Sandbox.Utility;
-using Sandbox.UI.Construct;
-using System.Collections.Generic;
-
 namespace Home;
 
 public class RotatingModelScenePanel : ScenePanel

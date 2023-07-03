@@ -1,10 +1,4 @@
-﻿using Sandbox;
-using Sandbox.UI;
-using Sandbox.UI.Construct;
-using System;
-using System.Collections.Generic;
-
-namespace Home;
+﻿namespace Home;
 
 public class HomeVoiceEntry : Panel
 {

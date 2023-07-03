@@ -1,11 +1,4 @@
-﻿
-using System;
-using System.Linq;
-using Sandbox;
-using Sandbox.UI;
-using Sandbox.UI.Construct;
-
-namespace Home;
+﻿namespace Home;
 
 public class PlayermodelButton : Panel
 {

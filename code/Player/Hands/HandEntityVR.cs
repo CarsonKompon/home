@@ -1,5 +1,3 @@
-using Sandbox;
-
 namespace Home;
 
 public partial class HandEntityVR : AnimatedEntity

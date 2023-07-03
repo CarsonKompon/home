@@ -1,7 +1,3 @@
-using Sandbox;
-using Editor;
-using Home.Util;
-
 namespace Home;
 
 /// <summary>
@@ -32,7 +28,7 @@ public partial class TestCrashNPC : BaseNPC
     }
 
     [ClientRpc]
-    public async void TestCrash()
+    public void TestCrash()
     {
         NotificationPanel.AddEntry("Upvote the github issue in console so Facepunch can fix", "", 30);
         Log.Info("UPVOTE THIS ISSUE:");
