@@ -212,7 +212,8 @@
     },
     "HttpAllowList": [
       "https://www.youtube.com/",
-      "https://kick.com/"
+      "https://kick.com/",
+      "https://beatconnect.io/"
     ],
     "PackageSettings": [
       {
