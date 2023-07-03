@@ -1,0 +1,53 @@
+AboutTab
+{
+    font-family: Poppins;
+    padding: 16px;
+    gap: 12px;
+
+    h2
+    {
+        font-size: 48px;
+        font-weight: bolder;
+        color: black;
+    }
+
+    h3
+    {
+        font-size: 24px;
+        font-weight: bolder;
+        color: black;
+    }
+
+    h4
+    {
+        font-size: 20px;
+        font-weight: light;
+        color: black;
+    }
+
+
+    .header
+    {
+        flex-direction: column;
+        gap: -4px;
+    }
+
+    .left, .right
+    {
+        flex-direction: column;
+        width: 50%;
+        gap: 4px;
+    }
+
+    .content
+    {
+        flex-direction: column;
+        overflow-y: scroll;
+        flex-grow: 1;
+
+        > *
+        {
+            flex-shrink: 0;
+        }
+    }
+}
