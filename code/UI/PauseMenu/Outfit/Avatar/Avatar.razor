@@ -36,7 +36,7 @@
 
                     @foreach( var item in group.clothing )
                     {
-                        <ClothingButton class="glass with-click" HasVariations=@(!displayingVariations && HasVariations(item)) Clothing=@item />
+                        <ClothingButton class="glass with-click @CategoryClass()" HasVariations=@(!displayingVariations && HasVariations(item)) Clothing=@item />
                     }
 
                 </wrap>
@@ -83,6 +83,10 @@
 
     <column class="preview">
         <AvatarHud @ref="AvatarHud" FullBody=@(true) Zoom=@(2) CanDrag=@(true) />
+        <div class="extra-buttons">
+            <i Tooltip="Larger Icons w/ Categories" onclick=@SetLargeDisplay >grid_3x3</i>
+            <i Tooltip="Smaller Icons w/ Everything" onclick=@SetSmallDisplay >grid_4x4</i>
+        </div>
     </column>
 
 </root>

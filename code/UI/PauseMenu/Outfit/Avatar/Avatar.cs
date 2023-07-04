@@ -12,6 +12,12 @@ namespace Home;
 
 public partial class Avatar : Panel
 {
+	enum DisplayType
+	{
+		Large,
+		Small
+	}
+
 	record struct ItemGroup( string subcategory, List<Clothing> clothing );
 	record struct ClothingCategory( Clothing.ClothingCategory category, string title, string icon, Vector3? position = default );
 
@@ -34,6 +40,7 @@ public partial class Avatar : Panel
 	public ClothingContainer Container = new();
 	public string PreviewClothing = "[]";
 	public List<SceneModel> ClothingModels = new();
+	DisplayType CurrentDisplayType = DisplayType.Large;
 
 	public Clothing.ClothingCategory CurrentCategory { get; set; }
 
@@ -63,7 +70,7 @@ public partial class Avatar : Panel
 		ItemGroups.Clear();
 
 		var subcategoryGroups = HomeClothing.All
-			.Where( x => x.Category == category && x.Parent == null )
+			.Where( x => x.Category == category && (x.Parent == null || CurrentDisplayType == DisplayType.Small) )
 			.OrderBy( x => x.SubCategory )
 			.GroupBy( x => x.SubCategory?.Trim() ?? string.Empty );
 
@@ -124,6 +131,7 @@ public partial class Avatar : Panel
 
 	bool HasVariations( Clothing clothing )
 	{
+		if(CurrentDisplayType == DisplayType.Small) return false;
 		return ResourceLibrary.GetAll<Clothing>().Any( x => x.Parent == clothing );
 	}
 
@@ -184,6 +192,29 @@ public partial class Avatar : Panel
 		timeSinceSave = 0;
 
 		originalValue = player.ClothingString;
+	}
+
+	void DisplayTypeChanged()
+	{
+		ChangeCategory( CurrentCategory );
+	}
+
+	void SetLargeDisplay( )
+	{
+		CurrentDisplayType = DisplayType.Large;
+		DisplayTypeChanged();
+	}
+
+	void SetSmallDisplay( )
+	{
+		CurrentDisplayType = DisplayType.Small;
+		DisplayTypeChanged();
+	}
+
+	string CategoryClass()
+	{
+		if(CurrentDisplayType == DisplayType.Small) return "small";
+		return "";
 	}
 
 	// protected override int BuildHash()
