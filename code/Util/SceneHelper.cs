@@ -1,13 +1,21 @@
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 using Sandbox;
 
 namespace Home.Util;
 
 public static class SceneHelper
 {
+
+    private static Dictionary<string, Texture> ModelThumbnails = new Dictionary<string, Texture>();
     public static Texture CreateModelThumbnail(string modelString, int size = 96)
     {
+        if(ModelThumbnails.ContainsKey(modelString))
+        {
+            return ModelThumbnails[modelString];
+        }
+
         // Thanks xenthio for this math :)
         float scalar = 3f;
         Model model = Model.Load(modelString);
@@ -31,13 +39,21 @@ public static class SceneHelper
         scene.AmbientLightColor = Color.White.Darken(0.5f);
 
         Graphics.RenderToTexture(scene, texture);
+        ModelThumbnails.Add(modelString, texture);
+
         obj.Delete();
         scene.World.Delete();
         return texture;
     }
 
+    private static Dictionary<string, Texture> ClothingThumbnails = new Dictionary<string, Texture>();
     public static Texture CreateClothingThumbnail(Clothing resource, int size = 256)
     {
+        if(ClothingThumbnails.ContainsKey(resource.ResourcePath))
+        {
+            return ClothingThumbnails[resource.ResourcePath];
+        }
+
 		var Scene = new ClothingScene();
 		Scene.UpdateLighting();
 		Scene.InstallClothing( resource );
@@ -48,6 +64,7 @@ public static class SceneHelper
             .Create();
 
         Graphics.RenderToTexture(Scene.Camera, texture);
+        ClothingThumbnails.Add(resource.ResourcePath, texture);
 
         Scene.World.Delete();
 		return texture;

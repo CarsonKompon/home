@@ -36,7 +36,7 @@
 
                     @foreach( var item in group.clothing )
                     {
-                        <ClothingButton class="glass with-click @CategoryClass()" HasVariations=@(!displayingVariations && HasVariations(item)) Clothing=@item />
+                        <ClothingButton Tooltip=@item.Title class="glass with-click @CategoryClass()" HasVariations=@(!displayingVariations && HasVariations(item)) Clothing=@item />
                     }
 
                 </wrap>

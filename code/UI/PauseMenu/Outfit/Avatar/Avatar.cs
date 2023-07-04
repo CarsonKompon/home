@@ -108,7 +108,7 @@ public partial class Avatar : Panel
 
 		if ( isVariation || !hasVariations ) return;
 
-		var variations = ResourceLibrary.GetAll<Clothing>()
+		var variations = HomeClothing.All
 			.Where( x => x == clothing || x.Parent == clothing )
 			.ToList();
 
@@ -132,7 +132,7 @@ public partial class Avatar : Panel
 	bool HasVariations( Clothing clothing )
 	{
 		if(CurrentDisplayType == DisplayType.Small) return false;
-		return ResourceLibrary.GetAll<Clothing>().Any( x => x.Parent == clothing );
+		return HomeClothing.All.Any( x => x.Parent == clothing );
 	}
 
 	void AddClothing( Clothing clothing )

@@ -79,6 +79,12 @@ public partial class HomeGame : GameManager
 		}
 	}
 
+	[GameEvent.Tick.Client]
+	private void ClientTick()
+	{
+		CheckClothingQueue();
+	}
+
 	[ConCmd.Server("home_try_place")]
 	public static async void TryPlace()
 	{
@@ -346,6 +352,35 @@ public partial class HomeGame : GameManager
 
 		// Delete the layout from the local layouts
 		player.RoomLayouts.RemoveAll(l => l.Name == name);
+	}
+
+
+	// Load the clothing in the queue
+	bool IsLoadingClothing = false;
+	private void CheckClothingQueue()
+	{
+		if(HomeClothing.LoadingQueue.Count() > 0 && !IsLoadingClothing)
+		{
+			LoadNextClothing();
+		}
+	}
+
+	private async void LoadNextClothing()
+	{
+		IsLoadingClothing = true;
+
+		// Get the next clothing
+		HomeClothing clothing = HomeClothing.LoadingQueue.First();
+		HomeClothing.LoadingQueue.Remove(clothing);
+
+		if(clothing.CloudModel != "")
+		{
+			Package pck = await Package.FetchAsync(clothing.CloudModel, false);
+			await pck.MountAsync(true);
+			clothing.Model = pck.GetMeta("PrimaryAsset", "");
+		}
+
+		IsLoadingClothing = false;
 	}
 
 }
