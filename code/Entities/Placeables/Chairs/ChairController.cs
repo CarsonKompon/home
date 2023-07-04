@@ -11,7 +11,14 @@ public class ChairController : HomePawnController
     {
         base.Simulate();
 
-        if(Chair == null) return;
+        if(!Chair.IsValid())
+        {
+            if(Pawn is HomePlayer ply)
+            {
+                ply.Controller = new HomeWalkController();
+            }
+            return;
+        }
 
         WishVelocity = Vector3.Zero;
         Velocity = Vector3.Zero;
