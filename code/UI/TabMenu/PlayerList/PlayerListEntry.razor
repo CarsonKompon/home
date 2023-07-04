@@ -17,7 +17,7 @@
 
         <div class="name-container">
             <label class="name" text=@Client.Name />
-            <label class="location" text=@Player.Location />
+            <label class="location" text=@(Player?.Location ?? "Loading...") />
         </div>
     </div>
 
@@ -47,6 +47,6 @@
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(Client.Name, Player.Location, Client.Ping);
+        return HashCode.Combine(Client.Name, Player?.Location ?? null, Client.Ping);
     }
 }
