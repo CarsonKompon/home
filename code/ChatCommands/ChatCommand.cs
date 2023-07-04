@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sandbox;
 
 
@@ -77,7 +78,7 @@ public class ChatCommandAttribute : LibraryAttribute
         }
 
         // Split the command into its parts
-        string[] parts = command.Split(" ");
+        List<string> parts = command.Split(" ").ToList();
 
         // Find the command
         ChatCommandAttribute chatCommand = null;
@@ -99,14 +100,20 @@ public class ChatCommandAttribute : LibraryAttribute
             return;
         }
 
-        // If the command has arguments, check if the number of arguments is correct
-        if(parts.Length - 1 != chatCommand.Arguments.Count)
+        // If the command has arguments, check if the number of arguments are correct and add the optional ones if we have the right amount of required
+        if(parts.Count - 1 < chatCommand.Arguments.Count(x => !x.Optional))
         {
-            Log.Info("🏠: Incorrect number of arguments");
+            HomeChatBox.AddChatEntry(To.Single(client), null, "Invalid number of arguments");
             return;
         }
 
+        // Add the default values for the optional arguments
+        for(int i = parts.Count - 1; i < chatCommand.Arguments.Count; i++)
+        {
+            parts.Add(chatCommand.Arguments[i].Default);
+        }
+
         // If the number of arguments is correct, run the command
-        chatCommand.Run(client, parts[1..]);
+        chatCommand.Run(client, parts.ToArray()[1..]);
     }
 }
