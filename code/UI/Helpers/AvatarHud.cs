@@ -15,11 +15,13 @@ public class AvatarHud : ScenePanel
     public bool FullBody {get;set;} = false;
     public string ClothingString {get;set;} = "";
     public float Zoom {get;set;} = 1f;
+    public bool CanDrag {get;set;} = false;
     private SceneModel AvatarModel;
     private List<SceneModel> ClothingObjects = new();
 
     private SceneSpotLight LightWarm;
 	private SceneSpotLight LightBlue;
+    private SceneSpotLight LightBack;
 
     public void Rebuild()
     {
@@ -34,6 +36,7 @@ public class AvatarHud : ScenePanel
 
         LightWarm = new SceneSpotLight(World);
         LightBlue = new SceneSpotLight(World);
+        LightBack = new SceneSpotLight(World);
         new SceneCubemap(World, Texture.Load("textures/cubemaps/default.vtex" ), BBox.FromPositionAndSize( Vector3.Zero, 1000 ) );
 
         Angles angles = new( 25, 180, 0 );
@@ -100,6 +103,38 @@ public class AvatarHud : ScenePanel
     Vector3 lookPos;
     Vector3 headPos;
     Vector3 aimPos;
+
+    float lastMousePos = 0f;
+    bool IsDragging = false;
+    float rotationOffset = 0f;
+
+    protected override void OnMouseDown( MousePanelEvent e )
+    {
+        if(e.Button == "mouseleft")
+        {
+            lastMousePos = e.LocalPosition.x;
+            IsDragging = true;
+        }
+    }
+
+    protected override void OnMouseUp( MousePanelEvent e )
+    {
+        if(e.Button == "mouseleft")
+        {
+            lastMousePos = 0f;
+            IsDragging = false;
+        }
+    }
+
+    protected override void OnMouseMove( MousePanelEvent e ) 
+    {
+        if(CanDrag && IsDragging)
+        {
+            rotationOffset -= e.LocalPosition.x - lastMousePos;
+            
+            lastMousePos = e.LocalPosition.x;
+        }
+    }
 
     void TickAvatar()
     {
@@ -193,7 +228,7 @@ public class AvatarHud : ScenePanel
 
         AvatarModel.Update(RealTime.Delta);
 
-        Angles angles = new(2, 180, 0);
+        Angles angles = new(2, 180 + rotationOffset, 0);
         Vector3 pos = Vector3.Zero;
         if(FullBody)
         {
@@ -227,6 +262,13 @@ public class AvatarHud : ScenePanel
 		LightBlue.Rotation = Rotation.LookAt( -LightBlue.Position );
 		LightBlue.ConeInner = 70;
 		LightBlue.ConeOuter = 70;
+
+        LightBack.Radius = 250;
+		LightBack.Position = Vector3.Up * 100.0f - Vector3.Forward * 100.0f + Vector3.Right * 100;
+		LightBack.LightColor = new Color( 1f, 1f, 1f ) * 5.0f;
+		LightBack.Rotation = Rotation.LookAt( -LightBack.Position );
+		LightBack.ConeInner = 70;
+		LightBack.ConeOuter = 70;
     }
 
     public void Update(string clothingString)
