@@ -35,4 +35,21 @@ public static class SceneHelper
         scene.World.Delete();
         return texture;
     }
+
+    public static Texture CreateClothingThumbnail(Clothing resource, int size = 256)
+    {
+		var Scene = new ClothingScene();
+		Scene.UpdateLighting();
+		Scene.InstallClothing( resource );
+		Scene.UpdateCameraPosition();
+
+        Texture texture = Texture.CreateRenderTarget()
+            .WithHeight(size).WithWidth(size)
+            .Create();
+
+        Graphics.RenderToTexture(Scene.Camera, texture);
+
+        Scene.World.Delete();
+		return texture;
+    }
 }

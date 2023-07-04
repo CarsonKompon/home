@@ -4,7 +4,7 @@ using System.Linq;
 using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
-
+using Home.Util;
 namespace Home;
 
 public class ClothingButton : Panel
@@ -31,7 +31,7 @@ public class ClothingButton : Panel
 		}
 		else
 		{
-			ImagePanel.Style.SetBackgroundImage( Clothing.ResourcePath.Replace(".clothing", ".png").Replace(".hcloth", ".png") );
+			ImagePanel.Style.BackgroundImage = SceneHelper.CreateClothingThumbnail( Clothing );
 		}
 
 		if( HasVariations )
