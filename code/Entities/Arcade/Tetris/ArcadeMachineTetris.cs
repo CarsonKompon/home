@@ -15,7 +15,6 @@ namespace Home;
 [Title("Tetros Arcade Cabinet"), Category("Arcade"), Icon("gamepad")]
 public partial class ArcadeMachineTetris : ArcadeMachineBase
 {
-    public override string ControllerType => "ArcadeControllerTetris";
     public ArcadeScreenTetris Screen { get; set; }
 
     public override void Spawn()

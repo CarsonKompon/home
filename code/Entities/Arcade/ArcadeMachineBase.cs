@@ -11,8 +11,6 @@ namespace Home;
 [EditorModel("models/arcade/arcade_machine_dev_01.vmdl")]
 public partial class ArcadeMachineBase : ModelEntity, IUse
 {
-    public virtual string ControllerType => "ArcadeControllerBase";
-
     public virtual bool IsUsable( Entity user ) => true;
     [Net] public HomePlayer CurrentUser { get; set; } = null;
     public bool InUse => CurrentUser != null;

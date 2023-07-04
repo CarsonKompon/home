@@ -10,7 +10,14 @@ public class ArcadeControllerBase : HomePawnController
     {
         base.Simulate();
 
-        if(ArcadeMachine == null) return;
+        if(!ArcadeMachine.IsValid())
+        {
+            if(Pawn is HomePlayer player)
+            {
+                player.Controller = new HomeWalkController();
+            }
+            return;
+        }
 
         WishVelocity = Vector3.Zero;
         Velocity = Vector3.Zero;
