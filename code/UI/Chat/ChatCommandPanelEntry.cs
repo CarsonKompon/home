@@ -15,7 +15,11 @@ namespace Home
 		public HomeChatCommandPanelEntry(ChatCommandAttribute command)
 		{
 			Command = Add.Label( "/" + command.Name.ToLower(), "command" );
-			Arguments = Add.Label( command.GetArgumentTemplate(), "arguments" );
+			string argString = command.GetArgumentTemplate();
+			if(argString != "")
+			{
+				Arguments = Add.Label( argString, "arguments" );
+			}
 		}
 
 	}

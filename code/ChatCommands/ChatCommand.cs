@@ -11,8 +11,8 @@ public class ChatArgument
     public string Name { get; set; }
     public string Description { get; set; }
     public Type Type { get; set; }
-    public string Default { get; set; }
-    public bool Optional { get; set; }
+    public string Default { get; set; } = "";
+    public bool Optional { get; set; } = false;
 }
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]

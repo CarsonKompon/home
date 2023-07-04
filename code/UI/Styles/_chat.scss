@@ -80,10 +80,24 @@ homechatbox
 
 	homechatcommandpanel
 	{
-		opacity: 0;
 		color: lightgrey;
 		text-align: left;
 		margin-top: 10px;
+		gap: 8px;
+		overflow-x: scroll;
+
+		homechatcommandpanelentry
+		{
+			gap: 4px;
+			flex-shrink: 0;
+			background-color: rgba( black, 0.5 );
+			padding: 4px;
+
+			label
+			{
+				gap: 4px;
+			}
+		}
 	}
 
 	&.open
