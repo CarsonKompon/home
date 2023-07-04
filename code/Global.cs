@@ -20,6 +20,8 @@ global using Editor;
 
 //Home
 global using Home;
+global using Home.Commands;
 global using Home.Util;
+global using Home.Interfaces;
 global using Home.Games.Trivia;
 global using Rhythm4K;

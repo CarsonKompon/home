@@ -19,7 +19,13 @@ public partial class HomeGame : GameManager
 			Game.RootPanel?.Delete(true);
 			Game.RootPanel = new HomeHud();
 		}
+	}
 
+	public override void PostLevelLoaded()
+	{
+		base.PostLevelLoaded();
+
+		All.OfType<IEntityPostLoad>().ToList().ForEach( l => l.DoPostLoading() );
 	}
 
 	public override void ClientJoined( IClient client )

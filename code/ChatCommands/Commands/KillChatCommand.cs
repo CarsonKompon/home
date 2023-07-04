@@ -13,6 +13,9 @@ public class KillChatCommand : ChatCommandAttribute
 
     public override void Run(IClient client)
     {
-        ConsoleSystem.Run("kill");
+		//ConsoleSystem.Run("kill");
+
+		var player = client.Pawn as HomePlayer;
+		player.OnKilled();
     }
 }

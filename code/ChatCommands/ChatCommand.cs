@@ -1,4 +1,4 @@
-namespace Home;
+namespace Home.Commands;
 
 public class ChatArgument
 {

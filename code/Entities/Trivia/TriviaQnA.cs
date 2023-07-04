@@ -4,10 +4,11 @@ public struct AnswerStruct
 {
 	public enum OptionEnum
 	{
+		UnSelected,
 		A,
 		B,
 		C,
-		D,
+		D
 	}
 
 	/// <summary>

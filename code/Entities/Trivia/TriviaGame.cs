@@ -1,7 +1,7 @@
 ﻿namespace Home.Games.Trivia;
 
 [Library("home_game_trivia")]
-[Title("Trivia Game"), Description("The Trivia game entity"), Icon( "videogame_asset" )]
+[Title("Trivia Game"), Description("The Trivia game entity"), Icon( "videogame_asset" ), Category("Trivia")]
 [HammerEntity]
 public partial class TriviaGame : Entity
 {

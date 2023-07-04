@@ -1,29 +1,46 @@
-﻿namespace Home.Games.Trivia;
+﻿using Home.Interfaces;
+
+namespace Home.Games.Trivia;
 
 [Library("home_game_trivia_contestant")]
-[Title("Contestant Panel"), Description("The trivia panel for a contestant to play"), Icon( "person" )]
+[Title("Contestant Panel"), Description("The trivia panel for a contestant to play"), Icon( "person" ), Category( "Trivia" )]
 [HammerEntity, EditorModel( "models/sbox_props/wooden_crate/wooden_crate.vmdl_c" )]
-public class TriviaContestant : ModelEntity
+public partial class TriviaContestant : ModelEntity, IUse, IEntityPostLoad
 {
-	[Property, Description("The trivia game where contestants are playing on"), FGDType( "target_destination" )]
-	public TriviaGame MainGame { get; set; }
+	[Property, Description("The trivia game where contestants are playing on")]
+	public EntityTarget TargetGame { get; set; }
 
 	public HomePlayer Contester { get; set; }
 	public QuestionStruct ActiveQuestion { get; set; }
 	public int OptionChosen { get; set; } = -1;
 	public List<int> OptionsChosen { get; set; } = new();
 
+	public TriviaGame MainGame;
 	public bool LockAnswer { get; set; }
 
 	//Locks the panel in the event something broke on start
-	bool lockPanel => MainGame is not TriviaGame;
+	bool lockPanel = false;
 
 	public override void Spawn()
 	{
 		base.Spawn();
 
-		if( lockPanel )
+		//TEMPORARY, we need a contestant panel model
+		SetModel( "models/sbox_props/wooden_crate/wooden_crate.vmdl_c" );
+		SetupPhysicsFromModel( PhysicsMotionType.Static );
+	}
+
+	public async void FindTriviaGame()
+	{
+		await GameTask.DelaySeconds( 3 );
+
+		MainGame = TargetGame.GetTarget( null ) as TriviaGame;
+
+		if ( MainGame == null || !MainGame.IsValid )
+		{
+			lockPanel = true;
 			Log.Error( $"HOME: {Name} has an invalid MainGame target" );
+		}
 		else
 		{
 			LockAnswer = false;
@@ -33,15 +50,29 @@ public class TriviaContestant : ModelEntity
 
 	public void ContesterJoin(HomePlayer joiner)
 	{
+		Game.AssertServer();
+
 		if ( lockPanel ) return;
 		if ( MainGame.IsPlaying ) return;
+		if ( Contester.IsValid() ) return;
+
+		joiner.Controller = new TriviaController()
+		{
+			TriviaPanel = this
+		};
 
 		Contester = joiner;
 	}
 
-	public void ContesterLeft()
+	public void ContesterLeave()
 	{
+		Game.AssertServer();
 		if ( lockPanel ) return;
+
+		if ( Contester.Controller is not HomeWalkController )
+			Contester.Controller = new HomeWalkController();
+
+		Log.Info( "Leave success" );
 
 		LockAnswer = false;
 		Contester = null;
@@ -74,11 +105,20 @@ public class TriviaContestant : ModelEntity
 		Contester = null;
 	}
 
-	[Event.Hotload]
-	void EntityHotload()
+	public bool OnUse( Entity user )
 	{
-		if ( lockPanel ) return;
+		ContesterJoin( user as HomePlayer );
 
-		MainGame.AddContestPanel( this );
+		return false;
+	}
+
+	public bool IsUsable( Entity user )
+	{
+		return true;
+	}
+
+	public void DoPostLoading()
+	{
+		FindTriviaGame();
 	}
 }

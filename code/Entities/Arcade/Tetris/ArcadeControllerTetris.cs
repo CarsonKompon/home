@@ -1,6 +1,6 @@
 namespace Home;
 
-public class ArcadeControllerTetris : ArcadeControllerBase
+public class ArcadeControllerTetris : TriviaController
 {
     
     // public override void BuildInput()
