@@ -10,7 +10,7 @@
 
 <root class="nametag">
 	<img class="avatar" src=@AvatarTexture() />
-	<label class="name" text=@Player.Client.Name />
+	<label class="name @GetRainbow()" text=@Player.Client.Name />
 </root>
 
 @code
@@ -41,6 +41,14 @@
 		var hat = Player.GetAttachment( "hat" ) ?? new Transform( Player.EyePosition );
 		Position = hat.Position + Vector3.Up * 8;
 		Rotation = Rotation.LookAt( -Screen.GetDirection( new Vector2( Screen.Width * 0.5f, Screen.Height * 0.5f ) ) );
+	}
+
+	string GetRainbow()
+	{
+		if( Player.Client.SteamId == 76561198031113835 )
+			return "rainbow";
+		else
+			return "";
 	}
 
 }
