@@ -32,10 +32,19 @@ public partial class HomeClothing : Clothing
 		base.PostLoad();
 		if (!string.IsNullOrEmpty(CloudModel) )
 		{
-			LoadingQueue.Add(this);
+			//LoadingQueue.Add(this);
 			// _Model = Cloud.Model(CloudModel);
 			// Model = _Model.ResourcePath;
+
+			MountPackage();
 		}
+	}
+
+	async void MountPackage()
+	{
+		Package package = await Package.FetchAsync(CloudModel, false);
+		await package.MountAsync();
+		Model = package.GetMeta("PrimaryAsset", "");
 	}
 
 	// public static string GetModel(Clothing clothing)
