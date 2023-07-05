@@ -9,19 +9,23 @@ public partial class TriviaWorldPanel
 
 	public TriviaWorldPanel()
 	{
+		TriviaPanel?.Delete();
+		TriviaPanel = null;
+
 		TriviaPanel = this;
 
 		ClientGameStatus = TriviaGame.TriviaStatus.Idle;
 		ClientRoundStatus = TriviaGame.TriviaRoundStatus.Waiting;
 	}
 
-	public void UpdateGameState( TriviaGame.TriviaStatus newStatus )
+	public void UpdateGameStatus( TriviaGame.TriviaStatus newStatus ) => ClientGameStatus = newStatus;
+
+	public void UpdateRoundStatus( TriviaGame.TriviaRoundStatus newStatus ) => ClientRoundStatus = newStatus;
+
+	public override void Tick()
 	{
+		base.Tick();
 
-	}
-
-	public void UpdateRoundStatus( TriviaGame.TriviaRoundStatus newStatus )
-	{
-
+		DebugOverlay.Text( "Trivia Screen", TriviaPanel.Position );
 	}
 }

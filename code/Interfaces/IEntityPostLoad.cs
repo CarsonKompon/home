@@ -2,7 +2,7 @@
 
 public interface IEntityPostLoad
 {
-	public void DoPostLoading()
+	void DoPostLoading()
 	{
 
 	}

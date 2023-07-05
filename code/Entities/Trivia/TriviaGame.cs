@@ -3,12 +3,17 @@
 [Library("home_game_trivia")]
 [Title("Trivia Game"), Description("The Trivia game entity"), Icon( "videogame_asset" ), Category("Trivia")]
 [HammerEntity]
-public partial class TriviaGame : Entity
+public partial class TriviaGame : Entity, IEntityPostLoad
 {
+	[Property]
+	public EntityTarget TriviaScreenTarget { get; set; }
+
 	[Property, Range(5, 25, 5)]
 	public int MaxRounds { get; set; } = 5;
 
 	public int CurRound { get; set; }
+
+	public TriviaScreen TriviaScreen;
 
 	public enum TriviaStatus
 	{
@@ -56,13 +61,23 @@ public partial class TriviaGame : Entity
 	[ClientRpc]
 	void UpdateGameClient( TriviaStatus updated )
 	{
-
+		worldPanel.UpdateGameStatus( updated );
 	}
 
 	[ClientRpc]
 	void UpdateRoundClient( TriviaRoundStatus updated )
 	{
-		
+		worldPanel.UpdateRoundStatus( updated );
+	}
+
+	public void DoPostLoad()
+	{
+		TriviaScreen = TriviaScreenTarget.GetTarget( null ) as TriviaScreen;
+
+		if( TriviaScreen == null || !TriviaScreen.IsValid())
+		{
+			Log.Error( $"HOME: {Name} is missing the trivia screen" );
+		}
 	}
 
 	public override void Spawn()
@@ -76,7 +91,7 @@ public partial class TriviaGame : Entity
 	{
 		base.ClientSpawn();
 
-		//worldPanel = new TriviaWorldPanel();
+		worldPanel = new TriviaWorldPanel();
 	}
 
 	public void AddContestPanel( TriviaContestant newPanel )
@@ -258,7 +273,7 @@ public partial class TriviaGame : Entity
 			if ( question.QuestionType == QuestionStruct.TypeEnum.MultiChoice )
 			{
 
-			} 
+			}
 			else
 			{
 				if (player.GetOptionChosen() == (int)answer.Option )

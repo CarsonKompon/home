@@ -9,7 +9,6 @@ public partial class TriviaContestant : ModelEntity, IUse, IEntityPostLoad
 {
 	[Property, Description("The trivia game where contestants are playing on")]
 	public EntityTarget TargetGame { get; set; }
-
 	public HomePlayer Contester { get; set; }
 	public QuestionStruct ActiveQuestion { get; set; }
 	public int OptionChosen { get; set; } = -1;
