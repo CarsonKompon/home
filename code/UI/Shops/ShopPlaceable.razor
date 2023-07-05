@@ -10,14 +10,15 @@
 <root class="shop-placeable">
     <label class="name" text=@Name />
     <div class="shop-container">
-        @if(Target == null)
+        @* @if(Target == null)
         {
             <div class="preview" />
         }
         else
         {
             <RotatingModelScenePanel IdleSpeed=@(20) Model=@Target.GetModel() class="preview" />
-        }
+        } *@
+        <div class="preview" />
         <div class="shop">
             <div class="items">
                 @foreach(var item in PlaceableList)

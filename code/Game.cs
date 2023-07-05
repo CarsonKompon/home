@@ -224,7 +224,7 @@ public partial class HomeGame : GameManager
 				};
 
 				// Set the model and physics
-				prop.SetModel(placeable.GetModel());
+				prop.SetModel(placeable.Model);
 				
 				// Add the component
 				PlaceableComponent component = new PlaceableComponent(placeable, owner);
@@ -263,7 +263,7 @@ public partial class HomeGame : GameManager
 
             case PlaceableType.PackageEntity:
                 // Create the package entity
-				Entity packageEntity = await SpawnPackage(placeable.EntityPackage, position, rotation, scale, placeable.ClassName);
+				Entity packageEntity = await SpawnPackage(placeable.CloudIdent, position, rotation, scale, placeable.ClassName);
 				packageEntity.Transmit = TransmitType.Always;
 
 				// Add the component
@@ -275,6 +275,21 @@ public partial class HomeGame : GameManager
 				player.Room.Entities.Add(packageEntity);
 
                 return packageEntity;
+			case PlaceableType.PackageProp:
+				// Create the package prop
+				Prop packageProp = await SpawnPackageProp(placeable.CloudIdent, position, rotation, scale);
+				packageProp.Transmit = TransmitType.Always;
+
+				// Add the component
+				component = new PlaceableComponent(placeable, owner);
+				packageProp.Components.Add(component);
+				component.SetPhysicsType(placeable.PhysicsType);
+
+				// Add the package prop to the room
+				player.Room.Entities.Add(packageProp);
+
+				return packageProp;
+
         }
 
 		return null;
@@ -309,6 +324,44 @@ public partial class HomeGame : GameManager
 
 		return entity;
     }
+
+	public static async Task<Prop> SpawnPackageProp(string ident, Vector3 position, Rotation rotation, float scale)
+	{
+		var package = await Package.FetchAsync( ident, false );
+		if ( package == null || package.PackageType != Package.Type.Model || package.Revision == null )
+		{
+			// spawn error particles
+			return null;
+		}
+
+		string modelName = package.GetMeta( "PrimaryAsset", "models/dev/error.vmdl" );
+		var mins = package.GetMeta( "RenderMins", Vector3.Zero );
+		var maxs = package.GetMeta( "RenderMaxs", Vector3.Zero );
+
+		// downloads if not downloads, mounts if not mounted
+		await package.MountAsync();
+
+		var model = Model.Load(modelName);
+		if(model == null || model.IsError) return null;
+
+		var ent = new Prop
+		{
+			Position = position,
+			Rotation = rotation,
+			Scale = scale,
+			Model = model
+		};
+
+		ent.SetupPhysicsFromModel(PhysicsMotionType.Keyframed);
+
+		// If there's no physics model, create a simple OBB
+		if ( !ent.PhysicsBody.IsValid() )
+		{
+			ent.SetupPhysicsFromOBB( PhysicsMotionType.Dynamic, ent.CollisionBounds.Mins, ent.CollisionBounds.Maxs );
+		}
+
+		return ent;
+	}
 
 	[ConVar.Server("home_set_placeable_physics")]
 	public static void SetPlaceablePhysics(int networkIdent, bool enabled)

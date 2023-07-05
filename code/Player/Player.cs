@@ -376,11 +376,6 @@ public partial class HomePlayer : AnimatedEntity
 		WorldFlashlight.SetParent(this, "head" );
 
 		Room = null;
-
-		if(Game.IsClient)
-		{
-			_ = new PlacingGuide();
-		}
 	}
 
 	public override void ClientSpawn()
@@ -550,7 +545,7 @@ public partial class HomePlayer : AnimatedEntity
 		// Room interactions
 		if(Room != null && Input.Down("menu"))
 		{
-			if(IsPlacing)
+			if(PlacingGuide.IsPlacing)
 			{
 				if(Input.Released("click"))
 				{
@@ -578,6 +573,7 @@ public partial class HomePlayer : AnimatedEntity
 						SetPlacing(tr.Entity.Root);
 						var dragging = Game.RootPanel.AddChild<HomeInventoryDragging>();
 			            dragging.Placeable = HomePlaceable.Find(component.PlaceableId);
+						dragging.SetBackgroundImage(dragging.Placeable.GetTexture().Result);
 
 						PlacingAngle = component.LocalAngle;
 					}
