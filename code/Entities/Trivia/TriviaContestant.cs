@@ -15,7 +15,7 @@ public partial class TriviaContestant : ModelEntity, IUse, IEntityPostLoad
 	public List<int> OptionsChosen { get; set; } = new();
 
 	public TriviaGame MainGame;
-	public bool LockAnswer { get; set; }
+	[Net] public bool LockAnswer { get; set; }
 
 	//Locks the panel in the event something broke on start
 	bool lockPanel = false;
@@ -61,7 +61,7 @@ public partial class TriviaContestant : ModelEntity, IUse, IEntityPostLoad
 					OptionChosen != -1 : OptionsChosen.Count > 0;
 
 				DisplayToContestant( To.Single( Contester ), $"Time: {timer}", screenPos, 3, Color.Yellow );
-				DisplayToContestant( To.Single( Contester ), $"Answered: {selected}", screenPos, 4, Color.Yellow );
+				DisplayToContestant( To.Single( Contester ), $"Locked Answer: {LockAnswer}", screenPos, 4, Color.Yellow );
 				
 				for ( int i = 0; i < question.Answers.Length; i++ )
 				{

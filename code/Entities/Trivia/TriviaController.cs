@@ -4,6 +4,7 @@ public class TriviaController : HomePawnController
 {
     public TriviaContestant TriviaPanel { get; set; }
 	[ClientInput] public AnswerStruct.OptionEnum SelectedOption { get; set; }
+	[ClientInput] public bool ShouldLockAnswer { get; set; }
 
 	public override void Simulate()
     {
@@ -25,12 +26,15 @@ public class TriviaController : HomePawnController
             Position = TriviaPanel.Position + Vector3.Down * 10 + TriviaPanel.Rotation.Forward * 40f + Vector3.Up * 10f;
         }
 
-		if ( Input.Pressed( "crouch" ) || Input.Pressed( "Jump" ) )
+		if ( Input.Pressed( "crouch" ) )
         {
 			TriviaPanel.ContesterLeave();
         }
 
         BuildInput();
+
+		if( ShouldLockAnswer && !TriviaPanel.LockAnswer )
+			TriviaPanel.LockAnswer = true;
 
 		if( SelectedOption != AnswerStruct.OptionEnum.Unselected)
 		{
@@ -63,6 +67,8 @@ public class TriviaController : HomePawnController
 
 		if(Pawn is HomePlayer)
 		{
+			ShouldLockAnswer = Input.Pressed( "Jump" );
+
 			var option = InputToOptionEnum();
 
 			if ( option != AnswerStruct.OptionEnum.Unselected )
