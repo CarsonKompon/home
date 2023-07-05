@@ -10,15 +10,18 @@
 <root class="shop-placeable">
     <label class="name" text=@Name />
     <div class="shop-container">
-        @* @if(Target == null)
+        @if(Target == null)
         {
             <div class="preview" />
         }
+        else if(!string.IsNullOrEmpty(Target.CloudIdent))
+        {
+            <div @ref="VideoPreview" class="preview video" />
+        }
         else
         {
-            <RotatingModelScenePanel IdleSpeed=@(20) Model=@Target.GetModel() class="preview" />
-        } *@
-        <div class="preview" />
+            <RotatingModelScenePanel IdleSpeed=@(-40) Model=@Target.Model class="preview" />
+        }
         <div class="shop">
             <div class="items">
                 @foreach(var item in PlaceableList)
@@ -34,6 +37,7 @@
 @code
 {
     public static ShopPlaceable Current { get; set; }
+    public Panel VideoPreview { get; set; }
 
     public HomePlaceable Target { get; set; } = null;
     public string Name = "Shop";
@@ -95,9 +99,14 @@
         }
     }
 
-    public void SetTarget(HomePlaceable placeable)
+    public async void SetTarget(HomePlaceable placeable)
     {
         Target = placeable;
+        if(!string.IsNullOrEmpty(placeable.CloudIdent))
+        {
+            var package = await Package.FetchAsync(placeable.CloudIdent, true);
+            VideoPreview.Style.SetBackgroundImage(package.VideoThumb ?? package.Thumb);
+        }
     }
 
 }
