@@ -32,10 +32,10 @@ public class TriviaController : HomePawnController
 
         BuildInput();
 
-		if( SelectedOption != AnswerStruct.OptionEnum.UnSelected)
+		if( SelectedOption != AnswerStruct.OptionEnum.Unselected)
 		{
 			TriviaPanel.SelectOption( (int)SelectedOption );
-			SelectedOption = AnswerStruct.OptionEnum.UnSelected;
+			SelectedOption = AnswerStruct.OptionEnum.Unselected;
 		}
     }
 
@@ -54,7 +54,7 @@ public class TriviaController : HomePawnController
 		if ( Input.Pressed( "Right" ) )
 			return AnswerStruct.OptionEnum.D;
 
-		return AnswerStruct.OptionEnum.UnSelected;
+		return AnswerStruct.OptionEnum.Unselected;
 	}
 
 	public override void BuildInput()
@@ -65,7 +65,7 @@ public class TriviaController : HomePawnController
 		{
 			var option = InputToOptionEnum();
 
-			if ( option != AnswerStruct.OptionEnum.UnSelected )
+			if ( option != AnswerStruct.OptionEnum.Unselected )
 				SelectedOption = option;
 		}
 	}

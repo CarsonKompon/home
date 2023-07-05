@@ -1,22 +1,36 @@
 ﻿namespace Home.Commands;
 
+//Starting
+#region
 [ChatCommand]
 public class TriviaStart : ChatCommandAttribute
 {
 	public TriviaStart()
 	{
-		Name = "Start Trivia Game";
+		Name = "quizstart";
 		Description = "Starts a trivia game";
 		Arguments = new List<ChatArgument>();
 	}
 
 	public override void Run( IClient client )
 	{
-		if ( !client.IsListenServerHost && !Game.IsDedicatedServer ) return;
+		//if ( Game.IsServerHost && !Game.IsDedicatedServer ) return;
 
 		var player = client.Pawn as HomePlayer;
 
-		TriviaGame game = FindNearestTrivia( player.Position );
+		if( player.Controller is TriviaController tc )
+		{
+			TriviaGame game = tc.TriviaPanel.MainGame;
+			game.StartUpGame();
+		}
+		else
+		{
+			TriviaGame game = FindNearestTrivia( player.Position );
+			if ( game.GetActiveContestants().Count > 0 ) return;
+
+			game.StartUpGame();
+		}
+
 	}
 
 	TriviaGame FindNearestTrivia(Vector3 playerPos)
@@ -42,3 +56,4 @@ public class TriviaStart : ChatCommandAttribute
 		return found;
 	}
 }
+#endregion

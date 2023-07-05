@@ -1,0 +1,28 @@
+﻿@namespace Home.UI
+
+@inherits Panel
+
+<style>
+    TriviaWorldPanel {
+        position: absolute;
+    }
+
+    .inactive {
+        
+    }
+</style>
+
+<root>
+    <div>
+
+    </div>
+</root>
+
+@code {
+
+
+    protected override int BuildHash()
+    {
+        return Time.Now.CeilToInt().GetHashCode();
+    }
+}

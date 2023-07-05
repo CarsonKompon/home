@@ -4,7 +4,7 @@ public struct AnswerStruct
 {
 	public enum OptionEnum
 	{
-		UnSelected,
+		Unselected,
 		A,
 		B,
 		C,
@@ -37,6 +37,20 @@ public struct AnswerStruct
 		Answer = text;
 		IsCorrect = isCorrect;
 		Option = option;
+	}
+
+	public int GetCorrectOptionInt()
+	{
+		if ( IsCorrect ) return (int)Option;
+
+		return -1;
+	}
+
+	public OptionEnum GetCorrectOption()
+	{
+		if ( IsCorrect ) return Option;
+
+		return OptionEnum.Unselected;
 	}
 }
 
@@ -113,6 +127,23 @@ public static class QnASheet
 		}
 	*/
 
+	public static QuestionStruct[] DummyQuestion = new QuestionStruct[]
+	{
+		new QuestionStruct()
+		{
+			Question = "Hi, I'm a dummy question",
+			Subject = QuestionStruct.SubjectEnum.Gaming,
+			QuestionType = QuestionStruct.TypeEnum.Standard,
+			Answers = new AnswerStruct[]
+			{
+				new AnswerStruct("You're a what?", AnswerStruct.OptionEnum.A),
+				new AnswerStruct("Who?", AnswerStruct.OptionEnum.B),
+				new AnswerStruct("What is this?", AnswerStruct.OptionEnum.C),
+				new AnswerStruct("haha funny men", AnswerStruct.OptionEnum.D, true)
+			}
+		}
+	};
+
 	public static QuestionStruct[] Questions = new QuestionStruct[]
 	{
 		//Gaming
@@ -125,7 +156,7 @@ public static class QnASheet
 			Answers = new AnswerStruct[]
 			{
 				new AnswerStruct("John Carmack", AnswerStruct.OptionEnum.A),
-				new AnswerStruct("Jonh Romero", AnswerStruct.OptionEnum.B),
+				new AnswerStruct("John Romero", AnswerStruct.OptionEnum.B),
 				new AnswerStruct("Dave Taylor", AnswerStruct.OptionEnum.C),
 				new AnswerStruct("Adrian Carmack", AnswerStruct.OptionEnum.D, true)
 			}
@@ -155,7 +186,7 @@ public static class QnASheet
 			QuestionType = QuestionStruct.TypeEnum.TrueOrFalse,
 			Answers = new AnswerStruct[]
 			{
-				new AnswerStruct("TRUE", AnswerStruct.OptionEnum.A),
+				new AnswerStruct("TRUE", AnswerStruct.OptionEnum.A, true),
 				new AnswerStruct("FALSE", AnswerStruct.OptionEnum.B),
 			}
 		},
@@ -207,9 +238,8 @@ public static class QnASheet
 		#endregion
 	};
 
-	public static List<QuestionStruct> QuestionsArray = Questions.ToList();
-
-	public static void ResetQuestions() => QuestionsArray = Questions.ToList();
+	public static List<QuestionStruct> QuestionsArray = (List<QuestionStruct>)Questions.Shuffle();
+	public static void ResetQuestions() => QuestionsArray = (List<QuestionStruct>)Questions.Shuffle();
 
 	public static QuestionStruct TakeQuestion()
 	{

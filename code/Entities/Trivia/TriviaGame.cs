@@ -25,9 +25,9 @@ public partial class TriviaGame : Entity
 		Reveal
 	}
 
-	[Net] public TriviaStatus GameStatus { get; set; } = TriviaStatus.Idle;
+	[Net, Change(nameof( OnGameChange ))] public TriviaStatus GameStatus { get; set; } = TriviaStatus.Idle;
 
-	[Net] public TriviaRoundStatus RoundStatus { get; set; } = TriviaRoundStatus.Waiting;
+	[Net, Change(nameof( OnRoundChange ) )] public TriviaRoundStatus RoundStatus { get; set; } = TriviaRoundStatus.Waiting;
 
 	public bool IsPlaying => GameStatus == TriviaStatus.Active;
 
@@ -35,11 +35,48 @@ public partial class TriviaGame : Entity
 	public List<TriviaContestant> ContestantPanels { get; set; } = new();
 	[Net] public TimeUntil TriviaTime { get; set; }
 
+	TriviaWorldPanel worldPanel;
+
+	public void OnGameChange( TriviaStatus oldStatus, TriviaStatus newStatus )
+	{
+		if ( Game.IsServer )
+		{
+			UpdateGameClient( To.Everyone, newStatus );
+		}
+	}
+
+	public void OnRoundChange( TriviaRoundStatus oldStatus, TriviaRoundStatus newStatus )
+	{
+		if ( Game.IsServer )
+		{
+			UpdateRoundClient( To.Everyone, newStatus );
+		}
+	}
+
+	[ClientRpc]
+	void UpdateGameClient( TriviaStatus updated )
+	{
+
+	}
+
+	[ClientRpc]
+	void UpdateRoundClient( TriviaRoundStatus updated )
+	{
+		
+	}
+
 	public override void Spawn()
 	{
 		base.Spawn();
 		Questions = new();
 		CurRound = 0;
+	}
+
+	public override void ClientSpawn()
+	{
+		base.ClientSpawn();
+
+		//worldPanel = new TriviaWorldPanel();
 	}
 
 	public void AddContestPanel( TriviaContestant newPanel )
@@ -52,54 +89,91 @@ public partial class TriviaGame : Entity
 	{
 		if ( GameStatus == TriviaStatus.Idle ) return;
 
+		if ( ShouldCancelGame() )
+			CancelGame();
+
+		if ( TriviaTime > 0.0f ) return;
+
 		switch( GameStatus )
 		{
 			case TriviaStatus.Starting: BeginGame(); return;
-			case TriviaStatus.Active: UpdateState();  return;
+			case TriviaStatus.Active: UpdateState(); return;
 			case TriviaStatus.Post: ResetGame(); return;
 		}
 	}
 
-	public int CountPlayers()
-	{
-		int count = 0;
+	//Getters
+	#region
+	/// <summary>
+	/// Gets active contestants
+	/// </summary>
+	/// <returns>List of contestants playing</returns>
+	public List<TriviaContestant> GetActiveContestants() => ContestantPanels.Where( p => p.Contester.IsValid() ).ToList();
 
-		foreach ( var panel in ContestantPanels )
-			if ( panel.Contester is HomePlayer ) count++;
-		
-		return count;
+	/// <summary>
+	/// Gets the active question
+	/// </summary>
+	public QuestionStruct GetActiveQuestion()
+	{
+		if ( !IsPlaying ) return QnASheet.DummyQuestion[0];
+
+		return Questions[CurRound - 1];
 	}
+
+	#endregion
 
 	//Start/End gameplay
 	#region
-	public bool CanBeginGame()
+	/// <summary>
+	/// Can the game start up
+	/// </summary>
+	public bool CanStartGame()
 	{
-		return false;
+		return GetActiveContestants().Count >= 2;
 	}
 
+	/// <summary>
+	/// If the game should be cancelled, either due to players leaving etc.
+	/// </summary>
 	public bool ShouldCancelGame()
 	{
-		if ( CountPlayers() == 0 ) return true;
+		if ( GetActiveContestants().Count == 0 ) return true;
 
 		return false;
 	}
 
+	/// <summary>
+	/// Cancels the game therefore restoring to idle state
+	/// </summary>
 	public void CancelGame()
 	{
 		GameStatus = TriviaStatus.Idle;
 		RoundStatus = TriviaRoundStatus.Waiting;
 	}
 
+	/// <summary>
+	/// Starts up the game, this doesn't begin gameplay
+	/// </summary>
 	public void StartUpGame()
 	{
+		TriviaTime = 20.0f;
 		GameStatus = TriviaStatus.Starting;
 	}
 
+	/// <summary>
+	/// Begins gameplay, not the same as starting
+	/// </summary>
 	public void BeginGame()
 	{
+		SetUpGame();
+		TriviaTime = 45.0f;
+		ContestantPanels.ForEach( l => l.ResetOptions() );
 		GameStatus = TriviaStatus.Active;
 	}
 
+	/// <summary>
+	/// Ends the game
+	/// </summary>
 	public void EndGame()
 	{
 		GameStatus = TriviaStatus.Post;
@@ -109,17 +183,23 @@ public partial class TriviaGame : Entity
 
 	//Gameplay flow
 	#region
+	/// <summary>
+	/// Updates the round status
+	/// </summary>
 	public void UpdateState()
 	{
 		switch( RoundStatus )
 		{
-			case TriviaRoundStatus.Waiting: RoundStatus = TriviaRoundStatus.PreReveal; return;
-			case TriviaRoundStatus.PreReveal: RoundStatus = TriviaRoundStatus.Reveal; return;
-			case TriviaRoundStatus.Reveal: RoundStatus = TriviaRoundStatus.Waiting; return;
+			case TriviaRoundStatus.Waiting: DoPreReveal(); return;
+			case TriviaRoundStatus.PreReveal: DoReveal(); return;
+			case TriviaRoundStatus.Reveal: NextRound(); return;
 		}
 	}
 
-	public void SetUpGame()
+	/// <summary>
+	/// Sets up the trivia game, called when the game begins
+	/// </summary>
+	void SetUpGame()
 	{
 		QnASheet.ResetQuestions();
 
@@ -129,16 +209,109 @@ public partial class TriviaGame : Entity
 			Questions.Add( GenerateQuestion() );
 	}
 
+	/// <summary>
+	/// Pre reveal, this is before the answer is shown
+	/// </summary>
 	public void DoPreReveal()
 	{
-		ContestantPanels.ForEach( l => l.LockAnswer = !l.LockAnswer );
+		ContestantPanels.ForEach( l => l.LockAnswer = true );
+		TriviaTime = 5.0f;
+
+		RoundStatus = TriviaRoundStatus.PreReveal;
 	}
 
+	/// <summary>
+	/// Reveal, this is where the answer is shown
+	/// </summary>
+	public void DoReveal()
+	{
+		DoScoreUpdate();
+		RoundStatus = TriviaRoundStatus.Reveal;
+		TriviaTime = 7.5f;
+	}
+
+	/// <summary>
+	/// Move onto the next round or ends the game
+	/// </summary>
 	public void NextRound()
 	{
 		CurRound++;
+		ContestantPanels.ForEach( l => l.ResetOptions() );
+
+		TriviaTime = 45.0f;
+		RoundStatus = TriviaRoundStatus.Waiting;
 	}
 
+	/// <summary>
+	/// Updates each contestants score
+	/// </summary>
+	public void DoScoreUpdate()
+	{
+		List<TriviaContestant> players = GetActiveContestants();
+
+		QuestionStruct question = GetActiveQuestion();
+
+		AnswerStruct answer = question.Answers.Where( a => a.IsCorrect ).FirstOrDefault();
+
+		foreach ( var player in players )
+		{
+			if ( question.QuestionType == QuestionStruct.TypeEnum.MultiChoice )
+			{
+
+			} 
+			else
+			{
+				if (player.GetOptionChosen() == (int)answer.Option )
+				{
+					player.CorrectStreak++;
+					player.AddScore( CalculateGivingPoints(player.CorrectStreak) );
+				}
+				else
+				{
+					player.CorrectStreak = 0;
+				}
+			}
+		}
+	}
+
+	[ClientRpc]
+	public void DisplayToUser()
+	{
+
+	}
+
+	[ClientRpc]
+	public void DisplayAnswer()
+	{
+
+	}
+
+	[ClientRpc]
+	public void DisplayEndResults()
+	{
+
+	}
+
+	/// <summary>
+	/// Calculates score before giving to the player
+	/// </summary>
+	/// <param name="streak">The players streak from continous correct answers</param>
+	/// <returns>The score calculated</returns>
+	int CalculateGivingPoints(int streak = 0)
+	{
+		int points = 5;
+
+		if ( streak > 2 )
+			points *= streak - 1;
+
+		//TODO: Multi-choice conditions for points
+
+		return points;
+	}
+
+	/// <summary>
+	/// Generates a question for the game
+	/// </summary>
 	public QuestionStruct GenerateQuestion()
 	{
 		return QnASheet.TakeQuestion();
@@ -147,12 +320,18 @@ public partial class TriviaGame : Entity
 
 	//Resetting
 	#region
+	/// <summary>
+	/// Resets the game for the next
+	/// </summary>
 	public void ResetGame()
 	{
 		EjectPlayers();
 		GameStatus = TriviaStatus.Idle;
 	}
 
+	/// <summary>
+	/// Forces contestants out of the panel
+	/// </summary>
 	public void EjectPlayers()
 	{
 		foreach ( var contest in ContestantPanels.Where(x => x.Contester is HomePlayer).ToArray() )

@@ -1,5 +1,6 @@
 ﻿//Visual Studio
 global using System;
+global using System.Collections;
 global using System.Collections.Generic;
 global using System.ComponentModel;
 global using System.Text.Json;
@@ -20,6 +21,7 @@ global using Editor;
 
 //Home
 global using Home;
+global using Home.UI;
 global using Home.Commands;
 global using Home.Util;
 global using Home.Interfaces;
