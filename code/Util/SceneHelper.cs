@@ -11,6 +11,7 @@ public static class SceneHelper
     private static Dictionary<string, Texture> ModelThumbnails = new Dictionary<string, Texture>();
     public static Texture CreateModelThumbnail(string modelString, int size = 96)
     {
+        if(modelString == null) return null;
         if(ModelThumbnails.ContainsKey(modelString))
         {
             return ModelThumbnails[modelString];
@@ -69,4 +70,6 @@ public static class SceneHelper
         Scene.World.Delete();
 		return texture;
     }
+
+
 }

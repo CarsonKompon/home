@@ -16,6 +16,7 @@
     public HomePlaceable Placeable { get; set; }
     public Vector2 DragOffset { get; set; } = new Vector2(25, 25);
     public Vector2 StartingPosition { get; set; }
+    Texture Tex;
 
     public HomeInventoryDragging()
     {
@@ -46,7 +47,13 @@
     {
         base.OnAfterTreeRender(firstTime);
 
-        Background.Style.BackgroundImage = Placeable.Texture;
+        
+        Background.Style.BackgroundImage = Tex;
+    }
+
+    public void SetBackgroundImage(Texture tex)
+    {
+        Tex = tex;
     }
 
     public override void Tick()
@@ -61,7 +68,7 @@
         {
             SetClass("placing", player.CanPlace);
             
-            if(player.PlacingModel == "") Delete();
+            if(!PlacingGuide.IsPlacing) Delete();
         }
     }
 

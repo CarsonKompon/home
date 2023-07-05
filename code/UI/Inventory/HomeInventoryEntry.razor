@@ -39,7 +39,7 @@
     {
         HomePlaceable placeable = Entry.GetPlaceable();
         if(placeable == null) return "";
-        return placeable.GetModel();
+        return placeable.Model;
     }
 
     private string GetName()
@@ -64,6 +64,7 @@
             Dragging = Game.RootPanel.AddChild<HomeInventoryDragging>();
             Dragging.Placeable = Entry.GetPlaceable();
             Dragging.DragOffset = MousePosition;
+            Dragging.SetBackgroundImage(Background.Style.BackgroundImage);
 
             if(Game.LocalPawn is HomePlayer player)
             {

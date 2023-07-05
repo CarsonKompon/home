@@ -14,9 +14,7 @@ public partial class HomePlayer
 	[ClientInput] public Rotation PlacingRotation { get; set; } = Rotation.Identity;
 	[ClientInput] public float PlacingAngle { get; set; } = 0f;
 	[ClientInput] public Entity MovingEntity { get; set; } = null;
-	public string PlacingModel { get; set; } = "";
 	public bool CanPlace { get; set; } = false;
-	public bool IsPlacing => PlacingModel != "";
 
 	public void TryPlace()
 	{
@@ -46,7 +44,7 @@ public partial class HomePlayer
 	{
 		Game.AssertClient();
 		Placing = placeable.Id;
-		PlacingModel = placeable.GetModel();
+		PlacingGuide.StartPlacing(placeable);
 		MovingEntity = null;
 		CanPlace = true;
 	}
@@ -57,12 +55,7 @@ public partial class HomePlayer
 		PlaceableComponent component = ent.Components.Get<PlaceableComponent>();
 		Placing = component.PlaceableId;
 		HomePlaceable placeable = HomePlaceable.Find(component.PlaceableId);
-		PlacingModel = placeable.GetModel();
-		if(string.IsNullOrWhiteSpace(PlacingModel) && ent is ModelEntity modelEnt)
-		{
-			PlacingModel = modelEnt.GetModelName();
-			placeable.RealModel = PlacingModel;
-		}
+		SetPlacing(placeable);
 		MovingEntity = ent;
 		CanPlace = true;
 	}
@@ -71,14 +64,14 @@ public partial class HomePlayer
 	public void FinishPlacing()
 	{
 		Placing = "";
-		PlacingModel = "";
+		PlacingGuide.StopPlacing();
 		MovingEntity = null;
 	}
 
 	public void StopPlacing()
 	{
 		Game.AssertClient();
-		PlacingModel = "";
+		PlacingGuide.StopPlacing();
 		CanPlace = false;
 	}
 

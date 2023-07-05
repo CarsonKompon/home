@@ -72,24 +72,23 @@ public partial class HomePlayer
 		
 	}
 
+	private async void LoadPlaceableThumbnails()
+	{
+		foreach(HomePlaceable placeable in HomePlaceable.All)
+		{
+			placeable.Texture = await placeable.GetTexture();
+		}
+
+	}
+
 	[ClientRpc]
 	public void LoadPlayerDataClientRpc()
 	{
 		if(Game.LocalPawn is not HomePlayer player) return;
 
 		// Load thumbnails for placeables
-		foreach(HomePlaceable placeable in HomePlaceable.All)
-		{
-			if(string.IsNullOrEmpty(placeable.ThumbnailOverride) && !string.IsNullOrEmpty(placeable.Model))
-			{
-				placeable.Texture = SceneHelper.CreateModelThumbnail(placeable.Model);
-			}
-			else
-			{
-				placeable.Texture = Texture.Load(placeable.ThumbnailOverride);
-			}
-		}
-
+		LoadPlaceableThumbnails();
+		
 		// Load thumbnails for playermodels
 		foreach(HomePlayermodel playermodel in HomePlayermodel.All)
 		{

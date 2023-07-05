@@ -11,7 +11,8 @@ public enum PlaceableType
 {
     Prop,
     Entity,
-    PackageEntity
+    PackageEntity,
+    PackageProp
 }
 
 public enum PlaceableState
@@ -42,7 +43,7 @@ public partial class HomePlaceable : GameResource
 
     public string ClassName { get; set; } = "";
 
-    public string EntityPackage { get; set; } = "";
+    public string CloudIdent { get; set; } = "";
 
     [ResourceType("png")]
     public string ThumbnailOverride { get; set; } = "";
@@ -58,7 +59,6 @@ public partial class HomePlaceable : GameResource
 
 
     private string PackageThumbnail = "";
-    [HideInEditor] public string RealModel = "";
     [HideInEditor] public Texture Texture;
     [HideInEditor] public Transform TransformOffset
     {
@@ -81,12 +81,6 @@ public partial class HomePlaceable : GameResource
 
     private Package LoadedPackage;
 
-    public string GetModel() {
-        if(!string.IsNullOrEmpty(RealModel)) return RealModel;
-        return Model;
-    }
-
-
     public static List<HomePlaceable> All => ResourceLibrary.GetAll<HomePlaceable>().ToList();
 
     public static HomePlaceable Find(string id)
@@ -96,7 +90,7 @@ public partial class HomePlaceable : GameResource
 
     public static HomePlaceable FindByModel(string model)
     {
-        return All.Find(p => p.GetModel() == model);
+        return All.Find(p => p.Model == model);
     }
 
     public static HomePlaceable FindByName(string name)
@@ -109,9 +103,37 @@ public partial class HomePlaceable : GameResource
         return All.Find(p => p.Cost <= cost);
     }
 
+    public async Task<Texture> GetTexture()
+    {
+        if(string.IsNullOrEmpty(ThumbnailOverride))
+        {
+            if(!string.IsNullOrEmpty(CloudIdent))
+            {
+                var package = await Package.FetchAsync(CloudIdent, true);
+                return Texture.Load(package.Thumb);
+
+            }
+            return SceneHelper.CreateModelThumbnail(Model);
+        }
+        
+        return Texture.Load(FileSystem.Mounted, ThumbnailOverride);
+    }
+
+    public async Task<string> GetVideoThumbnail()
+    {
+        if(string.IsNullOrEmpty(CloudIdent))
+        {
+            return "";
+        }
+
+        var package = await Package.FetchAsync(CloudIdent, true);
+        return package.VideoThumb;
+    }
+
     private void FindTransformOffset()
     {
         _TransformOffset = Transform.Zero;
+        if(Model == null) return;
         Model model = Sandbox.Model.Load(Model);
         switch(Bottom)
         {
