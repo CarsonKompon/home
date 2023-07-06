@@ -34,9 +34,7 @@ public partial class TestCrashNPC : BaseNPC
     [ClientRpc]
     public async void TestCrash()
     {
-        NotificationPanel.AddEntry("Upvote the github issue in console so Facepunch can fix", "", 30);
-        Log.Info("UPVOTE THIS ISSUE:");
-        Log.Info("https://github.com/sboxgame/issues/issues/3448");
+        NotificationPanel.AddEntry("The issue has been fixed by facepunch :)", "", 5);
     }
 
 }
