@@ -102,11 +102,8 @@
     public async void SetTarget(HomePlaceable placeable)
     {
         Target = placeable;
-        if(!string.IsNullOrEmpty(placeable.CloudIdent))
-        {
-            var package = await Package.FetchAsync(placeable.CloudIdent, true);
-            VideoPreview.Style.SetBackgroundImage(package.VideoThumb ?? package.Thumb);
-        }
+
+        VideoPreview.Style.SetBackgroundImage(await placeable.GetVideoThumbnail());
     }
 
 }

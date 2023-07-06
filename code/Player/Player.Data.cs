@@ -10,23 +10,40 @@ using Home.Util;
 
 namespace Home;
 
-public class PlayerData
+public partial class PlayerData : BaseNetworkable
 {
-	public long SteamId { get; set; }
-	public long Money { get; set; }
-	public List<StashEntry> Stash { get; set; }
-	public List<AchievementProgress> Achievements {get; set;}
+	[Net] public long SteamId { get; set; }
+	[Net] public long Money { get; set; } = 0;
+	[Net] public List<StashEntry> Stash { get; set; } = new();
+	[Net] public List<AchievementProgress> Achievements {get; set;} = new();
 
-	public PlayerData()
-	{
-		Money = 0;
-		Stash = new List<StashEntry>();
-		Achievements = new List<AchievementProgress>();
-	}
+	public PlayerData() {}
 
 	public PlayerData(long steamId) : this()
 	{
 		SteamId = steamId;
+	}
+
+	// public void Load()
+	// {
+	// 	Game.AssertClient();
+	// 	Log.Info("🏠: Loading player data file...");
+	// 	string steamId = Game.LocalClient.SteamId.ToString();
+	// 	if(!FileSystem.Data.DirectoryExists(steamId)) return;
+	// 	LoadFromString(FileSystem.Data.ReadAllText(steamId + "/player.json"));
+	// }
+
+	public void LoadFromString(string jsonString)
+	{
+		var newData = JsonSerializer.Deserialize<PlayerData>(jsonString);
+
+		Money = newData.Money;
+		Stash = newData.Stash;
+		Achievements = newData.Achievements;
+
+		CombStash();
+
+		Log.Info("🏠: Player data loaded from string!");
 	}
 
 	public void Save()
@@ -40,138 +57,6 @@ public class PlayerData
 		}
 		FileSystem.Data.WriteJson(steamId + "/player.json", this);
 		Log.Info("🏠: Player data saved!");
-	}	
-}
-
-public partial class HomePlayer
-{
-    [Net, Change] public long Money { get; set; }
-	[Net] public IList<StashEntry> Stash { get; set; }
-	public List<AchievementProgress> Achievements {get; set;}
-	public List<RoomLayout> RoomLayouts = new List<RoomLayout>();
-
-	[ConVar.ClientData] public string HomeUploadData { get; set; } = "";
-
-	[ClientRpc]
-	public void SavePlayerDataClientRpc()
-	{
-		if(!FileSystem.Data.DirectoryExists(Client.SteamId.ToString()))
-		{
-			FileSystem.Data.CreateDirectory(Client.SteamId.ToString());
-		}
-		
-		if(Stash == null) return;
-
-		// Save player data to client data
-		FileSystem.Data.WriteJson(Client.SteamId.ToString() + "/player.json", new PlayerData(Client.SteamId)
-		{
-			Money = Money,
-			Stash = Stash.ToList(),
-			Achievements = Achievements
-		});
-		
-	}
-
-	private async void LoadPlaceableThumbnails()
-	{
-		foreach(HomePlaceable placeable in HomePlaceable.All)
-		{
-			placeable.Texture = await placeable.GetTexture();
-		}
-
-	}
-
-	[ClientRpc]
-	public void LoadPlayerDataClientRpc()
-	{
-		if(Game.LocalPawn is not HomePlayer player) return;
-
-		// Load thumbnails for placeables
-		LoadPlaceableThumbnails();
-		
-		// Load thumbnails for playermodels
-		foreach(HomePlayermodel playermodel in HomePlayermodel.All)
-		{
-			if(string.IsNullOrEmpty(playermodel.ThumbnailOverride) && !string.IsNullOrEmpty(playermodel.Model))
-			{
-				playermodel.Texture = SceneHelper.CreateModelThumbnail(playermodel.Model);
-			}
-			else
-			{
-				playermodel.Texture = Texture.Load(playermodel.ThumbnailOverride);
-			}
-		}
-
-		// Load player data from client data
-		HomeUploadData = FileSystem.Data.ReadAllText(Client.SteamId.ToString() + "/player.json");
-		if(HomeUploadData == null)
-		{
-			HomeUploadData = JsonSerializer.Serialize(new PlayerData(Client.SteamId));
-		}
-
-		// Load local layouts
-		long steamId = Game.LocalClient.SteamId;
-		if(!FileSystem.Data.DirectoryExists(steamId.ToString()))
-		{
-			FileSystem.Data.CreateDirectory(steamId.ToString());
-		}
-		if(!FileSystem.Data.DirectoryExists(steamId + "/layouts"))
-		{
-			FileSystem.Data.CreateDirectory(steamId + "/layouts");
-		}
-		if(!FileSystem.Data.DirectoryExists(steamId + "/layouts/" + Game.Server.MapIdent))
-		{
-			FileSystem.Data.CreateDirectory(steamId + "/layouts/" + Game.Server.MapIdent);
-		}
-
-		// TODO: Remove this early compatibility code
-		if(Game.Server.MapIdent.Contains("home_staycation_strip"))
-		{
-			foreach(string file in FileSystem.Data.FindFile(steamId + "/layouts", "*.json"))
-			{
-				RoomLayout layout = FileSystem.Data.ReadJson<RoomLayout>(steamId + "/layouts/" + file);
-				FileSystem.Data.DeleteFile(steamId + "/layouts/" + file);
-				FileSystem.Data.WriteJson(steamId + "/layouts/" + Game.Server.MapIdent + "/" + file, layout);
-			}
-		}
-		foreach(string file in FileSystem.Data.FindFile(steamId + "/layouts/" + Game.Server.MapIdent, "*.json"))
-		{
-			RoomLayout layout = FileSystem.Data.ReadJson<RoomLayout>(steamId + "/layouts/" + Game.Server.MapIdent + "/" + file);
-			player.RoomLayouts.Add(layout);
-		}
-
-		ConsoleSystem.Run("home_player_data_loaded", Client.SteamId.ToString());
-	}
-
-	[ConCmd.Server("home_player_data_loaded")]
-	public static void OnPlayerDataLoaded(string steamIdString)
-	{
-		long steamId = long.Parse(steamIdString);
-		IClient client = Game.Clients.FirstOrDefault(c => c.SteamId == steamId);
-		PlayerData data = JsonSerializer.Deserialize<PlayerData>(client.GetClientData<string>("HomeUploadData"));
-		if(data == null)
-		{
-			data = new PlayerData(steamId);
-		}
-		if(client.Pawn is HomePlayer player)
-		{
-			for(int i = 0; i < data.Stash.Count; i++)
-			{
-				if(data.Stash[i].Amount <= 0 || data.Stash[i].GetPlaceable() == null)
-				{
-					data.Stash.RemoveAt(i);
-					i--;
-				}
-				else
-				{
-					data.Stash[i].Used = 0;
-				}
-			}
-
-			Log.Info("🏠: Player data loaded!");
-			player.Money = data.Money;
-			player.Stash = data.Stash;
-		}
 	}
 
 	public void SetAchievementProgress(string name, int progress)
@@ -237,14 +122,122 @@ public partial class HomePlayer
 
 	}
 
+	// Comb through the stash and remove any invalid entries
+	private void CombStash()
+	{
+		for(int i = 0; i < Stash.Count; i++)
+		{
+			if(Stash[i].Amount <= 0 || Stash[i].GetPlaceable() == null)
+			{
+				Stash.RemoveAt(i);
+				i--;
+			}
+			else
+			{
+				Stash[i].Used = 0;
+			}
+		}
+	}
+}
+
+public partial class HomePlayer
+{
+    [Net] public PlayerData Data { get; set; }
+	public List<RoomLayout> RoomLayouts = new List<RoomLayout>();
+
+	[ConVar.ClientData] public string HomeUploadData { get; set; } = "";
+
+	[ClientRpc]
+	public void SavePlayerDataClientRpc()
+	{
+		if(!FileSystem.Data.DirectoryExists(Client.SteamId.ToString()))
+		{
+			FileSystem.Data.CreateDirectory(Client.SteamId.ToString());
+		}
+
+		Data.Save();
+	}
+
+	private async void LoadPlaceableThumbnails()
+	{
+		foreach(HomePlaceable placeable in HomePlaceable.All)
+		{
+			placeable.Texture = await placeable.GetTexture();
+		}
+
+	}
+
+	[ClientRpc]
+	public void LoadPlayerDataClientRpc()
+	{
+		if(Game.LocalPawn is not HomePlayer player) return;
+
+		// Load thumbnails for placeables
+		// LoadPlaceableThumbnails();
+		
+		// Load thumbnails for playermodels
+		foreach(HomePlayermodel playermodel in HomePlayermodel.All)
+		{
+			if(string.IsNullOrEmpty(playermodel.ThumbnailOverride) && !string.IsNullOrEmpty(playermodel.Model))
+			{
+				playermodel.Texture = SceneHelper.CreateModelThumbnail(playermodel.Model);
+			}
+			else
+			{
+				playermodel.Texture = Texture.Load(playermodel.ThumbnailOverride);
+			}
+		}
+
+		// Load player data from client data
+		HomeUploadData = FileSystem.Data.ReadAllText(Client.SteamId.ToString() + "/player.json");
+		if(string.IsNullOrEmpty(HomeUploadData))
+		{
+			HomeUploadData = JsonSerializer.Serialize(new PlayerData(Client.SteamId));
+			Log.Info(HomeUploadData);
+		}
+
+		// Load local layouts
+		long steamId = Game.LocalClient.SteamId;
+		if(!FileSystem.Data.DirectoryExists(steamId.ToString()))
+		{
+			FileSystem.Data.CreateDirectory(steamId.ToString());
+		}
+		if(!FileSystem.Data.DirectoryExists(steamId + "/layouts"))
+		{
+			FileSystem.Data.CreateDirectory(steamId + "/layouts");
+		}
+		if(!FileSystem.Data.DirectoryExists(steamId + "/layouts/" + Game.Server.MapIdent))
+		{
+			FileSystem.Data.CreateDirectory(steamId + "/layouts/" + Game.Server.MapIdent);
+		}
+
+		foreach(string file in FileSystem.Data.FindFile(steamId + "/layouts/" + Game.Server.MapIdent, "*.json"))
+		{
+			RoomLayout layout = FileSystem.Data.ReadJson<RoomLayout>(steamId + "/layouts/" + Game.Server.MapIdent + "/" + file);
+			player.RoomLayouts.Add(layout);
+		}
+
+		OnPlayerDataLoaded(Client.SteamId.ToString());
+	}
+
+	[ConCmd.Server]
+	public static void OnPlayerDataLoaded(string steamIdString)
+	{
+		long steamId = long.Parse(steamIdString);
+		IClient client = Game.Clients.FirstOrDefault(c => c.SteamId == steamId);
+		if(client.Pawn is not HomePlayer player) return;
+		player.Data = new PlayerData(steamId);
+		player.Data.LoadFromString(client.GetClientData<string>("HomeUploadData"));
+	}
+
 	public bool HasMoney(long amount)
 	{
-		return Money >= amount;
+		return Data.Money >= amount;
 	}
 
 	public bool GiveMoney(long amount)
 	{
-		Money += amount;
+		Data.Money += amount;
 		SavePlayerDataClientRpc(To.Single(this.Client));
 		return true;
 	}
@@ -253,7 +246,7 @@ public partial class HomePlayer
 	{
 		if(!HasMoney(amount))
 			return false;
-		Money -= amount;
+		Data.Money -= amount;
 		SavePlayerDataClientRpc(To.Single(this.Client));
 		return true;
 	}
@@ -269,23 +262,23 @@ public partial class HomePlayer
 
 	public bool HasPlaceable(string id, int amount = 1)
 	{
-		return Stash.Any(s => s.Id == id && s.Amount >= amount);
+		return Data.Stash.Any(s => s.Id == id && s.Amount >= amount);
 	}
 
 	public bool CanUsePlaceable(string id, int amount = 1)
 	{
-		return Stash.Any(s => s.Id == id && s.Amount - s.Used >= amount);
+		return Data.Stash.Any(s => s.Id == id && s.Amount - s.Used >= amount);
 	}
 
 	public void GivePlaceable(string id, long amount = 1)
 	{
-		if(Stash.Any(s => s.Id == id))
+		if(Data.Stash.Any(s => s.Id == id))
 		{
-			Stash.First(s => s.Id == id).Amount += (int)amount;
+			Data.Stash.First(s => s.Id == id).Amount += (int)amount;
 		}
 		else
 		{
-			Stash.Add(new StashEntry(this.Client.SteamId, id, (int)amount));
+			Data.Stash.Add(new StashEntry(this.Client.SteamId, id, (int)amount));
 		}
 		SavePlayerDataClientRpc(To.Single(this.Client));
 	}
@@ -294,7 +287,7 @@ public partial class HomePlayer
 	{
 		if(!HasPlaceable(id, amount))
 			return false;
-		Stash.First(s => s.Id == id).Amount -= (int)amount;
+		Data.Stash.First(s => s.Id == id).Amount -= (int)amount;
 		SavePlayerDataClientRpc(To.Single(this.Client));
 		return true;
 	}
@@ -310,8 +303,8 @@ public partial class HomePlayer
 	[ClientRpc]
 	public void UnusePlaceable(string id, int amount = 1)
 	{
-		if(!Stash.Any(s => s.Id == id && s.Used >= amount)) return;
-		var thing = Stash.First(s => s.Id == id);
+		if(!Data.Stash.Any(s => s.Id == id && s.Used >= amount)) return;
+		var thing = Data.Stash.First(s => s.Id == id);
 		thing.Used -= amount;
 		if(thing.Used < 0) thing.Used = 0;
 	}

@@ -39,7 +39,7 @@
                 Shop = parent as ShopPlaceable;
             }
 
-            Icon.Style.BackgroundImage = Placeable.Texture;
+            Icon.Style.BackgroundImage = Placeable.GetTexture().Result;
 		}
 
 		
@@ -47,7 +47,7 @@
     public string GetDescription()
     {
         if(Game.LocalPawn is not HomePlayer player) return "";
-        var stashEntry = player.Stash.Where(x => x.GetPlaceable().Id == Placeable.Id).FirstOrDefault();
+        var stashEntry = player.Data.Stash.Where(x => x.GetPlaceable().Id == Placeable.Id).FirstOrDefault();
         if(stashEntry == null) return $"You currently own 0";
         return $"You currently own {stashEntry.Amount}";
     }

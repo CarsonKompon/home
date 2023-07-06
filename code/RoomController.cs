@@ -118,7 +118,7 @@ public partial class RoomController : Entity
         Entities.Clear();
 
         if(RoomOwner == null) return;
-        foreach(var item in RoomOwner.Stash)
+        foreach(var item in RoomOwner.Data.Stash)
         {
             item.Used = 0;
         }

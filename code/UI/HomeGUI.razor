@@ -47,7 +47,7 @@
     {
         if (Game.LocalPawn is HomePlayer player)
         {
-            return $"${player.Money:n0}";
+            return $"${player.Data.Money:n0}";
         }
         return "$0";
     }

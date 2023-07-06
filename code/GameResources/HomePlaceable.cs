@@ -119,15 +119,24 @@ public partial class HomePlaceable : GameResource
         return Texture.Load(FileSystem.Mounted, ThumbnailOverride);
     }
 
+    private string _VideoThumbnail = "";
     public async Task<string> GetVideoThumbnail()
     {
-        if(string.IsNullOrEmpty(CloudIdent))
-        {
-            return "";
-        }
-
+        if(!string.IsNullOrEmpty(_VideoThumbnail)) return _VideoThumbnail;
+        if(string.IsNullOrEmpty(CloudIdent)) return "";
         var package = await Package.FetchAsync(CloudIdent, true);
-        return package.VideoThumb;
+        int videoId = -1;
+        for(int i=0; i<package.Screenshots.Length; i++)
+        {
+            if(package.Screenshots[i].IsVideo)
+            {
+                videoId = i;
+                break;
+            }
+        }
+        if(videoId != -1) _VideoThumbnail = package.Screenshots[videoId].Url;
+        else _VideoThumbnail = (package.VideoThumb ?? package.Thumb);
+        return _VideoThumbnail;
     }
 
     private void FindTransformOffset()

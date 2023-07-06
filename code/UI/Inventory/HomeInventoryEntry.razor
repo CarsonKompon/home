@@ -30,7 +30,7 @@
             HomePlaceable placeable = Entry.GetPlaceable();
             if(placeable != null)
             {
-                Background.Style.BackgroundImage = placeable.Texture;
+                Background.Style.BackgroundImage = placeable.GetTexture().Result;
             }
         }
     }
