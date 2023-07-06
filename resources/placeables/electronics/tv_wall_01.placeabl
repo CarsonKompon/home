@@ -11,7 +11,7 @@
   "Bottom": "ZNegative",
   "Model": "models/items/electronics/tv_medium.vmdl",
   "ClassName": "CarsonK.MediaPlayerWall",
-  "EntityPackage": "carsonk.mediaplayer",
+  "CloudIdent": "carsonk.mediaplayer",
   "ThumbnailOverride": "",
   "PlaceSound": null,
   "StashSound": null,

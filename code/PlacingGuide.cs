@@ -41,7 +41,9 @@ public static class PlacingGuide
             Gizmo.Draw.Color = Color.White.WithAlpha(0.5f);
             if(Model == "")
             {
-                Gizmo.Draw.SolidBox(new BBox(player.PlacingPosition + GhostMins, player.PlacingPosition + GhostMaxs));
+                var box = new BBox(GhostMins, GhostMaxs);
+                box = box.Transform(new Transform(player.PlacingPosition, player.PlacingRotation));
+                Gizmo.Draw.SolidBox(box);
             }
             else
             {
@@ -62,7 +64,9 @@ public static class PlacingGuide
                 GhostMins = package.GetMeta("RenderMins", Vector3.Zero);
                 GhostMaxs = package.GetMeta("RenderMaxs", Vector3.Zero);
                 await package.MountAsync();
-                Model = package.GetMeta("PrimaryAsset", "models/dev/error.vmdl");
+                Model = package.GetMeta("PrimaryAsset", "");
+                if(string.IsNullOrEmpty(placeable.Model)) Model = "models/dev/error.vmdl";
+                else Model = placeable.Model;
                 return;
             }
         }
