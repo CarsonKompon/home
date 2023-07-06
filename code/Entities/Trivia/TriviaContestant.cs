@@ -10,7 +10,6 @@ public partial class TriviaContestant : ModelEntity, IUse, IEntityPostLoad
 	[Property, Description("The trivia game where contestants are playing on")]
 	public EntityTarget TargetGame { get; set; }
 	public HomePlayer Contester { get; set; }
-	public QuestionStruct ActiveQuestion { get; set; }
 	public int OptionChosen { get; set; } = -1;
 	public List<int> OptionsChosen { get; set; } = new();
 
@@ -63,16 +62,16 @@ public partial class TriviaContestant : ModelEntity, IUse, IEntityPostLoad
 				DisplayToContestant( To.Single( Contester ), $"Time: {timer}", screenPos, 3, Color.Yellow );
 				DisplayToContestant( To.Single( Contester ), $"Locked Answer: {LockAnswer}", screenPos, 4, Color.Yellow );
 				
-				for ( int i = 0; i < question.Answers.Length; i++ )
+				for ( int i = 1; i <= question.Answers.Length; i++ )
 				{
 					Color selectCol = Color.White;
 
 					if (type == QuestionStruct.TypeEnum.MultiChoice )
 						selectCol = OptionsChosen.Contains( i ) ? Color.Green : Color.Red;
 					else
-						selectCol = i == OptionChosen-1 ? Color.Green : Color.Red;
+						selectCol = i == OptionChosen ? Color.Green : Color.Red;
 
-					DisplayToContestant( To.Single( Contester ), $"{i+1}: {question.Answers[i].Answer}", screenPos, 6+i, selectCol );
+					DisplayToContestant( To.Single( Contester ), $"{i}: {question.Answers[i-1].Answer}", screenPos, 5+i, selectCol );
 				}
 			}
 			else if (MainGame.RoundStatus == TriviaGame.TriviaRoundStatus.PreReveal )
@@ -92,9 +91,9 @@ public partial class TriviaContestant : ModelEntity, IUse, IEntityPostLoad
 	}
 
 	[ClientRpc]
-	public void DisplayToContestant(string msg, Vector2 pos, int line, Color color)
+	public void DisplayToContestant(string msg, Vector2 pos, int line, Color color, float time = 0.0f)
 	{
-		DebugOverlay.ScreenText( msg, pos, line, color );
+		DebugOverlay.ScreenText( msg, pos, line, color, time );
 	}
 
 	public override void Spawn()
@@ -160,14 +159,16 @@ public partial class TriviaContestant : ModelEntity, IUse, IEntityPostLoad
 	{
 		if ( LockAnswer ) return;
 
-		if( ActiveQuestion.QuestionType == QuestionStruct.TypeEnum.MultiChoice )
+		var question = MainGame.GetActiveQuestion();
+
+		if( question.QuestionType == QuestionStruct.TypeEnum.MultiChoice )
 		{
 			if ( OptionsChosen.Contains( option ) )
 				OptionsChosen.Remove( option );
 			else
 				OptionsChosen.Add( option );
 		}
-		else if (ActiveQuestion.QuestionType == QuestionStruct.TypeEnum.TrueOrFalse )
+		else if ( question.QuestionType == QuestionStruct.TypeEnum.TrueOrFalse )
 		{
 			if ( option == 3 )
 				option = 1;

@@ -11,6 +11,8 @@ public partial class TriviaGame : Entity, IEntityPostLoad
 	[Property, Range(5, 25, 5)]
 	public int MaxRounds { get; set; } = 5;
 
+	[Property, MinMax(15, 60)]
+	public int BaseRoundTime { get; set; } = 30;
 	public int CurRound { get; set; }
 
 	public TriviaScreen TriviaScreen;
@@ -105,7 +107,7 @@ public partial class TriviaGame : Entity, IEntityPostLoad
 		if ( GameStatus == TriviaStatus.Idle ) return;
 
 		if ( ShouldCancelGame() )
-			CancelGame();
+			ResetGame();
 
 		if ( TriviaTime > 0.0f ) return;
 
@@ -157,21 +159,14 @@ public partial class TriviaGame : Entity, IEntityPostLoad
 		return false;
 	}
 
-	/// <summary>
-	/// Cancels the game therefore restoring to idle state
-	/// </summary>
-	public void CancelGame()
-	{
-		GameStatus = TriviaStatus.Idle;
-		RoundStatus = TriviaRoundStatus.Waiting;
-	}
 
 	/// <summary>
 	/// Starts up the game, this doesn't begin gameplay
 	/// </summary>
 	public void StartUpGame()
 	{
-		TriviaTime = 20.0f;
+		//TriviaTime = 20.0f;
+		TriviaTime = 5.0f;
 		GameStatus = TriviaStatus.Starting;
 	}
 
@@ -181,7 +176,7 @@ public partial class TriviaGame : Entity, IEntityPostLoad
 	public void BeginGame()
 	{
 		SetUpGame();
-		TriviaTime = 45.0f;
+		TriviaTime = BaseRoundTime;
 		ContestantPanels.ForEach( l => l.ResetOptions() );
 		GameStatus = TriviaStatus.Active;
 	}
@@ -262,29 +257,57 @@ public partial class TriviaGame : Entity, IEntityPostLoad
 	/// </summary>
 	public void DoScoreUpdate()
 	{
-		List<TriviaContestant> players = GetActiveContestants();
+		List<TriviaContestant> contestants = GetActiveContestants();
 
 		QuestionStruct question = GetActiveQuestion();
 
-		AnswerStruct answer = question.Answers.Where( a => a.IsCorrect ).FirstOrDefault();
+		var answer = question.Answers.Where( a => a.IsCorrect ).FirstOrDefault();
 
-		foreach ( var player in players )
+		foreach ( var contester in contestants )
 		{
+			float timeAnswered = (contester.Contester.Controller as TriviaController).TookToAnswer;
+
 			if ( question.QuestionType == QuestionStruct.TypeEnum.MultiChoice )
 			{
+				var chosen = contester.GetOptionsChosen();
+				var answers = question.Answers.ToList();
 
+				int correct = 0;
+				int incorrect = 0;
+
+				for ( int i = 1; i <= answers.Count; i++ )
+				{
+					if ( chosen.Contains( i ) )
+					{
+						if ( answers[i - 1].IsCorrect )
+							correct++;
+						else
+							incorrect++;
+					}
+					else if ( !chosen.Contains( i ) && answers[i-1].IsCorrect )
+						incorrect++;
+				}
+
+				if ( correct > 0 )
+				{
+					if ( incorrect == 0 )
+					{
+						contester.CorrectStreak++;
+						contester.AddScore( CalculateGivingPoints( contester.CorrectStreak, timeAnswered ) );
+					}
+					else
+						contester.AddScore( CalculateGivingPoints( (correct - incorrect) + 1, timeAnswered, true ) );
+				}
 			}
 			else
 			{
-				if (player.GetOptionChosen() == (int)answer.Option )
+				if ( contester.GetOptionChosen() == (int)answer.Option)
 				{
-					player.CorrectStreak++;
-					player.AddScore( CalculateGivingPoints(player.CorrectStreak) );
+					contester.CorrectStreak++;
+					contester.AddScore( CalculateGivingPoints( contester.CorrectStreak, timeAnswered ) );
 				}
 				else
-				{
-					player.CorrectStreak = 0;
-				}
+					contester.CorrectStreak = 0;
 			}
 		}
 	}
@@ -310,16 +333,26 @@ public partial class TriviaGame : Entity, IEntityPostLoad
 	/// <summary>
 	/// Calculates score before giving to the player
 	/// </summary>
-	/// <param name="streak">The players streak from continous correct answers</param>
+	/// <param name="amount">The amount to multiply or divide</param>
+	/// <param name="timeLocked">The time since the answer was locked</param>
+	/// <param name="mixed">If the player has both a incorrect and a corret answer</param>
 	/// <returns>The score calculated</returns>
-	int CalculateGivingPoints(int streak = 0)
+	int CalculateGivingPoints(int amount, float timeLocked, bool mixed = false)
 	{
 		int points = 5;
 
-		if ( streak > 2 )
-			points *= streak - 1;
+		if ( amount > 2 && !mixed )
+			points *= amount - 1;
 
-		//TODO: Multi-choice conditions for points
+		if( !mixed )
+			points += (int)Math.Ceiling( BaseRoundTime / timeLocked );
+
+		if ( mixed )
+			points = (int)MathF.Round( points / amount );
+
+		var player = GetActiveContestants()[0].Contester;
+
+		GetActiveContestants()[0].DisplayToContestant( To.Single( player ), $"Points earned: {points}", new Vector2( 125, 75 ), 0, Color.Yellow, 7.5f );
 
 		return points;
 	}
@@ -342,6 +375,7 @@ public partial class TriviaGame : Entity, IEntityPostLoad
 	{
 		EjectPlayers();
 		GameStatus = TriviaStatus.Idle;
+		RoundStatus = TriviaRoundStatus.Waiting;
 	}
 
 	/// <summary>

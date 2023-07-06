@@ -6,6 +6,8 @@ public class TriviaController : HomePawnController
 	[ClientInput] public AnswerStruct.OptionEnum SelectedOption { get; set; }
 	[ClientInput] public bool ShouldLockAnswer { get; set; }
 
+	public float TookToAnswer;
+
 	public override void Simulate()
     {
         base.Simulate();
@@ -33,10 +35,16 @@ public class TriviaController : HomePawnController
 
         BuildInput();
 
-		if( ShouldLockAnswer && !TriviaPanel.LockAnswer )
+		if( ShouldLockAnswer && !TriviaPanel.LockAnswer ) 
+		{ 
 			TriviaPanel.LockAnswer = true;
 
-		if( SelectedOption != AnswerStruct.OptionEnum.Unselected)
+			var game = TriviaPanel.MainGame;
+
+			TookToAnswer = game.BaseRoundTime - game.TriviaTime.Passed;
+		}
+
+		if( SelectedOption != AnswerStruct.OptionEnum.Unselected )
 		{
 			TriviaPanel.SelectOption( (int)SelectedOption );
 			SelectedOption = AnswerStruct.OptionEnum.Unselected;

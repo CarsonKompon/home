@@ -133,13 +133,27 @@ public static class QnASheet
 		{
 			Question = "Hi, I'm a dummy question",
 			Subject = QuestionStruct.SubjectEnum.Gaming,
-			QuestionType = QuestionStruct.TypeEnum.Standard,
+			QuestionType = QuestionStruct.TypeEnum.MultiChoice,
 			Answers = new AnswerStruct[]
 			{
 				new AnswerStruct("You're a what?", AnswerStruct.OptionEnum.A),
 				new AnswerStruct("Who?", AnswerStruct.OptionEnum.B),
 				new AnswerStruct("What is this?", AnswerStruct.OptionEnum.C),
 				new AnswerStruct("haha funny men", AnswerStruct.OptionEnum.D, true)
+			}
+		},
+
+		new QuestionStruct()
+		{
+			Question = "Are you winning son?",
+			Subject = QuestionStruct.SubjectEnum.Gaming,
+			QuestionType = QuestionStruct.TypeEnum.MultiChoice,
+			Answers = new AnswerStruct[]
+			{
+				new AnswerStruct("I'm not your son", AnswerStruct.OptionEnum.A),
+				new AnswerStruct("Yes dad", AnswerStruct.OptionEnum.B, true),
+				new AnswerStruct("How did you get in my house?", AnswerStruct.OptionEnum.C),
+				new AnswerStruct("I'm beating these sbox people", AnswerStruct.OptionEnum.D, true)
 			}
 		}
 	};
@@ -238,12 +252,12 @@ public static class QnASheet
 		#endregion
 	};
 
-	public static List<QuestionStruct> QuestionsArray = (List<QuestionStruct>)Questions.Shuffle();
-	public static void ResetQuestions() => QuestionsArray = (List<QuestionStruct>)Questions.Shuffle();
+	public static List<QuestionStruct> QuestionsArray = (List<QuestionStruct>)DummyQuestion.Shuffle();
+	public static void ResetQuestions() => QuestionsArray = (List<QuestionStruct>)DummyQuestion.Shuffle();
 
 	public static QuestionStruct TakeQuestion()
 	{
-		QuestionStruct question = QuestionsArray[Game.Random.Int( 0, QuestionsArray.Count - 1 )];
+		QuestionStruct question = QuestionsArray[Game.Random.Int( 0, QuestionsArray.Count()-1 )];
 
 		QuestionsArray.Remove( question );
 
