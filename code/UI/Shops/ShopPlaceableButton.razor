@@ -23,24 +23,29 @@
     public HomePlaceable Placeable { get; set; }
     public ShopPlaceable Shop { get; set; }
 
-		protected override void OnAfterTreeRender( bool firstTime )
-		{
-			base.OnAfterTreeRender( firstTime );
+    protected override void OnAfterTreeRender( bool firstTime )
+    {
+        base.OnAfterTreeRender( firstTime );
 
-            if(firstTime)
+        if(firstTime)
+        {
+            Panel parent = Parent;
+            int fallback = 0;
+            while(parent is not ShopPlaceable && fallback < 10)
             {
-                Panel parent = Parent;
-                int fallback = 0;
-                while(parent is not ShopPlaceable && fallback < 10)
-                {
-                    parent = parent.Parent;
-                    fallback++;
-                }
-                Shop = parent as ShopPlaceable;
+                parent = parent.Parent;
+                fallback++;
             }
+            Shop = parent as ShopPlaceable;
+        }
 
-            Icon.Style.BackgroundImage = Placeable.GetTexture().Result;
-		}
+        SetBackgroundImage();
+    }
+
+    private async void SetBackgroundImage()
+    {
+        Icon.Style.BackgroundImage = await Placeable.GetTexture();
+    }
 
 		
 
