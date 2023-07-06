@@ -150,7 +150,7 @@ public partial class HomeGame : GameManager
 		player.FinishPlacing();
 	}
 
-	[ConCmd.Server("home_buy")]
+	[ConCmd.Server]
 	public static void PurchasePlaceable(string id)
 	{
 		// Check the player and their variables
@@ -166,6 +166,24 @@ public partial class HomeGame : GameManager
 
 		// Give the placeable to the player
 		player.GivePlaceable(placeable.Id);
+	}
+
+	[ConCmd.Server]
+	public static void PurchaseClothing(int id)
+	{
+		// Check the player and their variables
+		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+
+		// Check the clothing
+		HomeClothing clothing = HomeClothing.AllHome.Where(x => x.ResourceId == id).FirstOrDefault();
+		if(clothing == null) return;
+
+		// Check the player's money
+		if(!player.HasMoney(clothing.Cost)) return;
+		player.TakeMoney(clothing.Cost);
+
+		// Give the placeable to the player
+		player.GiveClothing(clothing.ResourceId);
 	}
 
 	[ConCmd.Admin("home_give_money", Help = "Gives money to a player")]
@@ -202,6 +220,20 @@ public partial class HomeGame : GameManager
 
 		// Give the placeable to the player
 		player.GivePlaceable(placeable.Id);
+	}
+
+	[ConCmd.Server]
+	public static void GiveClothing(int id)
+	{		
+		// Check the player and their variables
+		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+
+		// Check the placeable
+		HomeClothing clothing = HomeClothing.AllHome.Where(x => x.ResourceId == id).FirstOrDefault();
+		if(clothing == null) return;
+
+		// Give the placeable to the player
+		player.GiveClothing(clothing.ResourceId);
 	}
 
 	public static async Task<Entity> SpawnPlaceable(string id, long owner, Vector3 position, Rotation rotation, float scale)

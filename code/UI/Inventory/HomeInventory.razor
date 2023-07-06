@@ -36,7 +36,7 @@
 
     IList<StashEntry> GetInventory()
     {
-        if(Game.LocalPawn is HomePlayer player) return player.Data.Stash;
+        if(Game.LocalPawn is HomePlayer player) return player?.Data?.Stash ?? new List<StashEntry>();
         return new List<StashEntry>();
     }
 

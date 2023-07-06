@@ -3,6 +3,8 @@
     "chat.settings.fontsize": "Font Size",
     "chat.settings.chatsfx": "Chat SFX",
 
+    "clothing.owned": "Owned",
+
     "location.mainplaza": "Main Plaza",
     "location.rooms1-6": "Rooms #1-6",
     "location.rooms7-12": "Rooms #7-12",
@@ -14,6 +16,7 @@
     "npc.roomservice": "Room Service",
     "npc.freemoney": "Free Money",
 
+    "shop.clothing": "Clothing Shop",
     "shop.construction": "Construction Shop",
     "shop.electronics": "Electronics Shop",
     "shop.furniture": "Furniture Shop",

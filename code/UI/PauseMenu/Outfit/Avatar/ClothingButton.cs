@@ -25,14 +25,7 @@ public class ClothingButton : Panel
 
 		ImagePanel = new Panel( this, "image" );
 		
-		if(Clothing.Icon.Path != null && FileSystem.Mounted.FileExists(Clothing.Icon.Path))
-		{
-			ImagePanel.Style.SetBackgroundImage( Clothing.Icon.Path );
-		}
-		else
-		{
-			ImagePanel.Style.BackgroundImage = SceneHelper.CreateClothingThumbnail( Clothing );
-		}
+		ImagePanel.Style.BackgroundImage = HomeClothing.GetIcon( Clothing );
 
 		if( HasVariations )
 		{

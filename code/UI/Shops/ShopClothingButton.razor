@@ -1,0 +1,74 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Sandbox;
+@using Sandbox.UI;
+
+@namespace Home
+
+<root>
+    <div class="info">
+        <img class="icon" @ref="Icon" />
+        <div class="names">
+            <div class="name">@Clothes.Title</div>
+            <div class="description">@Clothes.Subtitle</div>
+        </div>
+    </div>
+    @if(HasClothing())
+    {
+        <button class="buy owned" >#clothing.owned</button>
+    }
+    else
+    {
+        <button class="buy" onclick="@Purchase" >$@Clothes.Cost</button>
+    }
+</root>
+
+@code
+{
+    public Image Icon { get; set; }
+    public HomeClothing Clothes { get; set; }
+    public ShopClothing Shop { get; set; }
+
+    protected override void OnAfterTreeRender( bool firstTime )
+    {
+        base.OnAfterTreeRender( firstTime );
+
+        if(firstTime)
+        {
+            Panel parent = Parent;
+            int fallback = 0;
+            while(parent is not ShopClothing && fallback < 10)
+            {
+                parent = parent.Parent;
+                fallback++;
+            }
+            Shop = parent as ShopClothing;
+        }
+
+        Icon.Style.BackgroundImage = HomeClothing.GetIcon( Clothes );
+    }		
+
+    public bool HasClothing()
+    {
+        if(Game.LocalPawn is not HomePlayer player) return false;
+        return player.Data.Clothing.Contains(Clothes.ResourceId);
+    }
+
+    public void Purchase()
+    {
+        HomeGame.PurchaseClothing( Clothes.ResourceId );
+    }
+
+    protected override void OnMouseOver(MousePanelEvent e)
+    {
+        base.OnMouseOver(e);
+        if(Game.LocalPawn is not HomePlayer player) return;
+        Shop?.SetTarget(Clothes);
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(Clothes);
+    }
+}

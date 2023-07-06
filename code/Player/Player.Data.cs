@@ -15,6 +15,7 @@ public partial class PlayerData : BaseNetworkable
 	[Net] public long SteamId { get; set; }
 	[Net] public long Money { get; set; } = 0;
 	[Net] public List<StashEntry> Stash { get; set; } = new();
+	[Net] public List<int> Clothing { get; set; } = new();
 	[Net] public List<AchievementProgress> Achievements {get; set;} = new();
 
 	public PlayerData() {}
@@ -280,6 +281,13 @@ public partial class HomePlayer
 		{
 			Data.Stash.Add(new StashEntry(this.Client.SteamId, id, (int)amount));
 		}
+		SavePlayerDataClientRpc(To.Single(this.Client));
+	}
+
+	public void GiveClothing(int id)
+	{
+		if(Data.Clothing.Contains(id)) return;
+		Data.Clothing.Add(id);
 		SavePlayerDataClientRpc(To.Single(this.Client));
 	}
 

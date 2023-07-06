@@ -1,0 +1,108 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Sandbox;
+@using Sandbox.UI;
+@attribute [StyleSheet]
+
+@namespace Home
+
+<root class="shop-placeable">
+    <label class="name" text=@Name />
+    <div class="shop-container">
+        @if(Target == null)
+        {
+            <div class="preview" />
+        }
+        else if(!string.IsNullOrEmpty(Target.CloudModel))
+        {
+            <div @ref="VideoPreview" class="preview video" />
+        }
+        else
+        {
+            <RotatingModelScenePanel IdleSpeed=@(-40) Model=@Target.Model class="preview" />
+        }
+        <div class="shop">
+            <div class="items">
+                @foreach(var item in ClothingList)
+                {
+                    <ShopClothingButton Clothes=@item />
+                }
+            </div>
+        </div>
+    </div>
+    <img src="/ui/ui_no.png" class="close" onclick="@Close" />
+</root>
+
+@code
+{
+    public static ShopClothing Current { get; set; }
+    public Panel VideoPreview { get; set; }
+
+    public HomeClothing Target { get; set; } = null;
+    public string Name = "Shop";
+    public string Music = "tupac_lives";
+
+    private Sound PlayingMusic;
+    private float MusicVolume = 0f;
+
+    public List<HomeClothing> ClothingList = new();
+
+    [ClientRpc]
+    public static void Open(string name, string music = "tupac_lives")
+    {
+        if(Current == null)
+        {
+            Current = Game.RootPanel.AddChild<ShopClothing>();
+        }
+        if(Current.HasClass("open"))
+        {
+            Current.Close();
+            return;
+        }
+        Current.Name = name;
+        Current.Music = music;
+        Current.ClothingList.Clear();
+        Current.ClothingList.AddRange(HomeClothing.AllHome.Where(x => x.Cost > 0));
+        Current.AddClass("open");
+        if(Current.PlayingMusic.IsPlaying) Current.PlayingMusic.Stop();
+        Current.PlayingMusic = Sound.FromScreen(Current.Music).SetVolume(0f);
+        Current.MusicVolume = 0f;
+    }
+
+    public void Close()
+    {
+        RemoveClass("open");
+    }
+
+    [GameEvent.Tick.Client]
+    public void OnTick()
+    {
+        if(!PlayingMusic.IsPlaying) return;
+        bool isOpen = HasClass("open");
+        float lerpTo = isOpen ? 0.5f : 0f;
+        MusicVolume = MathX.Lerp(MusicVolume, lerpTo, Time.Delta * 5);
+        PlayingMusic.SetVolume(MusicVolume);
+        if(!isOpen && MusicVolume < 0.01f)
+        {
+            PlayingMusic.Stop();
+        }
+    }
+
+    [GameEvent.Client.BuildInput]
+    public void BuildInput()
+    {
+        if(Input.Pressed("crouch"))
+        {
+            Close();
+        }
+    }
+
+    public async void SetTarget(HomeClothing clothing)
+    {
+        Target = clothing;
+
+        VideoPreview.Style.SetBackgroundImage(await clothing.GetVideoThumbnail());
+    }
+
+}

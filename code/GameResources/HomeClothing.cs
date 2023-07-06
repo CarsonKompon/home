@@ -70,8 +70,42 @@ public partial class HomeClothing : Clothing
 	// 	return clothing.Model;
 	// }
 
+	public static Texture GetIcon(Clothing clothing)
+	{
+		if(clothing.Icon.Path != null && FileSystem.Mounted.FileExists(clothing.Icon.Path))
+		{
+			return Texture.Load(clothing.Icon.Path);
+		}
+		else
+		{
+			return SceneHelper.CreateClothingThumbnail( clothing );
+		}
+	}
+
+	string _VideoThumbnail = null;
+	public async Task<string> GetVideoThumbnail()
+    {
+        if(!string.IsNullOrEmpty(_VideoThumbnail)) return _VideoThumbnail;
+        if(string.IsNullOrEmpty(CloudModel)) return "";
+        var package = await Package.FetchAsync(CloudModel, true);
+        int videoId = -1;
+        for(int i=0; i<package.Screenshots.Length; i++)
+        {
+            if(package.Screenshots[i].IsVideo)
+            {
+                videoId = i;
+                break;
+            }
+        }
+        if(videoId != -1) _VideoThumbnail = package.Screenshots[videoId].Url;
+        else _VideoThumbnail = (package.VideoThumb ?? package.Thumb);
+        return _VideoThumbnail;
+    }
+
 
     public static List<Clothing> All => ResourceLibrary.GetAll<Clothing>().ToList();
+
+	public static List<HomeClothing> AllHome => ResourceLibrary.GetAll<HomeClothing>().ToList();
 
     //public static List<Clothing> All => ResourceLibrary.GetAll<Clothing>().ToList();
 }
