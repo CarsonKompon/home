@@ -107,5 +107,18 @@ public partial class HomeClothing : Clothing
 
 	public static List<HomeClothing> AllHome => ResourceLibrary.GetAll<HomeClothing>().ToList();
 
+	public static List<Clothing> GetAll(HomePlayer player)
+	{
+		var list = ResourceLibrary.GetAll<Clothing>().Where(x => x is not HomeClothing).ToList();
+		foreach(var clothing in AllHome)
+		{
+			if(player.Data.Clothing.Contains(clothing.ResourceId))
+			{
+				list.Add(clothing);
+			}
+		}
+		return list;
+	}
+
     //public static List<Clothing> All => ResourceLibrary.GetAll<Clothing>().ToList();
 }

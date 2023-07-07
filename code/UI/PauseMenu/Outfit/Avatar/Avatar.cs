@@ -65,11 +65,13 @@ public partial class Avatar : Panel
 
 	public void ChangeCategory( Clothing.ClothingCategory category )
 	{
+		if(Game.LocalPawn is not HomePlayer) return;
+		
 		CurrentCategory = category;
 
 		ItemGroups.Clear();
 
-		var subcategoryGroups = HomeClothing.All
+		var subcategoryGroups = HomeClothing.GetAll(Game.LocalPawn as HomePlayer)
 			.Where( x => x.Category == category && (x.Parent == null || CurrentDisplayType == DisplayType.Small) )
 			.OrderBy( x => x.SubCategory )
 			.GroupBy( x => x.SubCategory?.Trim() ?? string.Empty );
