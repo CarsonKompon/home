@@ -166,6 +166,8 @@ ShopClothingButton {
         font-size: 24px;
         font-weight: 500;
         background-color: #555;
+        flex-shrink: 0;
+        margin-left: 8px;
         margin-right: 8px;
         padding: 4px 8px;
         border-radius: 8px;
