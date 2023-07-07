@@ -25,15 +25,59 @@
         <div class="shop">
             <div class="sorting">
                 <label>Sort by: </label>
-                <button class="@IsSortingId" onclick=@SortById >Id</button>
+                <button class="@IsSortingCategories" onclick=@SortByCategories >Categories</button>
                 <button class="@IsSortingName" onclick=@SortByName >Name</button>
                 <button class="@IsSortingCost" onclick=@SortByCost >Cost</button>
                 <button class="@IsSortingOwned" onclick=@SortByOwned >Owned</button>
             </div>
             <div class="items">
-                @foreach(var item in ClothingList)
+                @if(SortType == ShopSortType.Categories)
                 {
-                    <ShopClothingButton Clothes=@item />
+                    <h2>Skins</h2>
+                    @foreach(var item in SkinList)
+                    {
+                        <ShopClothingButton Clothes=@item />
+                    }
+                    <h2>Hats</h2>
+                    @foreach(var item in HatList)
+                    {
+                        <ShopClothingButton Clothes=@item />
+                    }
+                    <h2>Hair</h2>
+                    @foreach(var item in HairList)
+                    {
+                        <ShopClothingButton Clothes=@item />
+                    }
+                    @if(FacialList.Count > 0)
+                    {
+                        <h2>Facial</h2>
+                        @foreach(var item in FacialList)
+                        {
+                            <ShopClothingButton Clothes=@item />
+                        }
+                    }
+                    <h2>Tops</h2>
+                    @foreach(var item in TopsList)
+                    {
+                        <ShopClothingButton Clothes=@item />
+                    }
+                    <h2>Bottoms</h2>
+                    @foreach(var item in BottomsList)
+                    {
+                        <ShopClothingButton Clothes=@item />
+                    }
+                    <h2>Footwear</h2>
+                    @foreach(var item in FootwearList)
+                    {
+                        <ShopClothingButton Clothes=@item />
+                    }
+                }
+                else
+                {
+                    @foreach(var item in ClothingList)
+                    {
+                        <ShopClothingButton Clothes=@item />
+                    }
                 }
             </div>
         </div>
@@ -71,6 +115,7 @@
         Current.Music = music;
         Current.ClothingList.Clear();
         Current.ClothingList.AddRange(HomeClothing.AllHome.Where(x => x.Cost > 0));
+        Current.GetClothing();
         Current.AddClass("open");
         if(Current.PlayingMusic.IsPlaying) Current.PlayingMusic.Stop();
         Current.PlayingMusic = Sound.FromScreen(Current.Music).SetVolume(0f);
@@ -112,19 +157,19 @@
         VideoPreview.Style.SetBackgroundImage(await clothing.GetVideoThumbnail());
     }
 
-    enum ShopSortType { Id, Name, Cost, Owned }
-    private ShopSortType SortType = ShopSortType.Id;
-    private string IsSortingId => SortType == ShopSortType.Id ? "selected" : "";
+    enum ShopSortType { Categories, Name, Cost, Owned }
+    private ShopSortType SortType = ShopSortType.Categories;
+    private string IsSortingCategories => SortType == ShopSortType.Categories ? "selected" : "";
     private string IsSortingName => SortType == ShopSortType.Name ? "selected" : "";
     private string IsSortingCost => SortType == ShopSortType.Cost ? "selected" : "";
     private string IsSortingOwned => SortType == ShopSortType.Owned ? "selected" : "";
 
     bool Descending = false;
 
-    private void SortById()
+    private void SortByCategories()
     {
-        if(SortType == ShopSortType.Id) Descending = !Descending;
-        SortType = ShopSortType.Id;
+        if(SortType == ShopSortType.Categories) Descending = !Descending;
+        SortType = ShopSortType.Categories;
         GetClothing();
     }
 
@@ -149,12 +194,28 @@
         GetClothing();
     }
 
+    private List<HomeClothing> HatList = new();
+    private List<HomeClothing> HairList = new();
+    private List<HomeClothing> SkinList = new();
+    private List<HomeClothing> FootwearList = new();
+    private List<HomeClothing> BottomsList = new();
+    private List<HomeClothing> TopsList = new();
+    private List<HomeClothing> GlovesList = new();
+    private List<HomeClothing> FacialList = new();
     private void GetClothing()
     {
         switch(SortType)
         {
-            case ShopSortType.Id:
+            case ShopSortType.Categories:
                 ClothingList = ClothingList.OrderBy(x => x.ResourceName).ToList();
+                HatList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Hat).ToList();
+                HairList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Hair).ToList();
+                SkinList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Skin).ToList();
+                FootwearList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Footwear).ToList();
+                BottomsList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Bottoms).ToList();
+                TopsList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Tops).ToList();
+                GlovesList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Gloves).ToList();
+                FacialList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Facial).ToList();
                 break;
             case ShopSortType.Name:
                 ClothingList = ClothingList.OrderBy(x => x.Title).ToList();

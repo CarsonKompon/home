@@ -92,6 +92,13 @@
                 gap: 4px;
                 overflow-y: scroll;
                 flex-direction: column;
+
+                h2 {
+                    font-size: 48px;
+                    flex-shrink: 0;
+                    font-weight: 600;
+                    font-style: italic;
+                }
             }
         }
     }
