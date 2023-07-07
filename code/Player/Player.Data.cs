@@ -40,6 +40,7 @@ public partial class PlayerData : BaseNetworkable
 
 		Money = newData.Money;
 		Stash = newData.Stash;
+		Clothing = newData.Clothing;
 		Achievements = newData.Achievements;
 
 		CombStash();

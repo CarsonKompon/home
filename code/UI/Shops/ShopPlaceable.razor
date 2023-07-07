@@ -23,6 +23,13 @@
             <RotatingModelScenePanel IdleSpeed=@(-40) Model=@Target.Model class="preview" />
         }
         <div class="shop">
+            <div class="sorting">
+                <label>Sort by: </label>
+                <button class="@IsSortingId" onclick=@SortById >Id</button>
+                <button class="@IsSortingName" onclick=@SortByName >Name</button>
+                <button class="@IsSortingCost" onclick=@SortByCost >Cost</button>
+                <button class="@IsSortingOwned" onclick=@SortByOwned >Owned</button>
+            </div>
             <div class="items">
                 @foreach(var item in PlaceableList)
                 {
@@ -61,9 +68,12 @@
             return;
         }
         Current.Name = name;
+
         Current.Music = music;
         Current.PlaceableList.Clear();
         Current.PlaceableList = HomePlaceable.All.Where(x => x.Categories.Contains(tag) && x.State == PlaceableState.Visible).ToList();
+        Current.GetPlaceables();
+        
         Current.SetTarget(null);
         Current.AddClass("open");
         if(Current.PlayingMusic.IsPlaying) Current.PlayingMusic.Stop();
@@ -104,6 +114,64 @@
         Target = placeable;
 
         VideoPreview.Style.SetBackgroundImage(await placeable.GetVideoThumbnail());
+    }
+
+    enum ShopSortType { Id, Name, Cost, Owned }
+    private ShopSortType SortType = ShopSortType.Id;
+    private string IsSortingId => SortType == ShopSortType.Id ? "selected" : "";
+    private string IsSortingName => SortType == ShopSortType.Name ? "selected" : "";
+    private string IsSortingCost => SortType == ShopSortType.Cost ? "selected" : "";
+    private string IsSortingOwned => SortType == ShopSortType.Owned ? "selected" : "";
+
+    bool Descending = false;
+
+    private void SortById()
+    {
+        if(SortType == ShopSortType.Id) Descending = !Descending;
+        SortType = ShopSortType.Id;
+        GetPlaceables();
+    }
+
+    private void SortByName()
+    {
+        if(SortType == ShopSortType.Name) Descending = !Descending;
+        SortType = ShopSortType.Name;
+        GetPlaceables();
+    }
+
+    private void SortByCost()
+    {
+        if(SortType == ShopSortType.Cost) Descending = !Descending;
+        SortType = ShopSortType.Cost;
+        GetPlaceables();
+    }
+
+    private void SortByOwned()
+    {
+        if(SortType == ShopSortType.Owned) Descending = !Descending;
+        SortType = ShopSortType.Owned;
+        GetPlaceables();
+    }
+
+    private void GetPlaceables()
+    {
+        switch(SortType)
+        {
+            case ShopSortType.Id:
+                PlaceableList = PlaceableList.OrderBy(x => x.Id).ToList();
+                break;
+            case ShopSortType.Name:
+                PlaceableList = PlaceableList.OrderBy(x => x.Name).ToList();
+                break;
+            case ShopSortType.Cost:
+                PlaceableList = PlaceableList.OrderBy(x => x.Cost).ToList();
+                break;
+            case ShopSortType.Owned:
+                if(Game.LocalPawn is not HomePlayer player) return;
+                PlaceableList = PlaceableList.OrderBy(x => player.Data.Stash.Where(y => y.Id == x.Id).FirstOrDefault()?.Amount ?? 0 ).ToList();
+                break;
+        }
+        if(Descending) PlaceableList.Reverse();
     }
 
 }
