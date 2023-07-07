@@ -74,7 +74,7 @@ public partial class HomeClothing : Clothing
 	{
 		if(clothing.Icon.Path != null && FileSystem.Mounted.FileExists(clothing.Icon.Path))
 		{
-			return Texture.Load(clothing.Icon.Path);
+			return Texture.Load(FileSystem.Mounted, clothing.Icon.Path);
 		}
 		else
 		{
