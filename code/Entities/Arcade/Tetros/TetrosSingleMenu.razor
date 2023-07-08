@@ -46,8 +46,8 @@
         };
 
         OnExit += (score) => {
-            Machine?.RemoveUser();
             ArcadeMachineTetros.Payout(PreviousUser, score);
+            ArcadeMachineTetros.RequestRemoveUser(Machine.NetworkIdent);
         };
     }
 

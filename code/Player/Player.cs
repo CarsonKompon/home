@@ -426,15 +426,7 @@ public partial class HomePlayer : AnimatedEntity
 
 		TimeSinceSpawned = 0;
 
-		if(Input.VR.IsActive)
-		{
-			Controller = new WalkControllerVR();
-		}
-		else
-		{
-        	Controller = new HomeWalkController();
-		}
-
+		ResetController();
 
         if(DevController is HomeNoclipController)
         {
@@ -464,6 +456,18 @@ public partial class HomePlayer : AnimatedEntity
 
 		GameManager.Current?.MoveToSpawnpoint( this );
 		ResetInterpolation();
+	}
+
+	public void ResetController()
+	{
+		if(Input.VR.IsActive)
+		{
+			Controller = new WalkControllerVR();
+		}
+		else
+		{
+        	Controller = new HomeWalkController();
+		}
 	}
 
 	public void Dress()

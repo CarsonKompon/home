@@ -14,7 +14,7 @@ public class ArcadeControllerBase : HomePawnController
         {
             if(Pawn is HomePlayer player)
             {
-                player.Controller = new HomeWalkController();
+                player.ResetController();
             }
             return;
         }
@@ -34,7 +34,7 @@ public class ArcadeControllerBase : HomePawnController
     
         if(Input.Pressed("crouch"))
         {
-            ArcadeMachine.RemoveUser();
+            ArcadeMachine.EndGame(Pawn.Client.SteamId);
         }
 
         BuildInput();

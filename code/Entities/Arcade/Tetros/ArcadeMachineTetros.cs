@@ -71,26 +71,17 @@ public partial class ArcadeMachineTetros : ArcadeMachineBase
         player.GiveMoney(score);
     }
 
-    [ConCmd.Server]
-    public static void RequestEndGame(int ident)
+    public override void EndGame(long steamId)
     {
-        var machine = Entity.FindByIndex(ident) as ArcadeMachineTetros;
-        if(machine == null) return;
-        if(machine.CurrentUser == null) return;
-        machine.RemoveUser();
-    }
+        EndGameRpc(steamId);
 
-    public override void EndGame()
-    {
-        EndGameRpc();
-
-        base.EndGame();
+        base.EndGame(steamId);
     }
 
     [ClientRpc]
-    public void EndGameRpc()
+    public void EndGameRpc(long steamId)
     {
-        Screen?.Menu?.EndGame.Invoke();
+        Screen?.Menu?.EndGame.Invoke(steamId);
     }
 
     [ConCmd.Server]

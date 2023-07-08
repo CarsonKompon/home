@@ -48,9 +48,9 @@ public partial class ChairBase : ModelEntity, IUse
         
         CurrentUser.SetParent(null, null, Transform.Zero);
 
-        if(CurrentUser.Controller is not HomeWalkController)
+        if(CurrentUser.Controller is ArcadeControllerBase)
         {
-            CurrentUser.Controller = new HomeWalkController();
+            CurrentUser.ResetController();
         }
         CurrentUser = null;
     }

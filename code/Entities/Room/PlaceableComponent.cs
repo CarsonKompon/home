@@ -95,10 +95,7 @@ public partial class PlaceableComponent : EntityComponent
         {
             if(child is HomePlayer player)
             {
-                if(player.Controller is not HomeWalkController)
-                {
-                    player.Controller = new HomeWalkController();
-                }
+                player.ResetController();
             }
             child.SetParent(null, null, Transform.Zero);
         }

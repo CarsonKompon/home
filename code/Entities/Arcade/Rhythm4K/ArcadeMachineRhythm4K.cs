@@ -80,9 +80,9 @@ public partial class ArcadeMachineRhythm4K : ArcadeMachineBase
         player.GiveMoney(score);
     }
 
-    public override void EndGame()
+    public override void EndGame(long steamId)
     {
-        base.EndGame();
+        base.EndGame(steamId);
 
         EndGameRpc(To.Single(CurrentUser));
     }
