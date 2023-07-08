@@ -5,6 +5,7 @@ using System.Linq;
 using Sandbox;
 using Sandbox.UI;
 using Editor;
+using Tetros;
 
 namespace Home;
 
@@ -13,9 +14,9 @@ namespace Home;
 /// </summary>
 [Library("home_arcade_tetros"), HammerEntity]
 [Title("Tetros Arcade Cabinet"), Category("Arcade"), Icon("gamepad")]
-public partial class ArcadeMachineTetris : ArcadeMachineBase
+public partial class ArcadeMachineTetros : ArcadeMachineBase
 {
-    public ArcadeScreenTetris Screen { get; set; }
+    public ArcadeScreenTetros Screen { get; set; }
 
     public override void Spawn()
     {
@@ -27,7 +28,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     {
         base.ClientSpawn();
         
-        Screen = new ArcadeScreenTetris(this);
+        Screen = new ArcadeScreenTetros(this);
     }
 
     [GameEvent.Client.Frame]
@@ -73,7 +74,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     [ConCmd.Server]
     public static void RequestEndGame(int ident)
     {
-        var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
+        var machine = Entity.FindByIndex(ident) as ArcadeMachineTetros;
         if(machine == null) return;
         if(machine.CurrentUser == null) return;
         machine.RemoveUser();
@@ -81,84 +82,84 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
 
     public override void EndGame()
     {
-        EndGameRpc(CurrentUser.Client.SteamId);
+        EndGameRpc();
 
         base.EndGame();
     }
 
     [ClientRpc]
-    public void EndGameRpc(long steamId)
+    public void EndGameRpc()
     {
-        Screen?.EndGame(steamId);
+        Screen?.Menu?.EndGame.Invoke();
     }
 
     [ConCmd.Server]
     public static void RequestUpdateBoard(int ident, string board)
     {
-        var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
+        var machine = Entity.FindByIndex(ident) as ArcadeMachineTetros;
         if(machine == null) return;
         if(machine.CurrentUser == null) return;
-        var clients = Game.Clients.Where(c => c.SteamId != machine.CurrentUser.Client.SteamId);
-        machine.UpdateBoardRpc(To.Multiple(clients), board);
+        machine.UpdateBoardRpc(board);
     }
 
     [ClientRpc]
     public void UpdateBoardRpc(string board)
     {
-        Screen?.UpdateBoard(ArcadeScreenTetris.StringToBoard(board));
+        if(Game.LocalClient == CurrentUser) return;
+        Screen?.Menu?.UpdateBoard.Invoke(TetrosGamePage.StringToBoard(board));
     }
 
     [ConCmd.Server]
     public static void RequestUpdatePlayer(int ident, int blockType, int x, int y, int rot)
     {
-        var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
+        var machine = Entity.FindByIndex(ident) as ArcadeMachineTetros;
         if(machine == null) return;
         if(machine.CurrentUser == null) return;
-        var clients = Game.Clients.Where(c => c.SteamId != machine.CurrentUser.Client.SteamId);
-        machine.UpdatePlayerRpc(To.Multiple(clients), blockType, x, y, rot);
+        machine.UpdatePlayerRpc(blockType, x, y, rot);
     }
 
     [ClientRpc]
     public void UpdatePlayerRpc(int blockType, int x, int y, int rot)
     {
-        Screen?.UpdatePlayer((ArcadeScreenTetris.BlockType)blockType, new Vector2(x, y), rot);
+        if(Game.LocalClient == CurrentUser) return;
+        Screen?.Menu?.UpdatePlayer.Invoke((BlockType)blockType, new Vector2(x, y), rot);
     }
 
     [ConCmd.Server]
     public static void RequestHeldPiece(int ident, int blockType)
     {
-        var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
+        var machine = Entity.FindByIndex(ident) as ArcadeMachineTetros;
         if(machine == null) return;
-        var clients = Game.Clients.Where(c => c.SteamId != machine.CurrentUser.Client.SteamId);
-        machine.UpdateHeldPieceRpc(To.Multiple(clients), blockType);
+        machine.UpdateHeldPieceRpc(blockType);
     }
 
     [ClientRpc]
     public void UpdateHeldPieceRpc(int blockType)
     {
-        Screen?.UpdateHeldPiece((ArcadeScreenTetris.BlockType)blockType);
+        if(Game.LocalClient == CurrentUser) return;
+        Screen?.Menu?.UpdateHeldPiece.Invoke((BlockType)blockType);
     }
 
     [ConCmd.Server]
     public static void RequestNextPieces(int ident, string queueStr)
     {
-        var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
+        var machine = Entity.FindByIndex<ArcadeMachineTetros>(ident);
         if(machine == null) return;
-        var queue = ArcadeScreenTetris.StringToBoard(queueStr);
-        var clients = Game.Clients.Where(c => c.SteamId != machine.CurrentUser.Client.SteamId);
+        var queue = TetrosGamePage.StringToBoard(queueStr);
         machine.UpdateNextPiecesRpc(queue);
     }
 
     [ClientRpc]
     public void UpdateNextPiecesRpc(int[] queue)
     {
-        Screen?.UpdateNextPieces(queue.Select(i => (ArcadeScreenTetris.BlockType)i).ToArray());
+        if(Game.LocalPawn == CurrentUser) return;
+        Screen?.Menu?.UpdateNextPieces.Invoke(queue.Select(i => (BlockType)i).ToArray());
     }
 
     [ConCmd.Server]
     public static void RequestScore(int ident, long score)
     {
-        var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
+        var machine = Entity.FindByIndex(ident) as ArcadeMachineTetros;
         if(machine == null) return;
         machine.UpdateScoreRpc(score);
     }
@@ -166,35 +167,36 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     [ClientRpc]
     public void UpdateScoreRpc(long score)
     {
-        Screen?.UpdateScore(score);
+        if(Game.LocalClient == CurrentUser) return;
+        Screen?.Menu?.UpdateScore.Invoke(score);
     }
 
-    [ConCmd.Server]
-    public static void RequestHideStuff(int ident)
-    {
-        var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
-        if(machine == null) return;
-        machine.HideAllRpc();
-    }
+    // [ConCmd.Server]
+    // public static void RequestHideStuff(int ident)
+    // {
+    //     var machine = Entity.FindByIndex(ident) as ArcadeMachineTetros;
+    //     if(machine == null) return;
+    //     machine.HideAllRpc();
+    // }
 
-    [ClientRpc]
-    public void HideAllRpc()
-    {
-        Screen?.HideAll();
-    }
+    // [ClientRpc]
+    // public void HideAllRpc()
+    // {
+    //     Screen?.HideAll();
+    // }
 
-    [ConCmd.Server]
-    public static void RequestShowStuff(int ident)
-    {
-        var machine = Entity.FindByIndex(ident) as ArcadeMachineTetris;
-        if(machine == null) return;
-        machine.ShowAllRpc();
-    }
+    // [ConCmd.Server]
+    // public static void RequestShowStuff(int ident)
+    // {
+    //     var machine = Entity.FindByIndex(ident) as ArcadeMachineTetros;
+    //     if(machine == null) return;
+    //     machine.ShowAllRpc();
+    // }
 
-    [ClientRpc]
-    public void ShowAllRpc()
-    {
-        Screen?.ShowAll();
-    }
+    // [ClientRpc]
+    // public void ShowAllRpc()
+    // {
+    //     Screen?.ShowAll();
+    // }
 
 }

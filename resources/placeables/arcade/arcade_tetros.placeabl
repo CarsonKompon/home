@@ -11,7 +11,7 @@
   "PhysicsType": "Keyframed",
   "Bottom": "ZNegative",
   "Model": "models/arcade/arcade_machine_dev_01.vmdl",
-  "ClassName": "ArcadeMachineTetris",
+  "ClassName": "ArcadeMachineTetros",
   "EntityPackage": "",
   "ThumbnailOverride": "",
   "PlaceSound": null,
