@@ -13,7 +13,7 @@ namespace Home;
 public partial class PlayerData : BaseNetworkable
 {
 	[Net] public long SteamId { get; set; }
-	[Net] public long Money { get; set; } = 0;
+	[Net, Change] public long Money { get; set; } = 0;
 	[Net] public List<StashEntry> Stash { get; set; } = new();
 	[Net] public List<int> Clothing { get; set; } = new();
 	[Net] public List<AchievementProgress> Achievements {get; set;} = new();
@@ -122,6 +122,15 @@ public partial class PlayerData : BaseNetworkable
 	private void AchievementUnlock(string name)
 	{
 
+	}
+
+	private void OnMoneyChanged(long oldMoney, long newMoney)
+	{
+		if(!Game.IsClient) return;
+		if(SteamId != Game.LocalClient.SteamId) return;
+		if(HomeGUI.Current == null) return;
+		var change = HomeGUI.Current.MoneyChangesPanel.AddChild<MoneyChanged>();
+		change.SetAmount(newMoney - oldMoney);
 	}
 
 	// Comb through the stash and remove any invalid entries
@@ -251,15 +260,6 @@ public partial class HomePlayer
 		Data.Money -= amount;
 		SavePlayerDataClientRpc(To.Single(this.Client));
 		return true;
-	}
-
-	public void OnMoneyChanged(long oldMoney, long newMoney)
-	{
-		if(!Game.IsClient) return;
-		if(Client.SteamId != Game.LocalClient.SteamId) return;
-		if(HomeGUI.Current == null) return;
-		var change = HomeGUI.Current.MoneyChangesPanel.AddChild<MoneyChanged>();
-		change.SetAmount(newMoney - oldMoney);
 	}
 
 	public bool HasPlaceable(string id, int amount = 1)
