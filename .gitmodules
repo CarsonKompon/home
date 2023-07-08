@@ -1,3 +1,6 @@
 [submodule "code/Entities/Arcade/Rhythm4K/Rhythm4K"]
 	path = code/Entities/Arcade/Rhythm4K/Rhythm4K
 	url = https://github.com/CarsonKompon/rhythm4k-core
+[submodule "code/Entities/Arcade/Tetros/Tetros"]
+	path = code/Entities/Arcade/Tetros/Tetros
+	url = https://github.com/CarsonKompon/tetros-core
