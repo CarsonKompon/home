@@ -8,7 +8,7 @@ namespace Home;
 /// <summary>
 /// This is a teleporter that allows you to teleport around the lobby
 /// </summary>
-[EditorModel("models/arcade/arcade_machine_dev_01.vmdl")]
+[EditorModel("models/arcade/cabinet/cabinet.vmdl")]
 public partial class ArcadeMachineBase : ModelEntity, IUse
 {
     public virtual bool IsUsable( Entity user ) => true;
@@ -18,7 +18,7 @@ public partial class ArcadeMachineBase : ModelEntity, IUse
     public override void Spawn()
     {
         base.Spawn();
-        SetModel("models/arcade/arcade_machine_dev_01.vmdl");
+        SetModel("models/arcade/cabinet/cabinet.vmdl");
         SetupPhysicsFromModel(PhysicsMotionType.Static);
     }
 

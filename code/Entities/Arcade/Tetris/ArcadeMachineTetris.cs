@@ -20,6 +20,7 @@ public partial class ArcadeMachineTetris : ArcadeMachineBase
     public override void Spawn()
     {
         base.Spawn();
+        SetMaterialOverride(Cloud.Material("shadb.tetros_cabinet"));
     }
 
     public override void ClientSpawn()
