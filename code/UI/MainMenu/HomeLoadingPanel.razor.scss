@@ -57,4 +57,47 @@
 			}
 		}
 	}
+
+	> .progress
+	{
+		margin: 50px 0px;
+		background-color: #0003;
+		width: 500px;
+		border-radius: 5px;
+		overflow: hidden;
+
+		.bar
+		{
+			background-color: #fff1;
+			position: absolute;
+			height: 100%;
+		}
+
+		.text-left
+		{
+			flex-grow: 1;
+			flex-shrink: 0;
+		}
+
+		.text-right
+		{
+			flex-shrink: 0;
+		}
+
+		.text-left, .text-right
+		{
+			padding: 5px 20px;
+			white-space: nowrap;
+			font-weight: bold;
+			opacity: 0.2;
+			font-size: 20px;
+			align-items: flex-end;
+
+			.unit
+			{
+				font-size: 15px;
+				opacity: 0.5;
+			}
+		}
+	}
 }
