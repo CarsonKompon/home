@@ -36,7 +36,7 @@ public partial class MediaPlayer : ModelEntity, IUse
 
     public MediaPlayer()
     {
-        ScreenMaterial = Material.Load("materials/mediaplayer_screen.vmat").CreateCopy();
+        ScreenMaterial = Cloud.Materials("carsonk.mediaplayer_screen").CreateCopy();
     }
 
     public override void Spawn()

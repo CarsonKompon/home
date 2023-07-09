@@ -1,0 +1,32 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+
+@inherits Sandbox.UI.NavHostPanel
+@namespace Home
+
+<root>
+
+</root>
+
+@code
+{
+    public ArcadeMachineCarsonWeb Machine {get; set;}
+    private long PreviousUser {get; set;}
+
+    public CarsonsWebArcadeScreen()
+    {
+        DefaultUrl = "/";
+
+        AddDestination("/", typeof(AttractMenuPage));
+        AddDestination("/game", typeof(TetrosGamePage));
+    }
+
+    public override bool WantsMouseInput()
+    {
+        return Machine?.CurrentUser == Game.LocalPawn; 
+    }
+}
