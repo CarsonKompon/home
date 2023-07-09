@@ -8,7 +8,7 @@ using Tetros;
 
 namespace Home;
 
-public partial class ArcadeScreenTetros: WorldPanel
+public partial class ArcadeScreenTetros : WorldPanel
 {
     
     public ArcadeMachineTetros Machine;
