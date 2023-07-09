@@ -75,9 +75,10 @@ namespace Home
         public virtual void UpdateBBox()
         {
             var girth = BodyGirth * 0.5f;
+            var height = ((Pawn as HomePlayer)?.Data?.Height ?? 1f);
 
             var mins = new Vector3(-girth, -girth, 0) * Pawn.Scale;
-            var maxs = new Vector3(+girth, +girth, BodyHeight) * Pawn.Scale;
+            var maxs = new Vector3(+girth, +girth, BodyHeight * height) * Pawn.Scale;
 
             Duck.UpdateBBox(ref mins, ref maxs, Pawn.Scale);
 
@@ -100,6 +101,8 @@ namespace Home
 			var pl = Pawn as HomePlayer;
 
 			EyeLocalPosition = Vector3.Up * (EyeHeight * Pawn.Scale);
+            EyeLocalPosition *= (Pawn as HomePlayer)?.Data?.Height ?? 1f;
+
 			UpdateBBox();
 
             EyeLocalPosition += TraceOffset;

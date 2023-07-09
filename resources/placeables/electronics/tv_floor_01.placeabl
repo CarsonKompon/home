@@ -9,7 +9,7 @@
   "Type": "Entity",
   "PhysicsType": "Keyframed",
   "Bottom": "ZNegative",
-  "Model": "models/items/electronics/tv_medium_onstand.vmdl",
+  "Model": null,
   "ClassName": "CarsonK.MediaPlayer",
   "CloudIdent": "luke.tv_flatscreen_stand",
   "ThumbnailOverride": null,

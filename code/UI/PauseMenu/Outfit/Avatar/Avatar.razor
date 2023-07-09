@@ -86,6 +86,10 @@
         <div class="extra-buttons">
             <i Tooltip="Larger Icons w/ Categories" onclick=@SetLargeDisplay >grid_3x3</i>
             <i Tooltip="Smaller Icons w/ Everything" onclick=@SetSmallDisplay >grid_4x4</i>
+            <div class="height-slider">
+                <i Tooltip="Reset Height" onclick=@ResetHeight >height</i>
+                <VSlider @ref="HeightSlider" />
+            </div>
         </div>
     </column>
 

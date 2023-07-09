@@ -331,7 +331,7 @@ public partial class HomePlayer : AnimatedEntity
 			// targetPos = pos + rot.Right * ((CollisionBounds.Mins.x + 16) * Scale);
 			// targetPos += rot.Forward * -distance;
 
-			var pos = Position + Vector3.Up * 64;
+			var pos = Position + Controller.EyeLocalPosition;
 			var targetPos = pos + (Camera.Rotation).Backward * ThirdPersonZoom;
 
 			var tr = Trace.Ray( pos, targetPos )
@@ -508,7 +508,10 @@ public partial class HomePlayer : AnimatedEntity
 	/// </summary>
 	public virtual void CreateHull()
 	{
-		SetupPhysicsFromAABB( PhysicsMotionType.Keyframed, new Vector3( -16, -16, 0 ), new Vector3( 16, 16, 72 ) );
+		var height = (Data?.Height ?? 1f);
+		Log.Info("HULL HEIGHT:");
+		Log.Info(height);
+		SetupPhysicsFromAABB( PhysicsMotionType.Keyframed, new Vector3( -16, -16, 0 ), new Vector3( 16, 16, 72 * height ) );
 
 		//var capsule = new Capsule( new Vector3( 0, 0, 16 ), new Vector3( 0, 0, 72 - 16 ), 32 );
 		//var phys = SetupPhysicsFromCapsule( PhysicsMotionType.Keyframed, capsule );
@@ -885,11 +888,14 @@ public partial class HomePlayer : AnimatedEntity
 	}
 
 	[ConCmd.Server("home_outfit")]
-	public static void ChangeOutfit(string outfit)
+	public static void ChangeOutfit(string outfit, float height = -1.0f)
 	{
 		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
 		player.ClothingString = outfit;
 		player.Dress();
+		
+		if(height >= 0)
+			HomePlayer.SetHeight(player.NetworkIdent, height);
 	}
 
 	[ConCmd.Server("home_playermodel")]

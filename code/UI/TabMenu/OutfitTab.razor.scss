@@ -69,6 +69,8 @@ outfittab {
                 top: 4px;
                 flex-direction: column;
                 gap: 4px;
+                height: 100%;
+                padding-bottom: 4px;
 
                 i {
                     background-color: #d6d6d6;
@@ -81,6 +83,34 @@ outfittab {
 
                     &:active {
                         transform: scale(0.9);
+                    }
+                }
+
+                .height-slider {
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 4px;
+                    flex-grow: 1;
+
+                    
+                    VSlider {
+                        flex-grow: 1;
+                        width: 28px;
+
+                        .track
+                        {
+                            background-color: #cccccc;
+                        }
+
+                        .track-active
+                        {
+                            background-color: #888;
+                        }
+
+                        .handle
+                        {
+                            background-color: #cccccc;
+                        }
                     }
                 }
             }

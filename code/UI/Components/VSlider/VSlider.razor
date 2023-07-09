@@ -1,0 +1,83 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using System;
+@attribute [StyleSheet]
+
+<root>
+    <div class="inner">
+        <div @ref="Track" class="track">
+            <div @ref="TrackFill" class="track-active"></div>
+            <div @ref="Handle" class="handle"></div>
+        </div>
+    </div>
+</root>
+
+@code
+{
+    Panel Handle { get; set; }
+    Panel TrackFill { get; set; }
+    Panel Track { get; set; }
+    bool IsDragging { get; set; }
+
+    public Action<float> OnValueChanged { get; set; } = delegate{ };
+
+    public float Value
+    {
+        get
+        {
+            return _Value;
+        }
+        set
+        {
+            _Value = value;
+            UpdateSlider();
+            OnValueChanged(value);
+        }
+    }
+    private float _Value = 0.5f;
+
+    [GameEvent.Client.Frame]
+    public void OnFrame()
+    {
+        if(IsDragging)
+        {
+            var height = GetMousePosition();
+            if(Value != height)
+            {
+                Value = height;
+            }
+        }
+    }
+
+    protected override void OnMouseDown(MousePanelEvent e)
+    {
+        base.OnMouseDown(e);
+        IsDragging = true;
+    }
+
+    protected override void OnMouseUp(MousePanelEvent e)
+    {
+        base.OnMouseMove(e);
+        IsDragging = false;
+    }
+
+    private void UpdateSlider()
+    {
+        if(TrackFill == null || Handle == null)
+        {
+            return;
+        }
+        TrackFill.Style.Height = Length.Percent(Value * 100);
+        TrackFill.Style.Dirty();
+        Handle.Style.Top = Length.Percent(Value * 100);
+        Handle.Style.Dirty();
+    }
+
+    private float GetMousePosition()
+    {
+        var rect = Track.Box.Rect;
+        var y = Mouse.Position.y - rect.Top;
+
+        return Math.Clamp(y / rect.Height, 0.0f, 1.0f);
+    }
+}

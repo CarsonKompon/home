@@ -14,6 +14,7 @@ public partial class PlayerData : BaseNetworkable
 {
 	[Net] public long SteamId { get; set; }
 	[Net, Change] public long Money { get; set; } = 0;
+	[Net] public float Height { get; set; } = 1f;
 	[Net] public List<StashEntry> Stash { get; set; } = new();
 	[Net] public List<int> Clothing { get; set; } = new();
 	[Net] public List<AchievementProgress> Achievements {get; set;} = new();
@@ -42,6 +43,9 @@ public partial class PlayerData : BaseNetworkable
 		Stash = newData.Stash;
 		Clothing = newData.Clothing;
 		Achievements = newData.Achievements;
+		Height = newData.Height;
+
+		HomePlayer.SetHeight(GetPlayer().NetworkIdent, Height);
 
 		CombStash();
 
@@ -148,6 +152,11 @@ public partial class PlayerData : BaseNetworkable
 				Stash[i].Used = 0;
 			}
 		}
+	}
+
+	public HomePlayer GetPlayer()
+	{
+		return Game.Clients.FirstOrDefault(c => c.SteamId == SteamId)?.Pawn as HomePlayer;
 	}
 }
 
@@ -260,6 +269,19 @@ public partial class HomePlayer
 		Data.Money -= amount;
 		SavePlayerDataClientRpc(To.Single(this.Client));
 		return true;
+	}
+
+	[ConCmd.Server]
+	public static void SetHeight(int networkIdent, float height)
+	{
+		if(Entity.FindByIndex<HomePlayer>(networkIdent) is not HomePlayer player) return;
+		player.SetAnimParameter("scale_height", height);
+		if(player.Data != null)
+		{
+			player.Data.Height = Math.Clamp(height, 0.5f, 1.5f);
+			player.SavePlayerDataClientRpc(To.Single(player));
+		}
+		//player.CreateHull();
 	}
 
 	public bool HasPlaceable(string id, int amount = 1)

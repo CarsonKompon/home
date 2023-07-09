@@ -271,6 +271,12 @@ public class AvatarHud : ScenePanel
 		LightBack.ConeOuter = 70;
     }
 
+    public void SetHeight(float height)
+    {
+        if(AvatarModel == null) return;
+        AvatarModel.SetAnimParameter("scale_height", height);
+    }
+
     public void Update(string clothingString)
     {
         ClothingString = clothingString;

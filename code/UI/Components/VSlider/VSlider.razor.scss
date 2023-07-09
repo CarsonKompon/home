@@ -1,0 +1,48 @@
+VSlider
+{
+    position: relative;
+    width: 32px;
+    height: 200px;
+    pointer-events: all;
+    cursor: pointer;
+    gap: 8px;
+    flex-grow: 1;
+    align-items: center;
+
+    > .inner
+    {
+        flex-direction: column;
+        flex-shrink: 1;
+        flex-grow: 1;
+        height: 100%;
+
+        > .track
+        {
+            background-color: #888;
+            width: 7px;
+            margin: 8px;
+            align-items: center;
+            border-radius: 4px;
+            flex-grow: 1;
+        
+            >.track-active
+            {
+                background-color: #fff;
+                position: absolute;
+                top: 0px;
+                width: 100%;
+                border-radius: 4px;
+            }
+
+            >.handle
+            {
+                background-color: #fff;
+                border-radius: 100px;
+                width: 16px;
+                height: 16px;
+                position: absolute;
+                transform: translate(-25%, -50%);
+            }
+        }
+    }
+}

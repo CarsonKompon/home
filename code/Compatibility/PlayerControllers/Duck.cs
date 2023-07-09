@@ -23,7 +23,7 @@ namespace Home
 				if ( wants ) TryDuck();
 				else TryUnDuck();
 			}
-
+			
 			if ( IsActive )
 			{
 				Controller.SetTag( "ducked" );
