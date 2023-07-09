@@ -36,6 +36,16 @@
     }
     private float _Value = 0.5f;
 
+    protected override void OnAfterTreeRender(bool firstTime)
+    {
+        base.OnAfterTreeRender(firstTime);
+
+        if(firstTime)
+        {
+            UpdateSlider();
+        }
+    }
+
     [GameEvent.Client.Frame]
     public void OnFrame()
     {

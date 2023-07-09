@@ -180,7 +180,7 @@ public partial class Avatar : Panel
 		if(Game.LocalPawn is not HomePlayer player) return;
 		originalValue = player.ClothingString;
 		PreviewClothing = originalValue;
-		HeightSlider.Value = player.Data.Height;
+		HeightSlider.Value = 1.0f - (player.Data.Height - 0.5f);
 		Log.Info(PreviewClothing);
 
 		Container.Deserialize( originalValue );
