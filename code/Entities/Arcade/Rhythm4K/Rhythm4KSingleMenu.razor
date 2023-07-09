@@ -16,7 +16,7 @@
 @code
 {
     public ArcadeMachineRhythm4K Machine {get; set;}
-
+    
     public Rhythm4KSingleMenu()
     {
         DefaultUrl = "/";
@@ -26,6 +26,13 @@
         AddDestination("/addons", typeof(AddonPage));
         AddDestination("/game", typeof(RhythmGamePage));
         AddDestination("/settings", typeof(SettingsPage));
+
+
+
+        OnExit += (score) => {
+            ArcadeMachineRhythm4K.Payout(Machine.PreviousUserSteamId, score / 4000);
+            ArcadeMachineRhythm4K.RequestRemoveUser(Machine.NetworkIdent);
+        };
     }
 
     public override bool WantsMouseInput()

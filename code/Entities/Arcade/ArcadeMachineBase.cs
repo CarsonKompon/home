@@ -13,6 +13,7 @@ public partial class ArcadeMachineBase : ModelEntity, IUse
 {
     public virtual bool IsUsable( Entity user ) => true;
     [Net] public HomePlayer CurrentUser { get; set; } = null;
+    [Net] public long PreviousUserSteamId { get; set; } = 0;
     public bool InUse => CurrentUser != null;
 
     public override void Spawn()
@@ -40,6 +41,15 @@ public partial class ArcadeMachineBase : ModelEntity, IUse
         machine.RemoveUser();
     }
 
+    [ConCmd.Server]
+    public static void Payout(long steamId, long score)
+    {
+        var user = Game.Clients.FirstOrDefault(c => c.SteamId == steamId);
+        if(user == null) return;
+        if(user.Pawn is not HomePlayer player) return;
+        player.GiveMoney(score);
+    }
+
     public void SetUser(HomePlayer player)
     {
         Game.AssertServer();
@@ -52,6 +62,7 @@ public partial class ArcadeMachineBase : ModelEntity, IUse
         var arcadeController = new ArcadeControllerBase();
         arcadeController.ArcadeMachine = this;
         player.Controller = arcadeController;
+        PreviousUserSteamId = player.Client.SteamId;
         StartGame();
     }
 

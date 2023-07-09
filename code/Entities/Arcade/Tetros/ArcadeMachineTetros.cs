@@ -62,15 +62,6 @@ public partial class ArcadeMachineTetros : ArcadeMachineBase
         Screen?.StartGame();
     }
 
-    [ConCmd.Server]
-    public static void Payout(long steamId, long score)
-    {
-        var user = Game.Clients.FirstOrDefault(c => c.SteamId == steamId);
-        if(user == null) return;
-        if(user.Pawn is not HomePlayer player) return;
-        player.GiveMoney(score);
-    }
-
     public override void EndGame(long steamId)
     {
         EndGameRpc(steamId);

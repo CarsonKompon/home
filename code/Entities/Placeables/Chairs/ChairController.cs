@@ -15,7 +15,7 @@ public class ChairController : HomePawnController
         {
             if(Pawn is HomePlayer ply)
             {
-                ply.Controller = new HomeWalkController();
+                ply.ResetController();
             }
             return;
         }
