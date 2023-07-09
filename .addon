@@ -13,11 +13,11 @@
   "CodePath": "/code/",
   "PackageReferences": [
     "alex.lcd",
-    "carsonk.mediahelpers",
     "shadb.ddrmachine",
     "shadb.hand_toon_left",
     "shadb.hand_toon_right",
-    "shadb.arcade_cabinet"
+    "shadb.arcade_cabinet",
+    "carsonk.mediahelpers"
   ],
   "EditorReferences": null,
   "Metadata": {

@@ -6,12 +6,12 @@
   "Categories": [
     "electronics"
   ],
-  "Type": "PackageEntity",
+  "Type": "Entity",
   "PhysicsType": "Keyframed",
   "Bottom": "ZNegative",
-  "Model": "models/items/electronics/tv_medium.vmdl",
+  "Model": null,
   "ClassName": "CarsonK.MediaPlayerWall",
-  "CloudIdent": "carsonk.mediaplayer",
+  "CloudIdent": "luke.tv_flatscreen",
   "ThumbnailOverride": "",
   "PlaceSound": null,
   "StashSound": null,
