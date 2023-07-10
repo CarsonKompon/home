@@ -75,8 +75,12 @@ public partial class ArcadeMachineBase : AnimatedEntity, IUse
     public void RemoveUser()
     {
         Game.AssertServer();
-        Log.Info("trying to remove...");
         if(CurrentUser == null) return;
+
+        if(CurrentUser?.Controller is ArcadeControllerBase controller)
+        {
+            controller.OnExit();
+        }
 
         CurrentUser.ResetController();
         CurrentUser = null;

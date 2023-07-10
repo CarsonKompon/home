@@ -50,12 +50,17 @@ public partial class ArcadeControllerBase : HomePawnController
 
             if(Input.Pressed("crouch"))
             {
-                SetVRIK(player, false);
                 ArcadeMachine.EndGame(Pawn.Client.SteamId);
             }
         }
 
         BuildInput();
+    }
+
+    public virtual void OnExit()
+    {
+        if(Pawn is not HomePlayer player) return;
+        SetVRIK(player, false);
     }
 
     public void SetVRIK(HomePlayer player, bool enabled)

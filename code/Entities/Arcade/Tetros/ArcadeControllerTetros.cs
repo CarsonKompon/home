@@ -14,6 +14,7 @@ public class ArcadeControllerTetros : ArcadeControllerBase
         {
             ArcadeMachine?.SetAnimParameter("left", Input.Down("TetrosMoveLeft"));
             ArcadeMachine?.SetAnimParameter("right", Input.Down("TetrosMoveRight"));
+            ArcadeMachine?.SetAnimParameter("down", Input.Down("TetrosSoftDrop"));
         }
 
     }
