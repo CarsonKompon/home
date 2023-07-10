@@ -9,12 +9,14 @@ namespace Home;
 /// This is a teleporter that allows you to teleport around the lobby
 /// </summary>
 [EditorModel("models/arcade/cabinet/cabinet.vmdl")]
-public partial class ArcadeMachineBase : ModelEntity, IUse
+public partial class ArcadeMachineBase : AnimatedEntity, IUse
 {
     public virtual bool IsUsable( Entity user ) => true;
     [Net] public HomePlayer CurrentUser { get; set; } = null;
     [Net] public long PreviousUserSteamId { get; set; } = 0;
     public bool InUse => CurrentUser != null;
+
+    public virtual string ControllerType => "ArcadeControllerBase";
 
     public override void Spawn()
     {
@@ -59,8 +61,12 @@ public partial class ArcadeMachineBase : ModelEntity, IUse
             return;
         }
         CurrentUser = player;
-        var arcadeController = new ArcadeControllerBase();
+
+        var type = TypeLibrary.GetType<ArcadeControllerBase>(ControllerType)?.TargetType;
+        if(type == null) return;
+        var arcadeController = TypeLibrary.Create<ArcadeControllerBase>(type);
         arcadeController.ArcadeMachine = this;
+
         player.Controller = arcadeController;
         PreviousUserSteamId = player.Client.SteamId;
         StartGame();

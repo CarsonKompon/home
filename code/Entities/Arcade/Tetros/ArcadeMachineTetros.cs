@@ -18,6 +18,8 @@ public partial class ArcadeMachineTetros : ArcadeMachineBase
 {
     public ArcadeScreenTetros Screen { get; set; }
 
+    public override string ControllerType => "ArcadeControllerTetros";
+
     public override void Spawn()
     {
         base.Spawn();
