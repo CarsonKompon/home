@@ -331,7 +331,8 @@ public partial class HomePlayer : AnimatedEntity
 			// targetPos = pos + rot.Right * ((CollisionBounds.Mins.x + 16) * Scale);
 			// targetPos += rot.Forward * -distance;
 
-			var pos = Position + Controller.EyeLocalPosition;
+			var eyePos = Vector3.Up * (64f * Scale) * (Data?.Height ?? 1f);
+			var pos = Position + eyePos;
 			var targetPos = pos + (Camera.Rotation).Backward * ThirdPersonZoom;
 
 			var tr = Trace.Ray( pos, targetPos )

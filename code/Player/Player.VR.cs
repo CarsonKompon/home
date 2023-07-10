@@ -41,7 +41,7 @@ public partial class HomePlayer
 		SetAnimParameter( "left_hand_ik.position", leftHandLocal.Position + (handOffset * leftHandLocal.Rotation) );
 		SetAnimParameter( "right_hand_ik.position", rightHandLocal.Position + (handOffset * rightHandLocal.Rotation) );
 
-		SetAnimParameter( "left_hand_ik.rotation", leftHandLocal.Rotation * Rotation.From( 0, 0, 180 ) );
+		SetAnimParameter( "left_hand_ik.rotation", leftHandLocal.Rotation);
 		SetAnimParameter( "right_hand_ik.rotation", rightHandLocal.Rotation );
 
 		float height = Input.VR.Head.Position.z - Position.z;
