@@ -19,6 +19,8 @@ public partial class ArcadeMachineRhythm4K : ArcadeMachineBase
 {
     public ArcadeScreenRhythm4K Screen { get; set; }
 
+    public override string ControllerType => "ArcadeControllerRhythm4K";
+
     public override void Spawn()
     {
         base.Spawn();
