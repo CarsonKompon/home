@@ -4,7 +4,7 @@ using System.Linq;
 using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
-using Tetros;
+using CarsonsWebArcade;
 
 namespace Home;
 
@@ -12,14 +12,14 @@ public partial class ArcadeScreenCarsonWeb : WorldPanel
 {
     
     public ArcadeMachineCarsonWeb Machine;
-    // public TetrosSingleMenu Menu;
+    public AttractMenuPage Menu;
 
     public ArcadeScreenCarsonWeb()
     {
 
-        AddClass("game-snek");
+        AddClass("game-carson-web");
         
-        // Menu = AddChild<TetrosSingleMenu>();
+        Menu = AddChild<AttractMenuPage>();
 
         float width = 590f;
         float height = 460f;
@@ -37,6 +37,22 @@ public partial class ArcadeScreenCarsonWeb : WorldPanel
     {
         // Menu.Navigate("/game");
         // Menu.StartGame.Invoke();
+        var menu = Game.RootPanel.AddChild<WebArcadeMenu>();
+        menu.OnClose = () => {
+            EndGame();
+            ArcadeMachineBase.RequestRemoveUser(Machine.NetworkIdent);
+        };
+    }
+
+    public void EndGame()
+    {
+        foreach(var child in Game.RootPanel.Children)
+        {
+            if(child is WebArcadeMenu)
+            {
+                child.Delete();
+            }
+        }
     }
 
     [GameEvent.Tick.Client]

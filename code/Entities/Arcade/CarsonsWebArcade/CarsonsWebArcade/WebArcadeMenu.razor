@@ -1,0 +1,97 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+@attribute [StyleSheet]
+
+@namespace CarsonsWebArcade
+
+<root>
+    @if(GameUrl == "")
+    {
+        <h1>Carson's Web Arcade</h1>
+        <div class="content">
+            <WebArcadeButton class="halfhour" Name="Half Hour Hexagon" Description="Vampire Survivors-like" onclick=@OpenHalfHour />
+            <WebArcadeButton class="piconight" Name="PICO NIGHT PUNKIN'" Description="A low-res demake of Friday Night Funkin'" onclick=@OpenPicoNight />
+            <WebArcadeButton class="raftboat" Name="Super Raft Boat Classic" Description="A raft-building roguelike" onclick=@OpenRaftBoat />
+            <WebArcadeButton class="islander" Name="ISLANDER" Description="An crafting survival game where you must escape the island" onclick=@OpenIslander />
+            <WebArcadeButton class="stlthscpe" Name="STLTHSCPE" Description="A level-clearing score chasing demake of Stealthscape" onclick=@OpenStlthscpe />
+            <WebArcadeButton class="winwin" Name="Win/Win" Description="A game that corrupts itself the more you play. Inspired by lose/lose." onclick=@OpenWinWin />
+            <WebArcadeButton class="soulkoban" Name="Soulkoban" Description="A sokoban with a soul-searching story" onclick=@OpenSoulkoban />
+            <WebArcadeButton class="iii" Name="iii Demake" Description="A demake of Yukon W's catroidvania" onclick=@OpenIII />
+            <WebArcadeButton class="dropcoin" Name="Drop Coin" Description="A coin dropping game inspired by Nintendo Land" onclick=@OpenDropCoin />
+            <WebArcadeButton class="arrowmania" Name="Arrowmania" Description="A 4 key rhythm game using the PICO NIGHT PUNKIN engine" onclick=@OpenArrowmania />
+        </div>
+    }
+    else
+    {
+        <WebPanel @ref="WebPanel"></WebPanel>
+        <i class="back" onclick=@Back >arrow_back</i>
+        <i class="pause" onclick=@Pause >pause</i>
+    }
+    <i class="close" onclick=@Close >close</i>
+</root>
+
+@code
+{
+    WebPanel WebPanel {get; set;}
+    string GameUrl = "";
+
+    public Action OnClose {get; set;} = delegate {};
+
+    protected override void OnAfterTreeRender(bool firstTime)
+    {
+        if(WebPanel == null) return;
+        if(WebPanel.Surface.Url != GameUrl && GameUrl != "")
+        {
+            WebPanel.Surface.Url = GameUrl;
+            WebPanel.Surface.HasKeyFocus = true;
+        }
+    }
+
+    [GameEvent.Client.Frame]
+    private void OnFrame()
+    {
+        if(WebPanel == null) return;
+        if(GameUrl != "")
+        {
+            WebPanel.Surface.TellMouseMove(WebPanel.GetTransformPosition(MousePosition));
+        }
+    }
+
+    private void OpenHalfHour() => OpenGame("https://carsonk.net/static/halfhourhexagon/");
+    private void OpenPicoNight() => OpenGame("https://carsonk.net/static/piconightpunkin/");
+    private void OpenRaftBoat() => OpenGame("https://carsonk.net/static/superraftboat/");
+    private void OpenIslander() => OpenGame("https://carsonk.net/static/islander/");
+    private void OpenStlthscpe() => OpenGame("https://carsonk.net/static/stlthscpe/");
+    private void OpenWinWin() => OpenGame("https://carsonk.net/static/winwin/");
+    private void OpenSoulkoban() => OpenGame("https://carsonk.net/static/soulkoban/");
+    private void OpenIII() => OpenGame("https://carsonk.net/static/iii/");
+    private void OpenDropCoin() => OpenGame("https://carsonk.net/static/dropcoin/");
+    private void OpenArrowmania() => OpenGame("https://carsonk.net/static/arrowmania/");
+    
+
+    private void OpenGame(string url)
+    {
+        GameUrl = url;
+    }
+
+    private void Back()
+    {
+        GameUrl = "";
+    }
+
+    private void Pause()
+    {
+        if(WebPanel == null) return;
+        if(GameUrl != "")
+        {
+            WebPanel.Surface.TellKey( 27, KeyboardModifiers.None, true ); 
+            WebPanel.Surface.TellKey( 27, KeyboardModifiers.None, false ); 
+        }
+    }
+
+    private void Close()
+    {
+        OnClose.Invoke();
+    }
+}

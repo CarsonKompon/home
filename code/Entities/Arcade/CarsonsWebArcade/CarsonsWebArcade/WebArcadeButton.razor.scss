@@ -1,0 +1,111 @@
+WebArcadeButton
+{
+    width: 45%;
+    height: auto;
+    flex-direction: column;
+    flex-shrink: 0;
+
+    .cover
+    {
+        width: 100%;
+        height: 256px;
+        background-color: #888;
+        border-radius: 24px;
+        background-position: center;
+        background-size: cover;
+
+        transition: transform 0.1s ease-in-out;
+    }
+
+    .info
+    {
+        flex-direction: column;
+        align-items: center;
+
+        h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        p {
+            font-size: 16px;
+            font-weight: 100;
+            margin: 0px;
+            padding: 0px;
+        }
+    }
+
+    &:hover
+    {
+        .cover
+        {
+            transform: scale(1.05);
+        }
+    }
+
+    &:active
+    {
+        .cover
+        {
+            transform: scale(0.95);
+        }
+    }
+
+    &.halfhour .cover
+    {
+        background-image: url("https://cdn.cloudflare.steamstatic.com/steam/apps/2144080/header.jpg?t=1671837848");
+    }
+
+    &.piconight .cover
+    {
+        background-image: url("https://picon.ngfiles.com/791000/flash_791887_card.png?f1619874147");
+    }
+    
+    &.raftboat .cover
+    {
+        background-image: url("https://picon.ngfiles.com/781000/flash_781907_card.webp?f1675564738");
+    }
+    
+    &.islander .cover
+    {
+        background-image: url("https://img.itch.zone/aW1nLzQxOTIxOTAucG5n/315x250%23c/iBz7LH.png");
+        background-position: top;
+    }
+
+    &.stlthscpe .cover
+    {
+        background-image: url("https://img.itch.zone/aW1nLzM5MzMxMzYuZ2lm/original/brqVlR.gif");
+        background-position: top;
+    }
+    
+    &.winwin .cover
+    {
+        background-image: url("https://img.itch.zone/aW1nLzc1NTQ2MDQuZ2lm/original/TQusMi.gif");
+        background-position: bottom;
+    }
+
+    &.soulkoban .cover
+    {
+        background-image: url("https://img.itch.zone/aW1nLzc3ODE3NjIuZ2lm/original/%2FFVHn5.gif");
+    }
+
+    &.iii .cover
+    {
+        background-image: url("https://img.itch.zone/aW1nLzQxOTIxMzEucG5n/315x250%23c/91oW4Z.png");
+        background-size: auto;
+    }
+
+    &.dropcoin .cover
+    {
+        background-image: url("https://img.itch.zone/aW1nLzc5MjQ0OTkuZ2lm/original/iXmndw.gif");
+        background-position: bottom;
+    }
+
+    &.arrowmania .cover
+    {
+        background-image: url("https://img.itch.zone/aW1nLzEwNzE3NDI1LmdpZg==/original/j13p8W.gif");
+        background-position: bottom;
+    }
+}

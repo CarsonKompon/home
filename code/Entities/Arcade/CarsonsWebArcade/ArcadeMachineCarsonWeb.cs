@@ -5,7 +5,7 @@ using System.Linq;
 using Sandbox;
 using Sandbox.UI;
 using Editor;
-using Tetros;
+using CarsonsWebArcade;
 
 namespace Home;
 
@@ -57,17 +57,17 @@ public partial class ArcadeMachineCarsonWeb : ArcadeMachineBase
         Screen?.StartGame();
     }
 
-    // public override void EndGame(long steamId)
-    // {
-    //     EndGameRpc(steamId);
+    public override void EndGame(long steamId)
+    {
+        EndGameRpc(steamId);
 
-    //     base.EndGame(steamId);
-    // }
+        base.EndGame(steamId);
+    }
 
-    // [ClientRpc]
-    // public void EndGameRpc(long steamId)
-    // {
-    //     Screen?.Menu?.EndGame.Invoke(steamId);
-    // }
+    [ClientRpc]
+    public void EndGameRpc(long steamId)
+    {
+        Screen?.EndGame();
+    }
 
 }
