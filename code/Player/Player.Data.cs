@@ -178,15 +178,6 @@ public partial class HomePlayer
 		Data.Save();
 	}
 
-	private async void LoadPlaceableThumbnails()
-	{
-		foreach(HomePlaceable placeable in HomePlaceable.All)
-		{
-			placeable.Texture = await placeable.GetTexture();
-		}
-
-	}
-
 	[ClientRpc]
 	public void LoadPlayerDataClientRpc()
 	{

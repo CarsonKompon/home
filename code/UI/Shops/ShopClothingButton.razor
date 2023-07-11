@@ -44,10 +44,20 @@
                 fallback++;
             }
             Shop = parent as ShopClothing;
+            SetIcon();
         }
+    }
 
-        Icon.Style.BackgroundImage = HomeClothing.GetIcon( Clothes );
-    }		
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        SetIcon();
+    }
+
+    private async void SetIcon()
+    {
+        Icon.Style.BackgroundImage = await HomeClothing.GetIcon( Clothes );
+    }
 
     public bool HasClothing()
     {

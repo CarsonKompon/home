@@ -25,13 +25,18 @@ public class ClothingButton : Panel
 
 		ImagePanel = new Panel( this, "image" );
 		
-		ImagePanel.Style.BackgroundImage = HomeClothing.GetIcon( Clothing );
+		SetIcon();
 
 		if( HasVariations )
 		{
 			AddClass( "has-variations" );
 			Add.Icon( "palette", "variations-icon" );
 		}
+	}
+
+	private async void SetIcon()
+	{
+		ImagePanel.Style.BackgroundImage = await HomeClothing.GetIcon( Clothing );
 	}
 
 	public override void Tick()

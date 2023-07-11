@@ -62,7 +62,7 @@ public partial class HomeClothing : Clothing
 	// 	return clothing.Model;
 	// }
 
-	public static Texture GetIcon(Clothing clothing)
+	public static async Task<Texture> GetIcon(Clothing clothing)
 	{
 		if(clothing.Icon.Path != null && FileSystem.Mounted.FileExists(clothing.Icon.Path))
 		{
@@ -71,7 +71,7 @@ public partial class HomeClothing : Clothing
 		
 		if(clothing is HomeClothing hcloth && !string.IsNullOrEmpty(hcloth.CloudModel))
 		{
-			var package = Package.Fetch(hcloth.CloudModel, true).Result;
+			var package = await Package.Fetch(hcloth.CloudModel, true);
 			return Texture.Load(package.Thumb);
 		}
 

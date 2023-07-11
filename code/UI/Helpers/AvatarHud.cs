@@ -76,15 +76,15 @@ public class AvatarHud : ScenePanel
         {
             ClothingContainer clothingFromString = new();
             clothingFromString.Deserialize(ClothingString);
-            foreach(var item in clothingFromString.Clothing)
-            {
-                if(item is HomeClothing hcloth && !string.IsNullOrEmpty(hcloth.CloudModel))
-                {
-                    await hcloth.MountPackage();
-                }
-            }
             if(clothingFromString != null && AvatarModel != null)
             {
+                foreach(var item in clothingFromString.Clothing)
+                {
+                    if(item is HomeClothing hcloth && !string.IsNullOrEmpty(hcloth.CloudModel))
+                    {
+                        await hcloth.MountPackage();
+                    }
+                }
                 ClothingObjects = ClothingHelper.DressSceneObject(AvatarModel, clothingFromString);
             }
             return;
