@@ -53,8 +53,7 @@
         if(WebPanel == null) return;
         if(GameUrl != "")
         {
-            var pos = WebPanel.MousePosition;
-            WebPanel.Surface.TellMouseMove(pos);
+            WebPanel.Surface.TellMouseMove(WebPanel.MousePosition);
         }
     }
 

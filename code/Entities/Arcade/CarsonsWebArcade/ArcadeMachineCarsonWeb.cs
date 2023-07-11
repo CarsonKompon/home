@@ -48,7 +48,7 @@ public partial class ArcadeMachineCarsonWeb : ArcadeMachineBase
     {
         base.StartGame();
         
-        StartGameRpc();
+        StartGameRpc(To.Single(CurrentUser));
     }
 
     [ClientRpc]
@@ -59,7 +59,7 @@ public partial class ArcadeMachineCarsonWeb : ArcadeMachineBase
 
     public override void EndGame(long steamId)
     {
-        EndGameRpc(steamId);
+        EndGameRpc(To.Single(CurrentUser), steamId);
 
         base.EndGame(steamId);
     }
