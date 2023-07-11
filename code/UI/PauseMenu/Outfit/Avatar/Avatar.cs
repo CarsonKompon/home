@@ -149,8 +149,13 @@ public partial class Avatar : Panel
 		return HomeClothing.All.Any( x => x.Parent == clothing );
 	}
 
-	void AddClothing( Clothing clothing )
+	async void AddClothing( Clothing clothing )
 	{
+		if(clothing is HomeClothing hcloth && !string.IsNullOrEmpty(hcloth.CloudModel))
+		{
+			await hcloth.MountPackage();
+		}
+
 		Container.Toggle( clothing );
 		
 		SetClass( "is-dirty", true );

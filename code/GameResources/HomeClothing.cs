@@ -30,17 +30,9 @@ public partial class HomeClothing : Clothing
 	protected override void PostLoad()
 	{
 		base.PostLoad();
-		if (!string.IsNullOrEmpty(CloudModel) )
-		{
-			//LoadingQueue.Add(this);
-			// _Model = Cloud.Model(CloudModel);
-			// Model = _Model.ResourcePath;
-
-			MountPackage();
-		}
 	}
 
-	async void MountPackage()
+	public async Task MountPackage()
 	{
 		Package package = await Package.FetchAsync(CloudModel, false);
 		await package.MountAsync();
@@ -76,10 +68,14 @@ public partial class HomeClothing : Clothing
 		{
 			return Texture.Load(FileSystem.Mounted, clothing.Icon.Path);
 		}
-		else
+		
+		if(clothing is HomeClothing hcloth && !string.IsNullOrEmpty(hcloth.CloudModel))
 		{
-			return SceneHelper.CreateClothingThumbnail( clothing );
+			var package = Package.Fetch(hcloth.CloudModel, true).Result;
+			return Texture.Load(package.Thumb);
 		}
+
+		return SceneHelper.CreateClothingThumbnail( clothing );
 	}
 
 	string _VideoThumbnail = null;

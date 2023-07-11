@@ -471,9 +471,16 @@ public partial class HomePlayer : AnimatedEntity
 		}
 	}
 
-	public void Dress()
+	public async void Dress()
 	{
 		Clothing.Deserialize(ClothingString);
+		foreach(var item in Clothing.Clothing)
+		{
+			if(item is HomeClothing hcloth && !string.IsNullOrEmpty(hcloth.CloudModel))
+			{
+				await hcloth.MountPackage();
+			}
+		}
 		ClothingHelper.DressEntity(this, Clothing);
 	}
 
