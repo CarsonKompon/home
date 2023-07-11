@@ -55,6 +55,7 @@ public partial class PlayerData : BaseNetworkable
 	public void Save()
 	{
 		Game.AssertClient();
+		if(SteamId == null || SteamId == 0) return;
 		Log.Info("🏠: Saving player data...");
 		string steamId = Game.LocalClient.SteamId.ToString();
 		if(!FileSystem.Data.DirectoryExists(steamId))
@@ -175,7 +176,7 @@ public partial class HomePlayer
 			FileSystem.Data.CreateDirectory(Client.SteamId.ToString());
 		}
 
-		Data.Save();
+		Data?.Save();
 	}
 
 	[ClientRpc]

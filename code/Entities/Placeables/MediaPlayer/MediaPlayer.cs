@@ -146,7 +146,7 @@ public partial class MediaPlayer : ModelEntity, IUse
     public void SkipCurrent()
     {
         
-        Video.Dispose();
+        Video?.Dispose();
         Video = null;
         ScreenMaterial.Set("Color", Texture.White);
     }

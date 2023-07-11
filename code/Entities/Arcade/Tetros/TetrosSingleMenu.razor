@@ -26,6 +26,7 @@
         AddDestination("/game", typeof(TetrosGamePage));
 
         StartGame += () => {
+            if(Machine == null || Machine.CurrentUser == null) return;
             PreviousUser = Machine.CurrentUser.Client.SteamId;
         };
 
