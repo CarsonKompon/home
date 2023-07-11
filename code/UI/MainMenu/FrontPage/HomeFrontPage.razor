@@ -92,6 +92,7 @@
     {
         var list = new ServerList();
         list.AddFilter("gametagsand", $"game:{Game.Menu.Package.FullIdent.Split('#')[0]}");
+        list.AddFilter("notfull", "1");
         list.Query();
         while(list.IsQuerying)
         {
@@ -100,12 +101,14 @@
         if(list.Count == 0)
         {
             // Create a lobby instead
-            await Game.Menu.CreateLobbyAsync();
+            this.Navigate("/lobby");
             return;
         }
         // Get the server with the most players
         list.Sort((a, b) => b.Players - a.Players);
-        Game.Menu.ConnectToServer(list[0].SteamId);
+        var serverid = list[0].SteamId;
+        list.Dispose();
+        Game.Menu.ConnectToServer(serverid);
     }
 
     void LeaveGame()
