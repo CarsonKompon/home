@@ -48,13 +48,13 @@
         }
     }
 
-    [GameEvent.Client.Frame]
-    private void OnFrame()
+    protected override void OnMouseMove(MousePanelEvent e)
     {
         if(WebPanel == null) return;
         if(GameUrl != "")
         {
-            WebPanel.Surface.TellMouseMove(WebPanel.GetTransformPosition(MousePosition));
+            var pos = WebPanel.MousePosition;
+            WebPanel.Surface.TellMouseMove(pos);
         }
     }
 
