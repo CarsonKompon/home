@@ -12,6 +12,16 @@ PlayerList {
         flex-direction: row;
         flex-shrink: 0;
 
+        &.me { background-color: rgb(220, 236, 255); }
+        &.friend { background-color: rgb(234, 255, 220); }
+        &.moderator { background-color: rgb(255, 220, 255); }
+        &.admin { background-color: rgb(255, 220, 220); }
+        &.rainbow { 
+            animation-name: rainbow-bg;
+            animation-duration: 5s;
+            animation-iteration-count: infinite;
+        }
+
         .player-container {
             width: 90%;
             height: 100%;
@@ -44,6 +54,11 @@ PlayerList {
             }
         }
 
+        .buttons {
+            height: 100%;
+            align-items: center;
+        }
+
         .ping-container {
             width: 10%;
             height: 100%;
@@ -61,4 +76,13 @@ PlayerList {
             }
         }
     }
+}
+
+@keyframes rainbow-bg {
+    0% { background-color: rgb(255, 220, 220); }
+    20% { background-color: rgb(255, 255, 220); }
+    40% { background-color: rgb(220, 255, 220); }
+    60% { background-color: rgb(220, 255, 255); }
+    80% { background-color: rgb(220, 220, 255); }
+    100% { background-color: rgb(255, 220, 255); }
 }

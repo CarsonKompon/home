@@ -13,6 +13,10 @@
             <a href="/outfit">Outfit</a>
             <a href="/settings">Settings</a>
             <a href="/about">About</a>
+            @if(IsAdmin())
+            {
+                <a href="/admin">Admin</a>
+            }
         </panel>
     </panel>
     <div class="content navigator-canvas" slot="navigator-canvas"></div>
@@ -28,6 +32,7 @@
         AddDestination("/outfit", typeof(OutfitTab));
         AddDestination("/settings", typeof(SettingsTab));
         AddDestination("/about", typeof(AboutTab));
+        AddDestination("/admin", typeof(AdminTab));
     }
     protected override void OnAfterTreeRender(bool firstTime)
     {
@@ -55,5 +60,11 @@
     void Close()
     {
         RemoveClass("open");
+    }
+
+    bool IsAdmin()
+    {
+        if(Game.LocalPawn is not HomePlayer player) return false;
+        return player.HasModeratorPermissions();
     }
 }

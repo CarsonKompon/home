@@ -82,6 +82,9 @@ public partial class HomePlayer : AnimatedEntity
 
     public HomePlayer(IClient client) : this()
     {
+		// Load Administrative Stuffs
+		InitAdmin(client);
+
         // Load clothing from client data
         Clothing.LoadFromClient(client);
 		ClothingString = Clothing.Serialize();

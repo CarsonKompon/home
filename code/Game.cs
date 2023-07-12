@@ -57,11 +57,22 @@ public partial class HomeGame : GameManager
 
 	public override void OnVoicePlayed( IClient cl )
 	{
+		cl.Voice.WantsStereo = true;
 		HomeVoiceList.Current?.OnVoicePlayed( cl.SteamId, cl.Voice.CurrentLevel );
 		// if(cl.Pawn is HomePlayer player)
 		// {
 		// 	player.OnVoicePlayed(cl.Voice.CurrentLevel);
 		// }
+	}
+
+	public override bool CanHearPlayerVoice( IClient source, IClient receiver )
+	{
+		if(receiver.Pawn is not HomePlayer player) return false;
+		if(player.PlayerVolumes.ContainsKey(source.SteamId))
+		{
+			return player.PlayerVolumes[source.SteamId] > 0.0f;
+		}
+		return true;
 	}
 
 	[Event.Hotload]

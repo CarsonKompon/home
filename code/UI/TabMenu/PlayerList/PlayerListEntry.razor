@@ -3,10 +3,11 @@
 @using Sandbox.UI.Construct;
 @using System;
 @using System.Collections.Generic;
+@using System.Linq;
 
 @namespace Home
 
-<root>
+<root class="@GetStyle()">
     @if(!Client.IsValid())
     {
         return;
@@ -19,6 +20,13 @@
             <label class="name" text=@Client.Name />
             <label class="location" text=@(Player?.Location ?? "Loading...") />
         </div>
+    </div>
+
+    <div class="buttons">
+        @if(!IsMe())
+        {
+            <i onclick=@ToggleMute >@GetMuteIcon()</i>
+        }
     </div>
 
     <div class="ping-container">
@@ -40,13 +48,43 @@
         }
     }
 
+    string GetStyle()
+    {
+        if(Client.Pawn is not HomePlayer player) return "";
+        return player.GetDisplayStyle();
+    }
+
+    bool IsMe()
+    {
+        return Client.SteamId == Game.LocalClient.SteamId;
+    }
+
     string AvatarTexture()
     {
         return $"avatar:{Client.SteamId}";
     }
 
+    void ToggleMute()
+    {
+        if(Game.LocalPawn is not HomePlayer player) return;
+        player.TogglePlayerMute(Client.SteamId);
+    }
+
+    string GetMuteIcon()
+    {
+        if(Game.LocalPawn is not HomePlayer localPlayer) return "";
+        if(localPlayer.PlayerVolumes.ContainsKey(Client.SteamId))
+        {
+            if(localPlayer.PlayerVolumes[Client.SteamId] == 0)
+            {
+                return "volume_off";
+            }
+        }
+        return "volume_up";
+    }
+
     protected override int BuildHash()
     {
-        return HashCode.Combine(Client.Name, Player?.Location ?? null, Client.Ping);
+        return HashCode.Combine(Client.Name, Player?.Location ?? null, Client.Ping, GetMuteIcon());
     }
 }

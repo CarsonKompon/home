@@ -10,7 +10,7 @@
 
 <root class="nametag">
 	<img class="avatar" src=@AvatarTexture() />
-	<label class="name @GetRainbow()" text=@Player.Client.Name />
+	<label class="name @GetStyle()" text=@Player.Client.Name />
 </root>
 
 @code
@@ -43,12 +43,9 @@
 		Rotation = Rotation.LookAt( -Screen.GetDirection( new Vector2( Screen.Width * 0.5f, Screen.Height * 0.5f ) ) );
 	}
 
-	string GetRainbow()
+	string GetStyle()
 	{
-		if( Player.Client.SteamId == 76561198031113835 )
-			return "rainbow";
-		else
-			return "";
+		return Player.GetDisplayStyle();
 	}
 
 }
