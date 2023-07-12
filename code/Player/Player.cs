@@ -90,6 +90,8 @@ public partial class HomePlayer : AnimatedEntity
 		ClothingString = Clothing.Serialize();
 
 		LoadOutfitRpc(To.Single(client));
+
+		LoadPlayerDataClientRpc(To.Single(client));
     }
 
 	[ClientRpc]

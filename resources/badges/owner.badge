@@ -1,0 +1,5 @@
+{
+  "Name": "Creator of Home",
+  "Icon": "ui/badges/owner.png",
+  "RequiresAuthority": true
+}

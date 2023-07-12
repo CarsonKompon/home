@@ -1,0 +1,5 @@
+{
+  "Name": "24 Hours of Playtime",
+  "Icon": "ui/badges/24h.png",
+  "RequiresAuthority": true
+}

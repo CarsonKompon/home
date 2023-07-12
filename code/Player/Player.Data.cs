@@ -12,12 +12,13 @@ namespace Home;
 
 public partial class PlayerData : BaseNetworkable
 {
-	[Net] public long SteamId { get; set; }
+	[Net] public long SteamId { get; set; } = 0;
 	[Net, Change] public long Money { get; set; } = 0;
 	[Net] public float Height { get; set; } = 1f;
 	[Net] public List<StashEntry> Stash { get; set; } = new();
 	[Net] public List<int> Clothing { get; set; } = new();
 	[Net] public List<AchievementProgress> Achievements {get; set;} = new();
+	[Net] public List<HomeBadge> Badges {get; set;} = new();
 
 	public PlayerData() {}
 
@@ -42,8 +43,9 @@ public partial class PlayerData : BaseNetworkable
 		Money = newData.Money;
 		Stash = newData.Stash;
 		Clothing = newData.Clothing;
-		Achievements = newData.Achievements;
 		Height = newData.Height;
+		Achievements = newData.Achievements;
+		Badges = newData.Badges.Where(x => x.RequiresAuthority == false).ToList();
 
 		HomePlayer.SetHeight(GetPlayer().NetworkIdent, Height);
 
@@ -55,7 +57,7 @@ public partial class PlayerData : BaseNetworkable
 	public void Save()
 	{
 		Game.AssertClient();
-		if(SteamId == null || SteamId == 0) return;
+		if(SteamId == 0) return;
 		Log.Info("🏠: Saving player data...");
 		string steamId = Game.LocalClient.SteamId.ToString();
 		if(!FileSystem.Data.DirectoryExists(steamId))
@@ -240,6 +242,7 @@ public partial class HomePlayer
 		if(client.Pawn is not HomePlayer player) return;
 		player.Data = new PlayerData(steamId);
 		player.Data.LoadFromString(client.GetClientData<string>("HomeUploadData"));
+		player.LoadBadges();
 	}
 
 	public bool HasMoney(long amount)
@@ -330,6 +333,16 @@ public partial class HomePlayer
 		var thing = Data.Stash.First(s => s.Id == id);
 		thing.Used -= amount;
 		if(thing.Used < 0) thing.Used = 0;
+	}
+
+	public void GiveBadge(string id)
+	{
+		Game.AssertServer();
+		var badge = HomeBadge.FindById(id);
+		if(badge == null) return;
+		if(Data.Badges.Contains(badge)) return;
+		Data.Badges.Add(badge);
+		SavePlayerDataClientRpc(To.Single(this.Client));
 	}
 
 }

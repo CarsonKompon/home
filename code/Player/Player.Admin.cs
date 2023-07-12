@@ -40,16 +40,66 @@ public partial class HomePlayer
         }
     }
 
-    private void InitRole(IClient client)
+    private void InitRole(IClient clint)
     {
-        switch(client.SteamId)
+        Log.Info("🏠: Initializing player role...");
+        switch(clint.SteamId)
         {
-            // Carson
-            case 76561198031113835:
+            // Owner
+            case 76561198031113835: // Carson
                 IsOwner = true;
                 IsAdmin = true;
                 IsModerator = true;
                 break;
+            
+            // Moderators
+            case 76561198038564197: // Yukon
+            case 76561198043458654: // Del Pickle
+            case 76561198037527559: // Stella Wisps
+            case 76561198160401653: // Milk Man
+                IsModerator = true;
+                break;
+        }
+    }
+
+    private async void LoadBadges()
+    {
+        if(IsOwner) GiveBadge("owner");
+        if(IsAdmin) GiveBadge("admin");
+        if(IsModerator) GiveBadge("moderator");
+
+        switch(Client.SteamId)
+        {
+            // Developers/Contributors
+            case 76561198031113835: // Carson
+            case 76561197990720321: // ShadowBrain
+            case 76561198155010327: // Luke
+            case 76561197972285500: // ItsRifter
+            case 76561198048910256: // Sugma Gaming
+                GiveBadge("developer");
+                break;
+        }
+
+        Log.Info("🏠: Awaiting game package...");
+        var package = await Package.FetchAsync("carsonk.home", false);
+        if(package != null)
+        {
+            Log.Info(package.Usage.Total.Seconds);
+            // More than 30 days of playtime
+            if(package.Interaction.Seconds > 2592000)
+            {
+                GiveBadge("30d");
+            }
+            // More than 7 days of playtime
+            else if(package.Interaction.Seconds > 604800)
+            {
+                GiveBadge("7d");
+            }
+            // More than 24 hours of playtime
+            else if(package.Interaction.Seconds > 86400)
+            {
+                GiveBadge("24h");
+            }
         }
     }
 

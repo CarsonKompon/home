@@ -44,8 +44,6 @@ public partial class HomeGame : GameManager
 		client.Pawn = player;
 
 		HomeChatBox.Announce($"{client.Name} joined the server");
-
-		player.LoadPlayerDataClientRpc(To.Single(client));
 	}
 
 	public override void ClientDisconnect( IClient client, NetworkDisconnectionReason reason )

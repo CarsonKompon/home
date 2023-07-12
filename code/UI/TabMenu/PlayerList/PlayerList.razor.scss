@@ -43,9 +43,19 @@ PlayerList {
             justify-content: center;
 
             .name {
+                gap: 4px;
                 font-size: 24px;
                 font-weight: bolder;
                 color: black;
+
+                .badges {
+                    gap: 2px;
+
+                    .badge {
+                        width: 32px;
+                        height: 32px;
+                    }
+                }
             }
 
             .location {

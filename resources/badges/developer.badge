@@ -1,0 +1,5 @@
+{
+  "Name": "Developer/Contributor",
+  "Icon": "ui/badges/developer.png",
+  "RequiresAuthority": true
+}
