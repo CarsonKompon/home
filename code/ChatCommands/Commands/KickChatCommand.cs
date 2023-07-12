@@ -11,20 +11,22 @@ public class KickChatCommand : ChatCommandAttribute
 {
     public KickChatCommand()
     {
-        Name = "Msg";
-        Description = "Send a private message";
+        Name = "Kick";
+        Description = "Kicks a player from the server";
         Arguments = new List<ChatArgument>();
         Arguments.Add(new ChatArgument()
         {
             Name = "recipient",
-            Description = "The recipient of the message",
+            Description = "The player to kick",
             Type = typeof(string)
         });
         Arguments.Add(new ChatArgument()
         {
             Name = "reason",
             Description = "The message to send",
-            Type = typeof(string)
+            Type = typeof(string),
+            Default = "",
+            Optional = true
         });
     }
 

@@ -60,7 +60,10 @@ public class ChatCommandAttribute : LibraryAttribute
 
         foreach (ChatCommandAttribute command in HomeGame.Current.ChatCommands)
         {
-            commandString += "\n/" + command.Name.ToLower() + " - " + command.Description;
+            if(command.HasPermission(client))
+            {
+                commandString += "\n/" + command.Name.ToLower() + " - " + command.Description;
+            }
         }
 
         HomeChatBox.AddChatEntry(To.Single(client), null, commandString);
@@ -104,7 +107,9 @@ public class ChatCommandAttribute : LibraryAttribute
         // If the command has arguments, check if the number of arguments are correct and add the optional ones if we have the right amount of required
         if(parts.Count - 1 < chatCommand.Arguments.Count(x => !x.Optional))
         {
-            HomeChatBox.AddChatEntry(To.Single(client), null, "Invalid number of arguments");
+            string response ="Invalid number of arguments. Valid usage:";
+            response += "\n/" + chatCommand.Name.ToLower() + " " + chatCommand.GetArgumentTemplate();
+            HomeChatBox.AddChatEntry(To.Single(client), null, response);
             return;
         }
 
