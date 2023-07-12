@@ -45,6 +45,6 @@ public class ModChatCommand : ChatCommandAttribute
     public override bool HasPermission(IClient client)
     {
         if(client.Pawn is not HomePlayer player) return false;
-        return player.IsAdmin;
+        return player.HasAdminPermissions();
     }
 }

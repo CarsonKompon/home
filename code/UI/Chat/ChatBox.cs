@@ -170,7 +170,7 @@ namespace Home
 				return;
 			}
       
-	  		if(ConsoleSystem.Caller?.Pawn is HomePlayer player && player.IsOwner)
+	  		if(ConsoleSystem.Caller?.Pawn is HomePlayer player && player.HasOwnerPermissions())
 			{
 				AddChatEntry( To.Everyone, ConsoleSystem.Caller?.Name ?? "Server", message, $"avatar:{ConsoleSystem.Caller?.SteamId}", "", "rainbow");
 			}

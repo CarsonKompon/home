@@ -6,7 +6,6 @@ namespace Home;
 
 public partial class HomePlayer
 {
-    [Net] public bool IsOwner {get; set;} = false;
     [Net] public bool IsAdmin {get; set;} = false;
     [Net] public bool IsModerator {get; set;} = false;
 
@@ -47,7 +46,6 @@ public partial class HomePlayer
         {
             // Owner
             case 76561198031113835: // Carson
-                IsOwner = true;
                 IsAdmin = true;
                 IsModerator = true;
                 break;
@@ -64,7 +62,7 @@ public partial class HomePlayer
 
     private async void LoadBadges()
     {
-        if(IsOwner) GiveBadge("owner");
+        if(HasOwnerPermissions()) GiveBadge("owner");
 
         switch(Client.SteamId)
         {
@@ -117,6 +115,11 @@ public partial class HomePlayer
         Cookie.Set("home.voice." + steamId.ToString(), PlayerVolumes[steamId]);
     }
 
+    public bool HasOwnerPermissions()
+    {
+        return (Client.SteamId == 76561198031113835);
+    }
+
     public bool HasAdminPermissions()
     {
         return IsAdmin;
@@ -129,10 +132,10 @@ public partial class HomePlayer
 
     public string GetDisplayStyle()
     {
-        if(IsOwner) return "rainbow";
+        if(HasOwnerPermissions()) return "rainbow";
         if(Client.SteamId == Game.LocalClient.SteamId) return "me";
-        if(IsAdmin) return "admin";
-        if(IsModerator) return "moderator";
+        if(HasAdminPermissions()) return "admin";
+        if(HasModeratorPermissions()) return "moderator";
         return "";
     }
 
