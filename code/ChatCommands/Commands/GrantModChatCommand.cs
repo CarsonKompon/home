@@ -7,17 +7,17 @@ using Sandbox;
 namespace Home;
 
 [ChatCommand]
-public class AdminChatCommand : ChatCommandAttribute
+public class ModChatCommand : ChatCommandAttribute
 {
-    public AdminChatCommand()
+    public ModChatCommand()
     {
-        Name = "Admin";
-        Description = "Grants admin to a player";
+        Name = "Mod";
+        Description = "Grants moderator to a player";
         Arguments = new List<ChatArgument>();
         Arguments.Add(new ChatArgument()
         {
             Name = "user",
-            Description = "The name of the user to grant admin to",
+            Description = "The name of the user to grant moderator to",
             Type = typeof(string)
         });
     }
@@ -36,10 +36,9 @@ public class AdminChatCommand : ChatCommandAttribute
             HomeChatBox.AddChatEntry(To.Single(client), null, "Could not find a player with that name", null, "yellow");
             return;
         }
-        recipientPlayer.IsAdmin = true;
         recipientPlayer.IsModerator = true;
-        HomeChatBox.AddChatEntry(To.Single(client), null, recipientClient.Name + " has been granted admin permissions!", null, "yellow");
-        HomeChatBox.AddChatEntry(To.Single(recipientClient), null, "You have been granted admin permissions!", null, "yellow");
+        HomeChatBox.AddChatEntry(To.Single(client), null, recipientClient.Name + " has been granted moderator permissions!", null, "yellow");
+        HomeChatBox.AddChatEntry(To.Single(recipientClient), null, "You have been granted moderator permissions!", null, "yellow");
     }
 
 
