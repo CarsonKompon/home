@@ -1,0 +1,112 @@
+LeaderboardPanel {
+    background-color: rgba(white, 0.6);
+    justify-content: center;
+    align-items: center;
+    font-family: Poppins;
+    font-weight: bolder;
+    color: black;
+    border-radius: 64px;
+    font-size: 32px;
+    font-weight: 400;
+
+    flex-direction: column;
+    gap: 64px;
+    padding: 32px;
+
+    h2 {
+        font-size: 64px;
+        text-align: center;
+        font-weight: 900;
+    }
+
+    .content {
+        display: flex;
+        flex-direction: row;
+        gap: 32px;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    
+        .leaderboard {
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+
+            h3 {
+                font-size: 32px;
+                text-align: center;
+                font-weight: 900;
+                border-bottom: 4px solid black;
+            }
+
+            .entries {
+                display: flex;
+                flex-direction: column;
+                gap: 32px;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                padding: 16px;
+
+                .entry {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 32px;
+                    align-items: center;
+                    justify-content: center;
+                    width: 100%;
+                    padding: 8px 16px;
+
+                    .rank {
+                        font-size: 32px;
+                        text-align: center;
+                        font-weight: 900;
+                        width: 64px;
+                    }
+
+                    .flag {
+                        font-size: 32px;
+                        text-align: center;
+                        font-weight: 900;
+                        font-family: Roboto;
+                    }
+
+                    .name {
+                        align-items: center;
+                        gap: 16px;
+
+                        image {
+                            aspect-ratio: 1;
+                            height: 48px;
+                            border-radius: 32px
+                            background-color: pink;
+                        }
+
+                        label {
+                            font-size: 32px;
+                            text-align: center;
+                            font-weight: 500;
+                            flex-grow: 2;
+                            justify-content: flex-start;
+                            text-align: left;
+                        }
+                    }
+
+                    .score {
+                        font-size: 32px;
+                        text-align: center;
+                        font-weight: 600;
+                        flex-grow: 1;
+                        text-align: right;
+                        justify-content: flex-end;
+                    }
+
+                    &.me {
+                        background-color: rgba(rgb(31, 166, 245), 0.6);
+                        border-radius: 32px;
+                    }
+                }
+            }
+        }
+    }
+}
