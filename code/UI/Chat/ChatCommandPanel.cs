@@ -37,7 +37,7 @@ namespace Home
 
 				foreach (var command in HomeGame.Current.ChatCommands)
 				{
-					if(command.Name.ToLower().StartsWith(words[0].ToLower()))
+					if(command.Name.ToLower().StartsWith(words[0].ToLower()) && command.HasPermission(Game.LocalClient))
 					{
 						HomeChatCommandPanelEntry entry = new HomeChatCommandPanelEntry(command);
 						AddChild(entry);

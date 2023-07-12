@@ -85,7 +85,6 @@ public partial class HomePlayer
         var package = await Package.FetchAsync("carsonk.home", false);
         if(package != null)
         {
-            Log.Info(package.Usage.Total.Seconds);
             // More than 30 days of playtime
             if(package.Interaction.Seconds > 2592000)
             {

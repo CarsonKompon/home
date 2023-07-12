@@ -21,6 +21,7 @@ public class ChatCommandAttribute : LibraryAttribute
     public virtual new string Name { get; set; }
     public virtual List<ChatArgument> Arguments { get; set; }
     public virtual new string Description { get; set; }
+    public virtual bool HasPermission(IClient client) => true;
 
     public ChatCommandAttribute()
     {
