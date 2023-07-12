@@ -51,7 +51,7 @@ public partial class ArcadeMachineTetros : ArcadeMachineBase
     {
         base.StartGame();
         
-        StartGameRpc();
+        StartGameRpc(CurrentUser.Client.SteamId);
 
         // UpdateBoard();
         // UpdateNextPieces();
@@ -59,9 +59,9 @@ public partial class ArcadeMachineTetros : ArcadeMachineBase
     }
 
     [ClientRpc]
-    public void StartGameRpc()
+    public void StartGameRpc(long steamid)
     {
-        Screen?.StartGame();
+        Screen?.StartGame(steamid);
     }
 
     public override void EndGame(long steamId)

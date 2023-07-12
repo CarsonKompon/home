@@ -49,7 +49,7 @@ public partial class ArcadeMachineSnek : ArcadeMachineBase
     {
         base.StartGame();
         
-        StartGameRpc();
+        StartGameRpc(To.Single(CurrentUser));
     }
 
     [ClientRpc]

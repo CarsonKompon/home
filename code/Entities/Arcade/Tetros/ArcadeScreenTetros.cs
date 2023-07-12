@@ -34,10 +34,10 @@ public partial class ArcadeScreenTetros : WorldPanel
         Menu.Machine = Machine;
     }
 
-    public void StartGame()
+    public void StartGame(long steamid)
     {
         Menu.Navigate("/game");
-        Menu.StartGame.Invoke();
+        Menu.StartGame.Invoke(steamid);
     }
 
     [GameEvent.Tick.Client]
