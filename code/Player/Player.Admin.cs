@@ -65,8 +65,6 @@ public partial class HomePlayer
     private async void LoadBadges()
     {
         if(IsOwner) GiveBadge("owner");
-        if(IsAdmin) GiveBadge("admin");
-        if(IsModerator) GiveBadge("moderator");
 
         switch(Client.SteamId)
         {
@@ -79,6 +77,9 @@ public partial class HomePlayer
                 GiveBadge("developer");
                 break;
         }
+
+        if(IsAdmin) GiveBadge("admin");
+        if(IsModerator) GiveBadge("moderator");
 
         Log.Info("🏠: Awaiting game package...");
         var package = await Package.FetchAsync("carsonk.home", false);
