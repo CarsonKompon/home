@@ -19,12 +19,15 @@
         <div class="name-container">
             <div class="name">
                 <label text=@Client.Name />
-                <div class="badges">
-                    @foreach(var badge in Player.Data.Badges)
-                    {
-                        <img class="badge" src=@badge.Icon Tooltip=@badge.Name />
-                    }
-                </div>
+                @if(Player.Data != null)
+                {
+                    <div class="badges">
+                        @foreach(var badge in Player.Data.Badges)
+                        {
+                            <img class="badge" src=@badge.Icon Tooltip=@badge.Name />
+                        }
+                    </div>
+                }
             </div>
             <label class="location" text=@(Player?.Location ?? "Loading...") />
         </div>
