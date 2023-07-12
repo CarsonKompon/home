@@ -228,27 +228,6 @@ HomeInventoryDragging {
     }
 }
 
-.nametag {
-    font-family: Ubuntu;
-    font-size: 48px;
-    color: white;
-    align-items: center;
-    justify-content: center;
-    text-shadow: 3px 3px 3px black;
-    font-weight: 800;
-    transition: opacity .15s ease-out;
-    gap: 24px;
-
-    .avatar {
-        border-radius: 100%;
-        box-shadow: 3px 3px 10px rgba(black, 0.6);
-    }
-
-    &.local {
-        display: none;
-    }
-}
-
 .tooltip
 {
     font-family: Roboto;

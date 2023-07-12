@@ -4,13 +4,24 @@
 @using Sandbox.UI.Construct;
 
 @inherits WorldPanel;
-@attribute [StyleSheet("/UI/Styles/_styles.scss")]
+@attribute [StyleSheet]
 
 @namespace Home
 
-<root class="nametag">
-	<img class="avatar" src=@AvatarTexture() />
-	<label class="name @GetStyle()" text=@Player.Client.Name />
+<root class="nametag @GetStyle()">
+	<div class="name">
+		<img class="avatar" src=@AvatarTexture() />
+		<label text=@Player.Client.Name />
+	</div>
+	@if(Player.Data != null)
+	{
+		<div class="badges">
+			@foreach(var badge in Player.Data.Badges)
+			{
+				<img class="badge" src=@badge.Icon Tooltip=@badge.Name />
+			}
+		</div>
+	}
 </root>
 
 @code
@@ -22,7 +33,7 @@
 	{
 		Player = player;
 		PanelBounds = new Rect( -1000, -1000, 2000, 2000 );
-		SetClass( "local", player.IsLocalPawn );
+		//SetClass( "local", player.IsLocalPawn );
 	}
 
 	string AvatarTexture()
@@ -39,13 +50,18 @@
 		Style.Opacity = MathX.Clamp(1.25f - (Vector3.DistanceBetween( Camera.Position, Player.EyePosition ) * 0.004f), 0f, 1f);
 
 		var hat = Player.GetAttachment( "hat" ) ?? new Transform( Player.EyePosition );
-		Position = hat.Position + Vector3.Up * 8;
+		Position = hat.Position + Vector3.Up * 10;
 		Rotation = Rotation.LookAt( -Screen.GetDirection( new Vector2( Screen.Width * 0.5f, Screen.Height * 0.5f ) ) );
 	}
 
 	string GetStyle()
 	{
-		return Player.GetDisplayStyle();
+		return Player.GetDisplayStyle() + (((Player?.Data?.Badges?.Count ?? 0) > 2 ? " column" : ""));
+	}
+
+	protected override int BuildHash()
+	{
+		return HashCode.Combine(GetStyle());
 	}
 
 }

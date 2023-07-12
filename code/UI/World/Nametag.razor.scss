@@ -1,0 +1,47 @@
+@import "/UI/Styles/_rainbow.scss";
+
+.nametag {
+    font-family: Ubuntu;
+    font-size: 48px;
+    color: white;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 3px 3px 3px black;
+    font-weight: 800;
+    transition: opacity .15s ease-out;
+    gap: 24px;
+
+    .name {
+        gap: 24px;
+
+        .avatar {
+            border-radius: 100%;
+            box-shadow: 3px 3px 10px rgba(black, 0.6);
+        }
+    }
+
+    .badges {
+
+        .badge {
+            aspect-ratio: 1;
+            width: 48px;
+        }
+    }
+
+    &.local {
+        display: none;
+    }
+
+    &.rainbow
+    {
+        animation-name: rainbowcycle;
+        animation-duration: 4s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
+
+    &.column {
+        flex-direction: column;
+        gap: 0px;
+    }
+}
