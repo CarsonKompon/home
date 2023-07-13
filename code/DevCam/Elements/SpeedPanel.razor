@@ -1,0 +1,48 @@
+﻿
+@using System
+@using Sandbox
+@using Sandbox.UI
+
+@internal
+@namespace Home.DevCam
+@inherits Panel
+
+<style>
+    .panel
+    {
+        align-items: center;
+    }
+</style>
+
+<root class="panel">
+
+	<row>
+		<title>
+			<text>Lerp Speed</text>
+		</title>
+		<control>
+			<SliderControl min="0.0" max="1.0" step="0.001" default="0.0" Value:bind="@LerpSpeed" style="width:200px"></SliderControl>
+		</control>
+	</row>
+
+</root>
+
+@code
+{
+	public float LerpSpeed
+	{
+		get => _LerpSpeed;
+		set
+		{
+			_LerpSpeed = value;
+			Event.Run("devcam.setlerp", 1.0f - value);
+		}
+	}
+	private float _LerpSpeed = 1.0f;
+
+    [Event( "devcam.reset" )]
+    public void ResetToDefaults()
+    {
+        LerpSpeed = 1.0f;
+    }
+}

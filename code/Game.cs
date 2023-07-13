@@ -477,4 +477,20 @@ public partial class HomeGame : GameManager
 		IsLoadingClothing = false;
 	}
 
+	public override void DoPlayerDevCam( IClient client )
+	{
+		Game.AssertServer();
+
+		var camera = client.Components.Get<Home.DevCamera>( true );
+
+		if ( camera == null )
+		{
+			camera = new Home.DevCamera();
+			client.Components.Add( camera );
+			return;
+		}
+
+		camera.Enabled = !camera.Enabled;
+	}
+
 }

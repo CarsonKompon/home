@@ -1,0 +1,151 @@
+﻿
+@using System
+@using Sandbox
+@using Sandbox.UI
+
+@internal
+@namespace Home.DevCam
+@inherits Panel
+
+<style>
+    .panel
+    {
+        align-items: center;
+    }
+</style>
+
+<root class="panel">
+
+	<row>
+		<title>
+			<text>Blur Size</text>
+		</title>
+		<control>
+			<SliderControl min="0.0" max="256.0" step="1" default="0.0" Value:bind="@Radius" style="width:200px"></SliderControl>
+		</control>
+	</row>
+
+	<toolbar>
+		<button icon="highlight_alt" onclick=@StartFocusTypePick >Focus Select</button>
+        <button icon="filter_center_focus" onclick=@LiveFocus active="@(focusMode == "live")">Live Focus</button>
+	</toolbar>
+
+	<toolbar>
+		<button icon="flip_to_back" onclick=@ToggleNear active="@Near" >Near Blur</button>
+        <button icon="flip_to_front" onclick=@ToggleFar active="@Far">Far Blur</button>
+	</toolbar>
+
+    <toolbar>
+        <button icon="undo" onclick=@ResetToDefaults>Reset</button>
+    </toolbar>
+
+</root>
+
+@code
+{
+    public float Radius { get; set; } = 0.0f;
+    public float FStop { get; set; } = 0.16f;
+    public float DofFocalPoint { get; set; } = 64.0f;
+
+    public bool Near { get; set; } = false;
+	public bool Far { get; set; } = true;
+
+    private string focusMode { get; set; } = "fixed";
+
+
+	public void TickSettings()
+	{
+		var hook = Camera.Main.FindHook<DevCamDof>();
+		if ( hook == null ) return;
+
+		hook.Enabled = Radius > 0;
+		if ( !hook.Enabled ) return;
+
+		if ( focusMode == "live" )
+		{
+			var raySize = 8.0f;
+
+			var eyeRay = new Ray( Camera.Position, Camera.Rotation.Forward );
+
+			var tr = Trace.Ray( eyeRay, 10000.0f )
+							.UseHitboxes()
+							.WithAnyTags( "solid", "player" )
+							.Size( raySize )
+							.Run();
+			if ( tr.Hit )
+			{
+				DofFocalPoint = DofFocalPoint.LerpTo(
+					tr.Distance + (raySize),
+					Math.Min( Time.Delta , 1.0f ) ,
+					true );
+			}
+		}
+
+		hook.BlurSize = Radius;
+		hook.FocalDistance = DofFocalPoint;
+		hook.FrontBlur = Near;
+		hook.BackBlur = Far;
+	}
+
+    [GameEvent.Client.Frame]
+	public void OnFrame()
+	{
+		TickSettings();
+	}
+
+	public void PickFocalPoint( MousePanelEvent e )
+	{
+		focusMode = "fixed";
+
+        DevCamOverlay.OnMouseClicked = default;
+        DevCamOverlay.OnMouseMoved = default;
+	}
+
+	public void MoveFocalPoint( MousePanelEvent e )
+	{
+		if ( focusMode != "pick" ) return;
+
+		var dir = Screen.GetDirection( e.LocalPosition );
+		var eyeRay = new Ray( Camera.Position, dir );
+
+		var tr = Trace.Ray( eyeRay, 10000.0f ).UseHitboxes().WithAnyTags( "solid", "player" ).Run();
+		if ( tr.Hit )
+		{
+			DofFocalPoint = tr.Distance;
+		}
+	}
+
+	public void StartFocusTypePick()
+	{
+		focusMode = "pick";
+
+        DevCamOverlay.OnMouseClicked = PickFocalPoint;
+        DevCamOverlay.OnMouseMoved = MoveFocalPoint;
+	}
+
+	public void LiveFocus()
+	{
+		focusMode = "live";
+	}
+
+	public void ToggleNear()
+	{
+		Near = !Near;
+	}
+
+	public void ToggleFar()
+	{
+		Far = !Far;
+	}
+
+    [Event( "devcam.reset" )]
+    public void ResetToDefaults()
+    {
+        var props = TypeLibrary.GetPropertyDescriptions( this, true );
+        foreach( var prop in props )
+        {
+            var def = prop.GetCustomAttribute<DefaultValueAttribute>();
+            if ( def != null ) TypeLibrary.SetProperty( this, prop.Name, def.Value );
+        }
+    }
+}

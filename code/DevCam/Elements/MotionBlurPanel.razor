@@ -1,0 +1,60 @@
+﻿
+@using Sandbox
+@using Sandbox.UI
+
+@internal
+@namespace Home.DevCam
+@inherits Panel
+
+<root class="panel">
+
+    <row>
+        <title>
+            <text>Scale</text>
+        </title>
+        <control>
+            <SliderControl min="0.0" max="1.0" step="0.01" default="0.0" Value:bind="@Scale"></SliderControl>
+        </control>
+    </row>
+    <!--
+    <row>
+        <title>
+            <text>Samples</text>
+        </title>
+        <control>
+            <SliderEntry min="4" max="32.0" step="1" @value="Samples"></SliderEntry>
+        </control>
+    </row>
+    -->
+
+    <toolbar>
+        <button icon="undo" onclick=@ResetToDefaults>Reset</button>
+    </toolbar>
+
+</root>
+
+@code {
+    public float Scale { get; set; } = 0.0f;
+    public int Samples { get; set; } = 16;
+
+    [GameEvent.Client.Frame]
+    public void OnFrame()
+    {
+        DevCamPP pp = Camera.Main.FindHook<DevCamPP>();
+        if (pp == null) return;
+
+        pp.MotionBlur.Scale = Scale;
+        pp.MotionBlur.Samples = Samples;
+    }
+
+    [Event( "devcam.reset" )]
+    public void ResetToDefaults()
+    {
+        var props = TypeLibrary.GetPropertyDescriptions( this, true );
+        foreach( var prop in props )
+        {
+            var def = prop.GetCustomAttribute<DefaultValueAttribute>();
+            if( def != null ) TypeLibrary.SetProperty( this, prop.Name, def.Value );
+        }
+    }
+}

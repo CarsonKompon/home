@@ -208,6 +208,16 @@
           "KeyboardCode": "RIGHTARROW",
           "GamepadCode": "DpadWest",
           "GroupName": "Arcade - Rhythm4K"
+        },
+        {
+          "Name": "DevCamSpeedUp",
+          "KeyboardCode": "E",
+          "GroupName": "Other"
+        },
+        {
+          "Name": "DevCamSpeedDown",
+          "KeyboardCode": "Q",
+          "GroupName": "Other"
         }
       ]
     },

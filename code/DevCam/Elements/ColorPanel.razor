@@ -1,0 +1,115 @@
+﻿@using System
+@using Sandbox
+@using Sandbox.UI
+
+@internal
+@namespace Home.DevCam
+@inherits Panel
+
+<root class="panel">
+
+	<row>
+		<title>
+			<text>Saturation</text>
+		</title>
+		<control>
+			<SliderControl min="0.0" max="2.0" step="0.01" default="1.0" Value:bind="@Saturation"></SliderControl>
+		</control>
+	</row>
+
+	<row>
+		<title>
+			<text>Sharpen</text>
+		</title>
+		<control>
+			<SliderControl min="0.0" max="16.0" step="0.01" default="0.0" Value:bind="@Sharpen"></SliderControl>
+		</control>
+	</row>
+
+	<row>
+		<title>
+			<text>Hue</text>
+		</title>
+		<control>
+			<SliderControl min="0.0" max="360.0" step="0.1" default="0.0" Value:bind="@Hue"></SliderControl>
+		</control>
+	</row>
+
+	<row>
+		<title>
+			<text>Brightness</text>
+		</title>
+		<control>
+			<SliderControl min="0.01" max="4.0" step="0.01" default="1.0" Value:bind="@Brightness"></SliderControl>
+		</control>
+	</row>
+
+	<row>
+		<title>
+			<text>Contrast</text>
+		</title>
+		<control>
+			<SliderControl min="0.0" max="2.0" step="0.01" default="1.0" Value:bind="@Contrast"></SliderControl>
+		</control>
+	</row>
+
+	<row>
+		<title>
+			<text>Pixelation</text>
+		</title>
+		<control>
+			<SliderControl min="0.0" max="1.0" step="0.01" default="0.0" Value:bind="@Pixelation"></SliderControl>
+		</control>
+	</row>
+
+	<row>
+		<title>
+			<text>Chromatic Aberration</text>
+		</title>
+		<control>
+			<SliderControl min="0.0" max="1.0" step="0.01" default="0.0" Value:bind="@ChromaticAberration"></SliderControl>
+		</control>
+    </row>
+
+    <toolbar>
+        <button icon="undo" onclick=@ResetToDefaults>Reset</button>
+    </toolbar>
+
+</root>
+
+@code
+{
+    public float Saturation { get; set; } = 1.0f;
+    public float Sharpen { get; set; } = 0.0f;
+    public float Hue { get; set; } = 0.0f;
+    public float Brightness { get; set; } = 1.0f;
+    public float Contrast { get; set; } = 1.0f;
+    public float Pixelation { get; set; } = 0.0f;
+    public float ChromaticAberration { get; set; } = 0.0f;
+
+    [GameEvent.Client.Frame]
+    public void OnFrame()
+    {
+        DevCamPP pp = Camera.Main.FindHook<DevCamPP>();
+        if (pp == null) return;
+
+        pp.Saturation = Saturation;
+        pp.Sharpen = Sharpen;
+        pp.HueRotate = Hue;
+        pp.Brightness = Brightness;
+        pp.Contrast = Contrast;
+        pp.Pixelation = Pixelation;
+        pp.ChromaticAberration.Scale = ChromaticAberration;
+    }
+
+    [Event( "devcam.reset" )]
+    public void ResetToDefaults()
+    {
+        var props = TypeLibrary.GetPropertyDescriptions( this, true );
+        foreach( var prop in props )
+        {
+            var def = prop.GetCustomAttribute<DefaultValueAttribute>();
+            if ( def != null ) TypeLibrary.SetProperty( this, prop.Name, def.Value );
+        }
+    }
+}

@@ -1,0 +1,91 @@
+﻿@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Sandbox;
+@using Sandbox.UI;
+
+@internal
+@namespace Home.DevCam
+@attribute [StyleSheet]
+@inherits Panel
+
+<root>
+
+	<div class="menubar">
+
+		<div class="button" onclick=@(() => TogglePanel( "speedpanel" )) for="speedpanel">
+			<text class="icon" text="running" />
+			<text class="text" text="Speed" />
+		</div>
+
+		<div class="button" onclick=@(() => TogglePanel( "dofpanel" )) for="dofpanel">
+			<text class="icon" text="camera" />
+			<text class="text" text="Depth Of Field" />
+		</div>
+
+		<div class="button" onclick=@(() => TogglePanel( "colorpanel" )) for="colorpanel">
+			<text class="icon" text="palette" />
+			<text class="text" text="Color" />
+		</div>
+
+		<div class="button" onclick=@(() => TogglePanel( "vignettepanel" )) for="vignettepanel">
+            <text class="icon" text="vignette" />
+            <text class="text" text="Vignette" />
+		</div>
+
+        <div class="button" onclick=@(() => TogglePanel( "filmgrainpanel" )) for="filmgrainpanel">
+            <text class="icon" text="grain" />
+            <text class="text" text="Film Grain" />
+		</div>
+
+		<div class="button" onclick=@(() => TogglePanel( "motionblurpanel" )) for="motionblurpanel">
+            <text class="icon" text="animation" />
+            <text class="text" text="Motion Blur" />
+		</div>
+
+		<div class="button reset" onclick=@(() => Event.Run( "devcam.reset" ))>
+            <text class="icon" text="undo" />
+            <text class="text" text="Reset All" />
+		</div>
+
+	</div>
+
+	<SpeedPanel />
+    <VignettePanel />
+    <MotionBlurPanel />
+    <FilmGrainPanel />
+    <DofPanel />
+    <ColorPanel />
+
+</root>
+
+@code
+{
+
+    public void TogglePanel( string name )
+	{
+		var panel = Children.FirstOrDefault( x => x.ElementName == name );
+		if ( panel == null ) return;
+
+		bool wasVisible = panel.HasClass( "visible" );
+
+		// Hide all panels
+		foreach ( var child in Children.Where( x => x.HasClass( "panel" ) ) )
+		{
+			child.SetClass( "visible", false );
+		}
+
+		if ( wasVisible )
+		{
+			HighlightBottom( "none" );
+			return;
+		}
+
+		// Show selected panel
+		panel.SetClass( "visible", true );
+		panel.Style.Left = (Mouse.Position.x * ScaleFromScreen) - 150;
+
+		HighlightBottom( name );
+	}
+
+}

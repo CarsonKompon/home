@@ -1,0 +1,59 @@
+﻿
+@using Sandbox
+@using Sandbox.UI
+
+@internal
+@namespace Home.DevCam
+@inherits Panel
+
+<root class="panel">
+
+    <row>
+        <title>
+            <text>Intensity</text>
+        </title>
+        <control>
+            <SliderControl min="0.0" max="1.0" step="0.01" default="0" Value:bind="@Intensity"></SliderControl>
+        </control>
+    </row>
+
+    <row>
+        <title>
+            <text>Response</text>
+        </title>
+        <control>
+            <SliderControl min="0.0" max="1.0" step="0.01" default="0.5" Value:bind="@Response"></SliderControl>
+        </control>
+    </row>
+
+    <toolbar>
+        <button icon="undo" onclick=@ResetToDefaults>Reset</button>
+    </toolbar>
+
+</root>
+
+@code {
+    public float Intensity { get; set; } = 0.0f;
+    public float Response { get; set; } = 0.5f;
+
+    [GameEvent.Client.Frame]
+    public void OnFrame()
+    {
+        DevCamPP pp = Camera.Main.FindHook<DevCamPP>();
+        if (pp == null) return;
+
+        pp.FilmGrain.Intensity = Intensity;
+        pp.FilmGrain.Response = Response;
+    }
+
+    [Event( "devcam.reset" )]
+    public void ResetToDefaults()
+    {
+        var props = TypeLibrary.GetPropertyDescriptions( this, true );
+        foreach( var prop in props )
+        {
+            var def = prop.GetCustomAttribute<DefaultValueAttribute>();
+            if( def != null ) TypeLibrary.SetProperty( this, prop.Name, def.Value );
+        }
+    }
+}
