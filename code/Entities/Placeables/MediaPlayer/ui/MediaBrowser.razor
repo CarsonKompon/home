@@ -15,10 +15,17 @@
             {
                 <div class="volume">
                     <i>volume_up</i>
-                    <SliderControl min="0.0" max="1.0" step="0.01" Value:bind="@Volume" ></SliderControl>
+                    <SliderControl min="0.0" max="1.0" step="0.01" default="0.5" Value:bind="@Volume" ></SliderControl>
                 </div>
                 <label class="header">Currently Playing:</label>
                 <MediaBrowserEntry Video=@MediaEntity.CurrentlyPlaying />
+                @if(MediaEntity.Video != null)
+                {
+                    <div class="controls">
+                        <i class="play" onclick=@TogglePause >@GetPlayIcon()</i>
+                        <SliderControl min="0.0" max="@MediaEntity.Video.Duration" step="0.01" Value:bind="@CurrentTime" ></SliderControl>
+                    </div>
+                }
             }
 
             @if(MediaEntity.Queue.Count > 0)
@@ -66,17 +73,31 @@
     public string MediaUrl = "";
     private string PreviousUrl = "";
     public MediaPlayer MediaEntity {get;set;}
-    public double Volume
+    public float Volume
     {
         get
         {
-            if(MediaEntity == null) return 0.0;
+            if(MediaEntity == null) return 0.0f;
             return MediaEntity.Volume;
         }
         set
         {
             if(MediaEntity == null) return;
-            MediaEntity.Volume = value;
+            MediaEntity.SetVolume(value);
+        }
+    }
+    public float CurrentTime
+    {
+        get
+        {
+            if(MediaEntity == null) return 0.0f;
+            if(MediaEntity.Video == null) return 0.0f;
+            return MediaEntity.Video.PlaybackTime;
+        }
+        set
+        {
+            if(MediaEntity == null) return;
+            MediaEntity.Seek(value);
         }
     }
 
@@ -95,6 +116,11 @@
         }
 
         UpdateButton();
+    }
+
+    public override void Tick()
+    {
+        if(!MediaEntity.IsValid()) Close();
     }
 
     public void OpenYoutube()
@@ -163,6 +189,19 @@
         WebPanel.Surface.InBackgroundMode = true;
         Delete(true);
         Current = null;
+    }
+
+    string GetPlayIcon()
+    {
+        if(MediaEntity == null) return "";
+        if(MediaEntity.Video == null) return "";
+        if(MediaEntity.Video.IsPaused) return "play_arrow";
+        return "pause";
+    }
+
+    void TogglePause()
+    {
+        MediaPlayer.PauseVideo(MediaEntity.NetworkIdent);
     }
 
     protected override int BuildHash()

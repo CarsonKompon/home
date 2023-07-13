@@ -19,7 +19,7 @@ namespace Home
             StyleSheet.Load( "/ui/notifications/Notifications.scss" );
         }
 
-        [ConCmd.Server("home_notify", Help = "Notifies all players")]
+        [ConCmd.Admin("home_notify", Help = "Notifies all players")]
 		public static void Announce( string message, string color = "white", float length = 15f)
         {
             AddEntry( To.Everyone, message, color, length);

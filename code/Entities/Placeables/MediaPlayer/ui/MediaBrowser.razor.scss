@@ -12,6 +12,15 @@ MediaBrowser {
     pointer-events: all;
     display: none;
 
+    i {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .slidercontrol {
+        margin-top: 6px;
+    }
+
     .left {
         height: 100%;
         width: 25%;
@@ -33,6 +42,27 @@ MediaBrowser {
             gap: 8px;
             flex-direction: column;
             overflow: scroll;
+        }
+
+        .controls {
+            .slidercontrol {
+                .inner .track .track-active {
+                    background-color: rgb(247, 159, 119);
+                }
+                .inner .track .thumb {
+                    display: none;
+                }
+            }
+
+            .play {
+                &:hover {
+                    transform: scale(1.1);
+                }
+
+                &:active {
+                    transform: scale(0.9);
+                }
+            }
         }
     }
 

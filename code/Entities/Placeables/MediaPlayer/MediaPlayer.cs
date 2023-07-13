@@ -31,8 +31,9 @@ public partial class MediaPlayer : ModelEntity, IUse
     protected PhysicsMotionType MotionType {get; set;} = PhysicsMotionType.Dynamic;
 
     public VideoPlayer Video { get; set; }
+    public SoundHandle? CurrentSound { get; set; }
     public Material ScreenMaterial { get; set; }
-    public double Volume { get; set; } = 0.5f;
+    public float Volume { get; set; } = 0.5f;
 
     public MediaPlayer()
     {
@@ -93,6 +94,22 @@ public partial class MediaPlayer : ModelEntity, IUse
         MediaBrowser.Open(To.Single(user), NetworkIdent);
         
         return false;
+    }
+
+    [ConCmd.Server]
+    public static void PauseVideo(int networkIdent)
+    {
+        var entity = Entity.FindByIndex<MediaPlayer>(networkIdent);
+
+        entity?.TogglePauseRpc();
+    }
+
+    [ClientRpc]
+    public void TogglePauseRpc()
+    {
+        Log.Info("📺: Toggling pause on TV");
+        Video?.TogglePause(); 
+        Log.Info(Video?.IsPaused);
     }
 
     [ConCmd.Server]
@@ -188,7 +205,11 @@ public partial class MediaPlayer : ModelEntity, IUse
     public async void PlayVideo(string url)
     {
         Video = new VideoPlayer();
-        Video.OnAudioReady = () => Video.PlayAudio(this);
+        Video.OnAudioReady = () => {
+            CurrentSound = Video.PlayAudio(this);
+            var sound = CurrentSound.Value;
+            sound.Volume = Volume;
+        };
 
         if(MediaHelper.IsYoutubeUrl(url))
         {
@@ -205,9 +226,26 @@ public partial class MediaPlayer : ModelEntity, IUse
         Video.Seek(CurrentTime);
     }
 
+    public void Seek(float time)
+    {
+        CurrentTime = time;
+        Video.Seek(time);
+    }
+
     [ClientRpc]
     public void PlayVideoRpc(string url)
     {
         PlayVideo(url);
+    }
+
+    public void SetVolume(float volume)
+    {
+        Game.AssertClient(); // Only set volume on the client side
+        if(CurrentSound.HasValue)
+        {
+            var sound = CurrentSound.Value;
+            sound.Volume = volume;
+            Volume = volume;
+        }
     }
 }
