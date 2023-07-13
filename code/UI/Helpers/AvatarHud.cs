@@ -101,8 +101,15 @@ public class AvatarHud : ScenePanel
         }
         if(clothing != null)
         {
-            Log.Info("CLOTHING:");
-            Log.Info(clothing.Serialize());
+            // Log.Info("CLOTHING:");
+            // Log.Info(clothing.Serialize());
+            foreach(var item in clothing.Clothing)
+            {
+                if(item is HomeClothing hcloth && !string.IsNullOrEmpty(hcloth.CloudModel))
+                {
+                    await hcloth.MountPackage();
+                }
+            }
             ClothingObjects = ClothingHelper.DressSceneObject(AvatarModel, clothing);
         }
     }
