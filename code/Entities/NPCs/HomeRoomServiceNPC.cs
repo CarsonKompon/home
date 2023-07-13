@@ -41,6 +41,7 @@ public partial class RoomServiceNPC : BaseNPC
                 RoomController room = RoomController.GetOpenRoom();
                 room.SetOwner(player);
                 HomeChatBox.AddChatEntry(To.Single(user), "", "You have checked in to room #" + room.Id.ToString(), null, "yellow");
+                Sandbox.Services.Stats.Increment(user.Client, "checked_in", 1);
             }
             else
             {

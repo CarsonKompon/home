@@ -253,6 +253,7 @@ public partial class HomePlayer
 	public bool GiveMoney(long amount)
 	{
 		Data.Money += amount;
+		Sandbox.Services.Stats.Increment(this.Client, "money_earned", amount);
 		SavePlayerDataClientRpc(To.Single(this.Client));
 		return true;
 	}
