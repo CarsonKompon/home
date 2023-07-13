@@ -44,6 +44,7 @@ public partial class HomePlaceable : GameResource
     public string ClassName { get; set; } = "";
 
     public string CloudIdent { get; set; } = "";
+    public string CloudModel { get; set; } = "";
 
     [ResourceType("png")]
     public string ThumbnailOverride { get; set; } = "";

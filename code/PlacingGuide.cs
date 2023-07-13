@@ -56,15 +56,17 @@ public static class PlacingGuide
     {
         IsPlacing = true;
         Model = "";
-        if(!string.IsNullOrEmpty(placeable.CloudIdent))
+        var _cloudIdent = placeable.CloudIdent;
+        if(placeable.CloudModel != "") _cloudIdent = placeable.CloudModel;
+        if(!string.IsNullOrEmpty(_cloudIdent))
         {
-            var package = await Package.FetchAsync(placeable.CloudIdent, true);
+            var package = await Package.FetchAsync(_cloudIdent, true);
             if(package != null)
             {
                 GhostMins = package.GetMeta("RenderMins", Vector3.Zero);
                 GhostMaxs = package.GetMeta("RenderMaxs", Vector3.Zero);
                 await package.MountAsync();
-                Model = package.GetMeta("PrimaryAsset", "");
+                placeable.Model = package.GetMeta("PrimaryAsset", "");
                 if(string.IsNullOrEmpty(placeable.Model)) Model = "models/dev/error.vmdl";
                 else Model = placeable.Model;
                 return;
