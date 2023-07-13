@@ -30,23 +30,36 @@
                 <button class="@IsSortingCost" onclick=@SortByCost >Cost</button>
                 <button class="@IsSortingOwned" onclick=@SortByOwned >Owned</button>
             </div>
+            <div class="searchbar">
+                <i>search</i>
+                <TextEntry Value:bind=@SearchTerm />
+            </div>
             <div class="items">
                 @if(SortType == ShopSortType.Categories)
                 {
-                    <h2>Skins</h2>
-                    @foreach(var item in SkinList)
+                    @if(SkinList.Count > 0)
                     {
-                        <ShopClothingButton Clothes=@item />
+                        <h2>Skins</h2>
+                        @foreach(var item in SkinList)
+                        {
+                            <ShopClothingButton Clothes=@item />
+                        }
                     }
-                    <h2>Hats</h2>
-                    @foreach(var item in HatList)
+                    @if(HatList.Count > 0)
                     {
-                        <ShopClothingButton Clothes=@item />
+                        <h2>Hats</h2>
+                        @foreach(var item in HatList)
+                        {
+                            <ShopClothingButton Clothes=@item />
+                        }
                     }
-                    <h2>Hair</h2>
-                    @foreach(var item in HairList)
+                    @if(HairList.Count > 0)
                     {
-                        <ShopClothingButton Clothes=@item />
+                        <h2>Hair</h2>
+                        @foreach(var item in HairList)
+                        {
+                            <ShopClothingButton Clothes=@item />
+                        }
                     }
                     @if(FacialList.Count > 0)
                     {
@@ -56,25 +69,34 @@
                             <ShopClothingButton Clothes=@item />
                         }
                     }
-                    <h2>Tops</h2>
-                    @foreach(var item in TopsList)
+                    @if(TopsList.Count > 0)
                     {
-                        <ShopClothingButton Clothes=@item />
+                        <h2>Tops</h2>
+                        @foreach(var item in TopsList)
+                        {
+                            <ShopClothingButton Clothes=@item />
+                        }
                     }
-                    <h2>Bottoms</h2>
-                    @foreach(var item in BottomsList)
+                    @if(BottomsList.Count > 0)
                     {
-                        <ShopClothingButton Clothes=@item />
+                        <h2>Bottoms</h2>
+                        @foreach(var item in BottomsList)
+                        {
+                            <ShopClothingButton Clothes=@item />
+                        }
                     }
-                    <h2>Footwear</h2>
-                    @foreach(var item in FootwearList)
+                    @if(FootwearList.Count > 0)
                     {
-                        <ShopClothingButton Clothes=@item />
+                        <h2>Footwear</h2>
+                        @foreach(var item in FootwearList)
+                        {
+                            <ShopClothingButton Clothes=@item />
+                        }
                     }
                 }
                 else
                 {
-                    @foreach(var item in ClothingList)
+                    @foreach(var item in ClothingListDisplay)
                     {
                         <ShopClothingButton Clothes=@item />
                     }
@@ -98,6 +120,7 @@
     private float MusicVolume = 0f;
 
     public List<HomeClothing> ClothingList = new();
+    public List<HomeClothing> ClothingListDisplay = new();
 
     [ClientRpc]
     public static void Open(string name, string music = "tupac_lives")
@@ -115,6 +138,8 @@
         Current.Music = music;
         Current.ClothingList.Clear();
         Current.ClothingList.AddRange(HomeClothing.AllHome.Where(x => x.Cost > 0));
+        Current.ClothingListDisplay.Clear();
+        Current.ClothingListDisplay.AddRange(Current.ClothingList);
         Current.GetClothing();
         Current.AddClass("open");
         if(Current.PlayingMusic.IsPlaying) Current.PlayingMusic.Stop();
@@ -194,6 +219,23 @@
         GetClothing();
     }
 
+    string SearchTerm
+    {
+        get => _SearchTerm;
+        set
+        {
+            _SearchTerm = value;
+            GetClothing();
+        }
+    }
+    private string _SearchTerm = "";
+
+    private List<HomeClothing> GetSearchList()
+    {
+        if(string.IsNullOrEmpty(SearchTerm)) return ClothingList;
+        return ClothingList.Where(x => x.Title.ToLower().Contains(SearchTerm.ToLower())).ToList();
+    }
+
     private List<HomeClothing> HatList = new();
     private List<HomeClothing> HairList = new();
     private List<HomeClothing> SkinList = new();
@@ -204,31 +246,32 @@
     private List<HomeClothing> FacialList = new();
     private void GetClothing()
     {
+        var searchList = GetSearchList();
         switch(SortType)
         {
             case ShopSortType.Categories:
-                ClothingList = ClothingList.OrderBy(x => x.ResourceName).ToList();
-                HatList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Hat).ToList();
-                HairList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Hair).ToList();
-                SkinList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Skin).ToList();
-                FootwearList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Footwear).ToList();
-                BottomsList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Bottoms).ToList();
-                TopsList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Tops).ToList();
-                GlovesList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Gloves).ToList();
-                FacialList = ClothingList.Where(x => x.Category == Clothing.ClothingCategory.Facial).ToList();
+                ClothingListDisplay = searchList.OrderBy(x => x.ResourceName).ToList();
+                HatList = searchList.Where(x => x.Category == Clothing.ClothingCategory.Hat).ToList();
+                HairList = searchList.Where(x => x.Category == Clothing.ClothingCategory.Hair).ToList();
+                SkinList = searchList.Where(x => x.Category == Clothing.ClothingCategory.Skin).ToList();
+                FootwearList = searchList.Where(x => x.Category == Clothing.ClothingCategory.Footwear).ToList();
+                BottomsList = searchList.Where(x => x.Category == Clothing.ClothingCategory.Bottoms).ToList();
+                TopsList = searchList.Where(x => x.Category == Clothing.ClothingCategory.Tops).ToList();
+                GlovesList = searchList.Where(x => x.Category == Clothing.ClothingCategory.Gloves).ToList();
+                FacialList = searchList.Where(x => x.Category == Clothing.ClothingCategory.Facial).ToList();
                 break;
             case ShopSortType.Name:
-                ClothingList = ClothingList.OrderBy(x => x.Title).ToList();
+                ClothingListDisplay = searchList.OrderBy(x => x.Title).ToList();
                 break;
             case ShopSortType.Cost:
-                ClothingList = ClothingList.OrderBy(x => x.Cost).ToList();
+                ClothingListDisplay = searchList.OrderBy(x => x.Cost).ToList();
                 break;
             case ShopSortType.Owned:
                 if(Game.LocalPawn is not HomePlayer player) return;
-                ClothingList = ClothingList.OrderBy(x => player.Data.Clothing.Contains(x.ResourceId) ).ToList();
+                ClothingListDisplay = searchList.OrderBy(x => player.Data.Clothing.Contains(x.ResourceId) ).ToList();
                 break;
         }
-        if(Descending) ClothingList.Reverse();
+        if(Descending) ClothingListDisplay.Reverse();
     }
 
 }

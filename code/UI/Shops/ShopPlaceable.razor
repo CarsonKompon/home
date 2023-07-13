@@ -30,8 +30,12 @@
                 <button class="@IsSortingCost" onclick=@SortByCost >Cost</button>
                 <button class="@IsSortingOwned" onclick=@SortByOwned >Owned</button>
             </div>
+            <div class="searchbar">
+                <i>search</i>
+                <TextEntry Value:bind=@SearchTerm />
+            </div>
             <div class="items">
-                @foreach(var item in PlaceableList)
+                @foreach(var item in PlaceableListDisplay)
                 {
                     <ShopPlaceableButton Placeable=@item />
                 }
@@ -54,6 +58,7 @@
     private float MusicVolume = 0f;
 
     public List<HomePlaceable> PlaceableList = new();
+    public List<HomePlaceable> PlaceableListDisplay = new();
 
     [ClientRpc]
     public static void Open(string tag, string name, string music = "go_to_the_picnic")
@@ -72,6 +77,8 @@
         Current.Music = music;
         Current.PlaceableList.Clear();
         Current.PlaceableList = HomePlaceable.All.Where(x => x.Categories.Contains(tag) && x.State == PlaceableState.Visible).ToList();
+        Current.PlaceableListDisplay.Clear();
+        Current.PlaceableListDisplay.AddRange(Current.PlaceableList);
         Current.GetPlaceables();
         
         Current.SetTarget(null);
@@ -153,25 +160,42 @@
         GetPlaceables();
     }
 
+    string SearchTerm
+    {
+        get => _SearchTerm;
+        set
+        {
+            _SearchTerm = value;
+            GetPlaceables();
+        }
+    }
+    private string _SearchTerm = "";
+
+    private List<HomePlaceable> GetSearchList()
+    {
+        if(string.IsNullOrEmpty(SearchTerm)) return PlaceableList;
+        return PlaceableList.Where(x => x.Name.ToLower().Contains(SearchTerm.ToLower())).ToList();
+    }
+
     private void GetPlaceables()
     {
         switch(SortType)
         {
             case ShopSortType.Id:
-                PlaceableList = PlaceableList.OrderBy(x => x.Id).ToList();
+                PlaceableListDisplay = GetSearchList().OrderBy(x => x.Id).ToList();
                 break;
             case ShopSortType.Name:
-                PlaceableList = PlaceableList.OrderBy(x => x.Name).ToList();
+                PlaceableListDisplay = GetSearchList().OrderBy(x => x.Name).ToList();
                 break;
             case ShopSortType.Cost:
-                PlaceableList = PlaceableList.OrderBy(x => x.Cost).ToList();
+                PlaceableListDisplay = GetSearchList().OrderBy(x => x.Cost).ToList();
                 break;
             case ShopSortType.Owned:
                 if(Game.LocalPawn is not HomePlayer player) return;
-                PlaceableList = PlaceableList.OrderBy(x => player.Data.Stash.Where(y => y.Id == x.Id).FirstOrDefault()?.Amount ?? 0 ).ToList();
+                PlaceableListDisplay = GetSearchList().OrderBy(x => player.Data.Stash.Where(y => y.Id == x.Id).FirstOrDefault()?.Amount ?? 0 ).ToList();
                 break;
         }
-        if(Descending) PlaceableList.Reverse();
+        if(Descending) PlaceableListDisplay.Reverse();
     }
 
 }
