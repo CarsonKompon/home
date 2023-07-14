@@ -1,0 +1,50 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+
+@inherits WorldPanel;
+@attribute [StyleSheet("/UI/World/Nametag.razor.scss")]
+
+@namespace CarsonK
+
+<root class="nametag">
+	<label class="name" text=@GetText() />
+</root>
+
+@code
+{
+
+	private RadioPlayer MediaEntity { get; set; }	
+
+	public RadioNametag( RadioPlayer radio )
+	{
+		MediaEntity = radio;
+		PanelBounds = new Rect( -1000, -1000, 2000, 2000 );
+	}
+
+	string GetText()
+	{
+		if(MediaEntity == null) return "";
+		return MediaEntity.GetTitle();
+	}
+
+	[GameEvent.Client.Frame]
+	private void OnFrame()
+	{
+		if ( !MediaEntity.IsValid() ) return;
+
+		Style.Opacity = MathX.Clamp(1.25f - (Vector3.DistanceBetween( Camera.Position, MediaEntity.Position ) * 0.004f), 0f, 1f);
+
+		var height = MediaEntity.Model.RenderBounds.Size.z + 5f;
+
+		Position = MediaEntity.Position + Vector3.Up * height;
+		Rotation = Rotation.LookAt( -Screen.GetDirection( new Vector2( Screen.Width * 0.5f, Screen.Height * 0.5f ) ) );
+	}
+
+	protected override int BuildHash()
+	{
+		return HashCode.Combine(GetText());
+	}
+
+}

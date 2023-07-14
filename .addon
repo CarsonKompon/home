@@ -25,7 +25,9 @@
     "MinPlayers": 1,
     "GameNetworkType": "Multiplayer",
     "MapSelect": "Tagged",
-    "MapList": [],
+    "MapList": [
+      "carsonk.home_staycation_strip"
+    ],
     "RankType": "None",
     "PerMapRanking": false,
     "LeaderboardType": "None",
@@ -273,6 +275,18 @@
     },
     "ReplaceTags": "chill life simulation sandbox community living",
     "ParentPackage": "",
-    "TickRate": 50
+    "TickRate": 50,
+    "LaunchConfigs": [
+      {
+        "Name": "HOME w ADDONS",
+        "GameIdent": "carsonk.home#local",
+        "MapName": "home_staycation_strip.vmap",
+        "MaxPlayers": 16,
+        "GameSettings": {},
+        "Addons": "carsonk.home_base_content#local",
+        "PreLaunchCommand": "",
+        "PostLaunchCommand": ""
+      }
+    ]
   }
 }

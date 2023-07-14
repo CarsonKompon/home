@@ -1,0 +1,20 @@
+{
+  "Id": "radio_01",
+  "Name": "Radio",
+  "Cost": 1000,
+  "State": "Visible",
+  "Categories": [
+    "electronics"
+  ],
+  "Type": "Entity",
+  "PhysicsType": "Keyframed",
+  "Bottom": "ZNegative",
+  "Model": null,
+  "ClassName": "CarsonK.RadioPlayer",
+  "CloudIdent": "jodiscontent.enhanced_speaker",
+  "CloudModel": "",
+  "ThumbnailOverride": "",
+  "PlaceSound": null,
+  "StashSound": null,
+  "TransformOffset": {}
+}

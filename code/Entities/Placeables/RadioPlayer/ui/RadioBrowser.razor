@@ -1,0 +1,157 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+@using MediaHelpers;
+@attribute [StyleSheet]
+
+@namespace CarsonK
+
+<root>
+    <div class="top">
+
+        <div class="input">
+            <TextEntry onsubmit=@CheckSite Value:bind=@MediaUrl Tooltip="Media URL" Placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"></TextEntry>
+            <button @ref="ButtonSubmit" class="btn" onclick=@PlayMedia >Submit</button>
+        </div>
+
+        <div class="websites">
+            <div class="header">Supported Websites:</div>
+            @* <div class="website" onclick=@OpenSoundcloud >Soundcloud</div> *@
+            <div class="website" onclick=@OpenYoutube >Youtube</div>
+            <div class="website" onclick=@OpenInternetRadio >Internet Radio</div>
+        </div>
+
+        <div class="search">
+            <WebPanel @ref="WebPanel"></WebPanel>
+        </div>
+
+    </div>
+
+    @if(MediaEntity != null && MediaEntity.CurrentlyPlaying != "")
+    {
+        <div class="bottom">
+
+            <div class="scrolling-text">
+                <label>@(MediaEntity.CurrentlyPlaying) - @(GetTitle())</label>
+            </div>
+        </div>
+    }
+
+    <img src="/ui/ui_no.png" class="close" onclick=@Close />
+
+</root>
+
+@code
+{
+    public static RadioBrowser Current {get;set;}
+    public Button ButtonSubmit {get; set;}
+    public WebPanel WebPanel {get; set;}
+    public string MediaUrl = "";
+    private string PreviousUrl = "";
+    public RadioPlayer MediaEntity {get;set;}
+
+    protected override void OnAfterTreeRender(bool firstTime)
+    {
+        if (firstTime)
+        {
+            WebPanel.Surface.Url = "https://www.youtube.com/";
+            PreviousUrl = WebPanel.Surface.Url;
+        }
+
+        if(WebPanel.Surface.Url != PreviousUrl)
+        {
+            MediaUrl = WebPanel.Surface.Url;
+            PreviousUrl = WebPanel.Surface.Url;
+        }
+    }
+
+    string GetTitle()
+    {
+        if(MediaEntity == null) return "Not Playing";
+        return MediaEntity.GetTitle();
+    }
+
+    public override void Tick()
+    {
+        if(!MediaEntity.IsValid()) Close();
+    }
+
+    public void OpenInternetRadio()
+    {
+        MediaUrl = "http://dir.xiph.org/";
+        CheckSite();
+    }
+
+    public void OpenSoundcloud()
+    {
+        MediaUrl = "https://www.soundcloud.com/";
+        CheckSite();
+    }
+
+    public void OpenYoutube()
+    {
+        MediaUrl = "https://www.youtube.com/";
+        CheckSite();
+    }
+
+    public void PlayMedia()
+    {
+        @* if(!ButtonSubmit.HasClass("can-press")) return; *@
+        Log.Info("Playing Media");
+        Log.Info(MediaUrl);
+        RadioPlayer.PlayAudio(MediaEntity.NetworkIdent, MediaUrl);
+        Close();
+    }
+
+    public void CheckSite()
+    {
+        if(!MediaUrl.StartsWith("https://") && !MediaUrl.StartsWith("http://")) MediaUrl = "https://" + MediaUrl;
+        WebPanel.Surface.Url = MediaUrl;
+        PreviousUrl = MediaUrl;
+    }
+    
+
+    [ClientRpc]
+    public static void Open(int networkIdent)
+    {
+        if(Current == null)
+        {
+            Current = Game.RootPanel.AddChild<RadioBrowser>();
+        }
+        Current.MediaEntity = Entity.FindByIndex<RadioPlayer>(networkIdent);
+        Current.AddClass("open");
+        if(Current.WebPanel != null)
+        {
+            Current.WebPanel.Surface.Url = "https://www.youtube.com";
+            Current.WebPanel.Surface.InBackgroundMode = false;
+            Current.WebPanel.Style.Display = DisplayMode.Flex;
+            Current.PreviousUrl = Current.WebPanel.Surface.Url;
+        }
+    }
+
+    public void Close()
+    {
+        WebPanel.Style.Display = DisplayMode.None;
+        WebPanel.Surface.InBackgroundMode = true;
+        Delete(true);
+        Current = null;
+    }
+
+    @* string GetPlayIcon()
+    {
+        if(MediaEntity == null) return "";
+        if(MediaEntity.Video == null) return "";
+        if(MediaEntity.Video.IsPaused) return "play_arrow";
+        return "pause";
+    }
+
+    void TogglePause()
+    {
+        MediaPlayer.PauseVideo(MediaEntity.NetworkIdent);
+    } *@
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(WebPanel?.Surface.Url, MediaEntity?.CurrentlyPlaying);
+    }
+}

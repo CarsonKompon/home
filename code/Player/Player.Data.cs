@@ -263,6 +263,7 @@ public partial class HomePlayer
 		if(!HasMoney(amount))
 			return false;
 		Data.Money -= amount;
+		Sandbox.Services.Stats.Increment(this.Client, "money_spent", amount);
 		SavePlayerDataClientRpc(To.Single(this.Client));
 		return true;
 	}
