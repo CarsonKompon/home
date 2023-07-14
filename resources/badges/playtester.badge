@@ -1,0 +1,5 @@
+{
+  "Name": "Playtester",
+  "Icon": "ui/badges/playtester.png",
+  "RequiresAuthority": true
+}

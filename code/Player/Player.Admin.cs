@@ -74,6 +74,14 @@ public partial class HomePlayer
             case 76561198048910256: // Sugma Gaming
                 GiveBadge("developer");
                 break;
+
+            // Playtesters
+            case 76561198330783877: // Ian
+            case 76561197969358147: // Jammie
+            case 76561197960279240: // Hearth
+            case 76561198045068860: // Trundler
+                GiveBadge("playtester");
+                break;
         }
 
         if(IsAdmin) GiveBadge("admin");
