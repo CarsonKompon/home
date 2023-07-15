@@ -1,0 +1,47 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+
+@namespace Home;
+
+<root onmouseover=@OnMouseOver onmouseout=@OnMouseOut >
+    <img @ref="ImagePanel" />
+</root>
+
+@code
+{
+    public HomePet Pet { get; set; }
+
+    Panel ImagePanel { get; set; }
+    bool MouseOver = false;
+
+    protected override void OnAfterTreeRender(bool firstTime)
+    {
+        base.OnAfterTreeRender(firstTime);
+
+        if(Pet == null || ImagePanel == null) return;
+
+        SetThumbnail();
+    }
+
+    async void SetThumbnail()
+    {
+        if(MouseOver) ImagePanel.Style.SetBackgroundImage(await Pet.GetVideoThumbnail());
+        else ImagePanel.Style.BackgroundImage = await Pet.GetThumbnail();
+    }
+
+    void OnMouseOver()
+    {
+        MouseOver = true;
+    }
+
+    void OnMouseOut()
+    {
+        MouseOver = false;
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(MouseOver, Pet);
+    }
+}

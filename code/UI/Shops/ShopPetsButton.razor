@@ -1,0 +1,84 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Sandbox;
+@using Sandbox.UI;
+
+@namespace Home
+
+<root>
+    <div class="info">
+        <img class="icon" @ref="Icon" />
+        <div class="names">
+            <div class="name">@Pet.Name</div>
+            <div class="description">@Pet.Description</div>
+        </div>
+    </div>
+    @if(HasPet())
+    {
+        <button class="buy owned" >#ui.shop.owned</button>
+    }
+    else
+    {
+        <button class="buy" onclick="@Purchase" >$@Pet.Cost</button>
+    }
+</root>
+
+@code
+{
+    public Image Icon { get; set; }
+    public HomePet Pet { get; set; }
+    public ShopPets Shop { get; set; }
+
+    protected override void OnAfterTreeRender( bool firstTime )
+    {
+        base.OnAfterTreeRender( firstTime );
+
+        if(firstTime)
+        {
+            Panel parent = Parent;
+            int fallback = 0;
+            while(parent is not ShopPets && fallback < 10)
+            {
+                parent = parent.Parent;
+                fallback++;
+            }
+            Shop = parent as ShopPets;
+            SetIcon();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        SetIcon();
+    }
+
+    private async void SetIcon()
+    {
+        Icon.Style.BackgroundImage = await Pet.GetThumbnail();
+    }
+
+    public bool HasPet()
+    {
+        if(Game.LocalPawn is not HomePlayer player) return false;
+        return player.Data.Pets.Contains(Pet.ResourceId);
+    }
+
+    public void Purchase()
+    {
+        HomeGame.PurchasePet( Pet.ResourceId );
+    }
+
+    protected override void OnMouseOver(MousePanelEvent e)
+    {
+        base.OnMouseOver(e);
+        if(Game.LocalPawn is not HomePlayer player) return;
+        Shop?.SetTarget(Pet);
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(Pet);
+    }
+}

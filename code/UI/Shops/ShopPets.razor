@@ -1,0 +1,201 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Sandbox;
+@using Sandbox.UI;
+@attribute [StyleSheet]
+
+@namespace Home
+
+<root class="shop-pets">
+    <label class="name" text=@Name />
+    <div class="shop-container">
+        @if(Target == null)
+        {
+            <div class="preview" />
+        }
+        else if(!string.IsNullOrEmpty(Target.CloudIdent))
+        {
+            <div @ref="VideoPreview" class="preview video" />
+        }
+        else
+        {
+            <RotatingModelScenePanel IdleSpeed=@(-40) Model=@Target.Model class="preview" />
+        }
+        <div class="shop">
+            <div class="sorting">
+                <label>Sort by: </label>
+                <button class="@IsSortingId" onclick=@SortById >Id</button>
+                <button class="@IsSortingName" onclick=@SortByName >Name</button>
+                <button class="@IsSortingCost" onclick=@SortByCost >Cost</button>
+                <button class="@IsSortingOwned" onclick=@SortByOwned >Owned</button>
+            </div>
+            <div class="searchbar">
+                <i>search</i>
+                <TextEntry Value:bind=@SearchTerm />
+            </div>
+            <div class="items">
+                @foreach(var item in PetListDisplay)
+                {
+                    <ShopPetsButton Pet=@item />
+                }
+            </div>
+        </div>
+    </div>
+    <img src="/ui/ui_no.png" class="close" onclick="@Close" />
+</root>
+
+@code
+{
+    public static ShopPets Current { get; set; }
+    public Panel VideoPreview { get; set; }
+
+    public HomePet Target { get; set; } = null;
+    public string Name = "Shop";
+    public string Music = "go_to_the_picnic";
+
+    private Sound PlayingMusic;
+    private float MusicVolume = 0f;
+
+    public List<HomePet> PetList = new();
+    public List<HomePet> PetListDisplay = new();
+
+    [ClientRpc]
+    public static void Open(string name, string music = "go_to_the_picnic")
+    {
+        if(Current == null)
+        {
+            Current = Game.RootPanel.AddChild<ShopPets>();
+        }
+        if(Current.HasClass("open"))
+        {
+            Current.Close();
+            return;
+        }
+        Current.Name = name;
+
+        Current.Music = music;
+        Current.PetList.Clear();
+        Current.PetList = HomePet.All;
+        Current.PetListDisplay.Clear();
+        Current.PetListDisplay.AddRange(Current.PetList);
+        Current.GetPlaceables();
+        
+        Current.SetTarget(null);
+        Current.AddClass("open");
+        if(Current.PlayingMusic.IsPlaying) Current.PlayingMusic.Stop();
+        Current.PlayingMusic = Sound.FromScreen(Current.Music).SetVolume(0f);
+        Current.MusicVolume = 0f;
+    }
+
+    public void Close()
+    {
+        RemoveClass("open");
+    }
+
+    [GameEvent.Tick.Client]
+    public void OnTick()
+    {
+        if(!PlayingMusic.IsPlaying) return;
+        bool isOpen = HasClass("open");
+        float lerpTo = isOpen ? 0.5f : 0f;
+        MusicVolume = MathX.Lerp(MusicVolume, lerpTo, Time.Delta * 5);
+        PlayingMusic.SetVolume(MusicVolume);
+        if(!isOpen && MusicVolume < 0.01f)
+        {
+            PlayingMusic.Stop();
+        }
+    }
+
+    [GameEvent.Client.BuildInput]
+    public void BuildInput()
+    {
+        if(Input.Pressed("crouch"))
+        {
+            Close();
+        }
+    }
+
+    public async void SetTarget(HomePet pet)
+    {
+        Target = pet;
+
+        VideoPreview.Style.SetBackgroundImage(await pet.GetVideoThumbnail());
+    }
+
+    enum ShopSortType { Id, Name, Cost, Owned }
+    private ShopSortType SortType = ShopSortType.Id;
+    private string IsSortingId => SortType == ShopSortType.Id ? "selected" : "";
+    private string IsSortingName => SortType == ShopSortType.Name ? "selected" : "";
+    private string IsSortingCost => SortType == ShopSortType.Cost ? "selected" : "";
+    private string IsSortingOwned => SortType == ShopSortType.Owned ? "selected" : "";
+
+    bool Descending = false;
+
+    private void SortById()
+    {
+        if(SortType == ShopSortType.Id) Descending = !Descending;
+        SortType = ShopSortType.Id;
+        GetPlaceables();
+    }
+
+    private void SortByName()
+    {
+        if(SortType == ShopSortType.Name) Descending = !Descending;
+        SortType = ShopSortType.Name;
+        GetPlaceables();
+    }
+
+    private void SortByCost()
+    {
+        if(SortType == ShopSortType.Cost) Descending = !Descending;
+        SortType = ShopSortType.Cost;
+        GetPlaceables();
+    }
+
+    private void SortByOwned()
+    {
+        if(SortType == ShopSortType.Owned) Descending = !Descending;
+        SortType = ShopSortType.Owned;
+        GetPlaceables();
+    }
+
+    string SearchTerm
+    {
+        get => _SearchTerm;
+        set
+        {
+            _SearchTerm = value;
+            GetPlaceables();
+        }
+    }
+    private string _SearchTerm = "";
+
+    private List<HomePet> GetSearchList()
+    {
+        if(string.IsNullOrEmpty(SearchTerm)) return PetList;
+        return PetList.Where(x => x.Name.ToLower().Contains(SearchTerm.ToLower())).ToList();
+    }
+
+    private void GetPlaceables()
+    {
+        switch(SortType)
+        {
+            case ShopSortType.Id:
+                PetListDisplay = GetSearchList().OrderBy(x => x.ResourceName).ToList();
+                break;
+            case ShopSortType.Name:
+                PetListDisplay = GetSearchList().OrderBy(x => x.Name).ToList();
+                break;
+            case ShopSortType.Cost:
+                PetListDisplay = GetSearchList().OrderBy(x => x.Cost).ToList();
+                break;
+            case ShopSortType.Owned:
+                if(Game.LocalPawn is not HomePlayer player) return;
+                PetListDisplay = GetSearchList().OrderBy(x => player.Data.Stash.Where(y => y.Id == x.ResourceName).FirstOrDefault()?.Amount ?? 0 ).ToList();
+                break;
+        }
+        if(Descending) PetListDisplay.Reverse();
+    }
+
+}

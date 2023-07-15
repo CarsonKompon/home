@@ -1,0 +1,23 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Sandbox;
+
+@namespace Home
+
+<root>
+    @foreach(var item in GetPets())
+    {
+        <
+    }
+</root>
+
+@code
+{
+    List<HomePet> GetPets()
+    {
+        if(Game.LocalPawn is not HomePlayer player) return null;
+        if(player.Data is null) return null;
+        return HomePet.All.Where(x => player.Data.Pets.Contains(x.ResourceId)).ToList();
+    }
+}
