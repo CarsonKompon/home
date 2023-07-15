@@ -60,7 +60,7 @@
         if(player.Room == null) return;
         player.LastRoomName = RoomName;
         Cookie.SetString("home.last_room_name", RoomName);
-        ConsoleSystem.Run("home_rename_room", RoomName);
+        RoomController.Rename(RoomName);
     }
 
     public void LoadLayout()

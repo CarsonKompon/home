@@ -88,11 +88,11 @@ public partial class HomeGame : GameManager
 		}
 	}
 
-	[ConCmd.Server("home_try_place")]
-	public static async void TryPlace()
+	[ConCmd.Server]
+	public static async void TryPlace(int networkId)
 	{
 		// Check the player and their variables
-		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+		if(Entity.FindByIndex(networkId) is not HomePlayer player) return;
 		if(player.Placing == "") return;
 		if(player.Room == null) return;
 
@@ -136,11 +136,11 @@ public partial class HomeGame : GameManager
 		player.FinishPlacing();
 	}
 
-	[ConCmd.Server("home_try_pickup")]
-	public static void TryPickup()
+	[ConCmd.Server]
+	public static void TryPickup(int networkId)
 	{
 		// Check the player and their variables
-		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+		if(Entity.FindByIndex(networkId) is not HomePlayer player) return;
 		if(player.MovingEntity == null) return;
 
 		//Check if entity is a placeable

@@ -184,7 +184,7 @@ public partial class RoomController : Entity
 
 
 
-    [ConCmd.Server("home_load_layout")]
+    [ConCmd.Server]
     public static async void LoadLayout()
     {
         if(ConsoleSystem.Caller == null) return;
@@ -223,8 +223,8 @@ public partial class RoomController : Entity
         player.Room.Name = newName;
     }
 
-    [ConCmd.Server("home_remove_owner")]
-    public static void RemoveOwnerConsole()
+    [ConCmd.Server]
+    public static void RemoveOwnerServer()
     {
         if(ConsoleSystem.Caller == null) return;
         if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;

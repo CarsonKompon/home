@@ -101,4 +101,11 @@ public partial class ArcadeMachineBase : AnimatedEntity, IUse
         }
         return false;
     }
+
+    // [GameEvent.Tick.Client]
+    // public void OnClientTick()
+    // {
+    //     Gizmo.Draw.SolidSphere(GetAttachment("hand_L")?.Position ?? Vector3.Zero, 1);
+    //     Gizmo.Draw.SolidSphere(GetAttachment("hand_R")?.Position ?? Vector3.Zero, 1);
+    // }
 }

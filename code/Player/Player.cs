@@ -190,18 +190,21 @@ public partial class HomePlayer : AnimatedEntity
 		RightHand?.Simulate(cl);
 	}
 
-	[ConCmd.Admin("noclip")]
+	[ConCmd.Server("noclip")]
 	static void DoPlayerNoclip()
 	{
 		if(ConsoleSystem.Caller.Pawn is HomePlayer player)
 		{
-			if(player.DevController is HomeNoclipController)
+			if(player.HasModeratorPermissions() || ConsoleSystem.GetValue("sv_cheats") == "1")
 			{
-				player.DevController = null;
-			}
-			else
-			{
-				player.DevController = new HomeNoclipController();
+				if(player.DevController is HomeNoclipController)
+				{
+					player.DevController = null;
+				}
+				else
+				{
+					player.DevController = new HomeNoclipController();
+				}
 			}
 		}
 	}
@@ -859,7 +862,7 @@ public partial class HomePlayer : AnimatedEntity
 
 		if(removeOwner)
 		{
-			ConsoleSystem.Run("home_remove_owner");
+			RoomController.RemoveOwnerServer();
 		}
 
 		// Save the layout to a local file
@@ -884,7 +887,7 @@ public partial class HomePlayer : AnimatedEntity
 
 		// Load the layout
 		player.HomeUploadData = Json.Serialize(layout);
-		ConsoleSystem.Run("home_load_layout");
+		RoomController.LoadLayout();
 		NotificationPanel.AddEntry(To.Single(player), "📁 Loaded layout \"" + name + "\"", "", 5);
 	}
 
@@ -921,7 +924,7 @@ public partial class HomePlayer : AnimatedEntity
 			SetHeight(height);
 	}
 
-	[ConCmd.Server("home_playermodel")]
+	[ConCmd.Server]
 	public static void ChangePlayerModel(string name)
 	{
 		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
