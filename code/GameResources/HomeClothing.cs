@@ -35,7 +35,11 @@ public partial class HomeClothing : Clothing
 	public async Task MountPackage()
 	{
 		Package package = await Package.FetchAsync(CloudModel, false);
-		await package.MountAsync();
+		try {
+			await package.MountAsync();
+		} catch (Exception e) {
+			Log.Info($"Failed to mount package {package.Title} for {e}");
+		}
 		Model = package.GetMeta("PrimaryAsset", "");
 	}
 

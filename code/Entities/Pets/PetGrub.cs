@@ -22,8 +22,6 @@ public partial class PetGrub : Pet
         var model = package.GetMeta("PrimaryAsset", "");
         SetModel( model );
         SetupPhysicsFromModel( PhysicsMotionType.Dynamic, false );
-
-        DressFromString(Player.ClothingString);
     }
 
     protected override void TickAnimation()
