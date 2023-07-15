@@ -33,15 +33,15 @@ public partial class HomeClothing : Clothing
 	public async Task MountPackage()
 	{
 		Log.Info($"Mounting clothing from {CloudModel}");
-		try {
-			Package package = await Package.FetchAsync(CloudModel, true);
-			Log.Info(package);
-			await package.MountAsync();
-			Model = package.GetMeta("PrimaryAsset", "");
-			Log.Info($"Mounted {CloudModel}");
-		} catch (Exception e) {
-			Log.Info($"Failed to mount package {CloudModel} for {e}");
+		if(string.IsNullOrEmpty(CloudModel))
+		{
+			Log.Error($"No cloud model for {this}");
+			return;
 		}
+		Package package = await Package.FetchAsync(CloudModel, true);
+		await package.MountAsync();
+		Model = package.GetMeta("PrimaryAsset", "");
+		Log.Info($"Mounted clothing from {CloudModel} as {Model}");
 	}
 
 	// public static string GetModel(Clothing clothing)

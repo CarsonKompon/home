@@ -56,7 +56,7 @@
 
 	string GetStyle()
 	{
-		return Player.GetDisplayStyle() + (((Player?.Data?.Badges?.Count ?? 0) > 2 ? " column" : ""));
+		return Player.GetDisplayStyle() + (((Player?.Data?.BadgeIds?.Count ?? 0) > 2 ? " column" : ""));
 	}
 
 	protected override int BuildHash()

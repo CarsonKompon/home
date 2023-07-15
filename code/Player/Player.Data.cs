@@ -19,7 +19,7 @@ public partial class PlayerData : BaseNetworkable
 	[Net] public IList<int> Clothing { get; set; } = new List<int>();
 	[Net] public IList<AchievementProgress> Achievements {get; set;} = new List<AchievementProgress>();
 	[Net] public IList<int> Pets {get; set;} = new List<int>();
-	[Net] public IList<int> Badges {get; set;} = new List<int>();
+	[Net] public IList<int> BadgeIds {get; set;} = new List<int>();
 	[Net] public int CurrentPet {get; set;} = 0; 
 
 	public PlayerData() {}
@@ -51,11 +51,11 @@ public partial class PlayerData : BaseNetworkable
 		CurrentPet = newData.CurrentPet;
 
 		// Authorize badges
-		Badges = new List<int>();
-		foreach(var badgeId in newData.Badges)
+		BadgeIds = new List<int>();
+		foreach(var badgeId in newData.BadgeIds)
 		{
 			var badge = HomeBadge.Find(badgeId);
-			if(!badge.RequiresAuthority) Badges.Add(badgeId);
+			if(!badge.RequiresAuthority) BadgeIds.Add(badgeId);
 		} 
 
 		GetPlayer()?.SetHeight(Height);
@@ -169,9 +169,9 @@ public partial class PlayerData : BaseNetworkable
 	public List<HomeBadge> GetBadges()
 	{
 		var badges = new List<HomeBadge>();
-		foreach(var badge in Badges)
+		foreach(var badgeId in BadgeIds)
 		{
-			badges.Add(HomeBadge.Find(badge));
+			badges.Add(HomeBadge.Find(badgeId));
 		}
 		return badges;
 	}
@@ -255,7 +255,7 @@ public partial class HomePlayer
 	}
 
 	[ConCmd.Server]
-	public static void OnPlayerDataLoaded(long steamId, string clothing = "")
+	public static async void OnPlayerDataLoaded(long steamId, string clothing = "")
 	{
 		IClient client = Game.Clients.FirstOrDefault(c => c.SteamId == steamId);
 		if(client.Pawn is not HomePlayer player) return;
@@ -267,11 +267,11 @@ public partial class HomePlayer
 		// Set Clothing
 		if(clothing == "default")
 		{
-			LoadDefaultOutfit(steamId);
+			await player.LoadDefaultOutfit();
 		}
 		else if(clothing != "")
 		{
-			player.ChangeOutfit(clothing);
+			await player.ChangeOutfit(clothing);
 		}
 
 		// Set Pet
@@ -387,8 +387,8 @@ public partial class HomePlayer
 		Game.AssertServer();
 		var badge = HomeBadge.FindById(id);
 		if(badge == null) return;
-		if(Data.Badges.Contains(badge.ResourceId)) return;
-		Data.Badges.Add(badge.ResourceId);
+		if(Data.BadgeIds.Contains(badge.ResourceId)) return;
+		Data.BadgeIds.Add(badge.ResourceId);
 		Log.Info("Gave badge " + id + " to " + Client.Name);
 	}
 

@@ -2,6 +2,7 @@
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Sandbox;
 using Sandbox.UI;
 using Sandbox.Component;
@@ -88,16 +89,22 @@ public partial class HomePlayer : AnimatedEntity
     }
 
 	[ConVar.Server]
-	public static void LoadDefaultOutfit(long steamId)
+	public static async void LoadDefaultOutfit(long steamId)
 	{
 		var client = Game.Clients.FirstOrDefault(x => x.SteamId == steamId);
 		if(client == null) return;
 		if(client.Pawn is not HomePlayer player) return;
 
-		player.Clothing.LoadFromClient(player.Client);
-		player.ClothingString = player.Clothing.Serialize();
+		await player.LoadDefaultOutfit();
+	}
 
-		player.Dress();
+	public async Task LoadDefaultOutfit()
+	{
+		Game.AssertServer();
+		Clothing.LoadFromClient(Client);
+		ClothingString = Clothing.Serialize();
+
+		await Dress();
 	}
 
 
@@ -471,7 +478,7 @@ public partial class HomePlayer : AnimatedEntity
 		}
 	}
 
-	public async void Dress()
+	public async Task Dress()
 	{
 		Clothing.Deserialize(ClothingString);
 		Log.Info(">>>>> DRESSING THE PLAYER <<<<<");
@@ -897,15 +904,18 @@ public partial class HomePlayer : AnimatedEntity
 	}
 
 	[ConCmd.Server]
-	public static void ChangeOutfit(int networkIdent, string outfit, float height = -1.0f)
+	public static async void ChangeOutfit(int networkIdent, string outfit, float height = -1.0f)
 	{
 		if(Entity.FindByIndex<HomePlayer>(networkIdent) is not HomePlayer player) return;
-		player.ChangeOutfit(outfit, height);
+		await player.ChangeOutfit(outfit, height);
 	}
-	public void ChangeOutfit(string outfit, float height = -1.0f)
+
+	public async Task ChangeOutfit(string outfit, float height = -1.0f)
 	{
+		Game.AssertServer();
+
 		ClothingString = outfit;
-		Dress();
+		await Dress();
 		
 		if(height >= 0)
 			SetHeight(height);
