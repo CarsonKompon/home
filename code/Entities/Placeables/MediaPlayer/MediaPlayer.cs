@@ -17,7 +17,7 @@ public partial class MediaPlayer : ModelEntity, IUse
 {
 
     public virtual bool IsUsable( Entity user ) => true;
-    [Net] public List<MediaVideo> Queue {get; set;} = new();
+    [Net] public IList<MediaVideo> Queue {get; set;} = new List<MediaVideo>();
     [Net] public MediaVideo CurrentlyPlaying { get; set; }
     [Net] public float CurrentLength { get; set; } = 5;
     [Net] public RealTimeSince CurrentTime { get; set; } = 0;
@@ -113,7 +113,7 @@ public partial class MediaPlayer : ModelEntity, IUse
     }
 
     [ConCmd.Server]
-    public static async void QueueMedia(int networkIdent, string url)
+    public static void QueueMedia(int networkIdent, string url)
     {
         var entity = Entity.FindByIndex(networkIdent);
         if(entity is not MediaPlayer mediaPlayer)
@@ -122,7 +122,7 @@ public partial class MediaPlayer : ModelEntity, IUse
             return;
         }
 
-        MediaVideo video = await MediaVideo.CreateFromUrl(url);
+        MediaVideo video = MediaVideo.CreateFromUrl(url);
 
         // Queue the media
         mediaPlayer.Queue.Add(video);

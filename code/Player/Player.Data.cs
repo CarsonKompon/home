@@ -389,6 +389,7 @@ public partial class HomePlayer
 		if(badge == null) return;
 		if(Data.Badges.Contains(badge.ResourceId)) return;
 		Data.Badges.Add(badge.ResourceId);
+		Log.Info("Gave badge " + id + " to " + Client.Name);
 	}
 
 	[ConCmd.Server]
