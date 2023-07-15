@@ -24,7 +24,7 @@ public partial class PetGrub : Pet
         var model = package.GetMeta("PrimaryAsset", "");
         SetModel( model );
         SetupPhysicsFromModel( PhysicsMotionType.Dynamic, false );
-        DressFromString(Player.ClothingString);
+        // if(Player.IsValid()) DressFromString(Player.ClothingString);
     }
 
     protected override void TickAnimation()
@@ -64,6 +64,8 @@ public partial class PetGrub : Pet
             }
         }
 
+
+        Log.Info(">>>>> MOUNTING GRUB CLOTHING <<<<<");
         foreach(var item in clothes.Clothing)
 		{
 			if(item is HomeClothing hcloth && !string.IsNullOrEmpty(hcloth.CloudModel))

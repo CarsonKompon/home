@@ -78,6 +78,7 @@ public class AvatarHud : ScenePanel
             clothingFromString.Deserialize(ClothingString);
             if(clothingFromString != null && AvatarModel != null)
             {
+                Log.Info(">>>>> DRESSING THE AVATAR HUD <<<<<");
                 foreach(var item in clothingFromString.Clothing)
                 {
                     if(item is HomeClothing hcloth && !string.IsNullOrEmpty(hcloth.CloudModel))
@@ -103,6 +104,7 @@ public class AvatarHud : ScenePanel
         {
             // Log.Info("CLOTHING:");
             // Log.Info(clothing.Serialize());
+            Log.Info(">>>>> DRESSING THE AVATAR HUD OTHERWAY <<<<<");
             foreach(var item in clothing.Clothing)
             {
                 if(item is HomeClothing hcloth && !string.IsNullOrEmpty(hcloth.CloudModel))

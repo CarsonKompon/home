@@ -1,13 +1,13 @@
-using System.Globalization;
-using System.Collections.Generic;
+
 using System.Linq;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Sandbox;
 using Sandbox.UI;
 using Sandbox.Component;
 using System.ComponentModel;
 using System.Text.Json;
-using System.Collections.Generic;
 using Home.Util;
 
 namespace Home;
@@ -83,22 +83,28 @@ public partial class HomePlayer : AnimatedEntity
     public HomePlayer(IClient client) : this()
     {
 		// Load Administrative Stuffs
-		InitAdmin(client);
-
+		InitRole(client);
+		
 		LoadPlayerDataClientRpc(To.Single(client));
     }
 
 	[ConVar.Server]
-	public static void LoadDefaultOutfit(long steamId)
+	public static async void LoadDefaultOutfit(long steamId)
 	{
 		var client = Game.Clients.FirstOrDefault(x => x.SteamId == steamId);
 		if(client == null) return;
 		if(client.Pawn is not HomePlayer player) return;
 
-		player.Clothing.LoadFromClient(player.Client);
-		player.ClothingString = player.Clothing.Serialize();
+		await player.LoadDefaultOutfit();
+	}
 
-		player.Dress();
+	public async Task LoadDefaultOutfit()
+	{
+		Game.AssertServer();
+		Clothing.LoadFromClient(Client);
+		ClothingString = Clothing.Serialize();
+
+		await Dress();
 	}
 
 
@@ -184,18 +190,21 @@ public partial class HomePlayer : AnimatedEntity
 		RightHand?.Simulate(cl);
 	}
 
-	[ConCmd.Admin("noclip")]
+	[ConCmd.Server("noclip")]
 	static void DoPlayerNoclip()
 	{
 		if(ConsoleSystem.Caller.Pawn is HomePlayer player)
 		{
-			if(player.DevController is HomeNoclipController)
+			if(player.HasModeratorPermissions() || ConsoleSystem.GetValue("sv_cheats") == "1")
 			{
-				player.DevController = null;
-			}
-			else
-			{
-				player.DevController = new HomeNoclipController();
+				if(player.DevController is HomeNoclipController)
+				{
+					player.DevController = null;
+				}
+				else
+				{
+					player.DevController = new HomeNoclipController();
+				}
 			}
 		}
 	}
@@ -472,9 +481,10 @@ public partial class HomePlayer : AnimatedEntity
 		}
 	}
 
-	public async void Dress()
+	public async Task Dress()
 	{
 		Clothing.Deserialize(ClothingString);
+		Log.Info(">>>>> DRESSING THE PLAYER <<<<<");
 		foreach(var item in Clothing.Clothing)
 		{
 			if(item is HomeClothing hcloth && !string.IsNullOrEmpty(hcloth.CloudModel))
@@ -852,7 +862,7 @@ public partial class HomePlayer : AnimatedEntity
 
 		if(removeOwner)
 		{
-			ConsoleSystem.Run("home_remove_owner");
+			RoomController.RemoveOwnerServer();
 		}
 
 		// Save the layout to a local file
@@ -877,7 +887,7 @@ public partial class HomePlayer : AnimatedEntity
 
 		// Load the layout
 		player.HomeUploadData = Json.Serialize(layout);
-		ConsoleSystem.Run("home_load_layout");
+		RoomController.LoadLayout();
 		NotificationPanel.AddEntry(To.Single(player), "📁 Loaded layout \"" + name + "\"", "", 5);
 	}
 
@@ -897,21 +907,24 @@ public partial class HomePlayer : AnimatedEntity
 	}
 
 	[ConCmd.Server]
-	public static void ChangeOutfit(int networkIdent, string outfit, float height = -1.0f)
+	public static async void ChangeOutfit(int networkIdent, string outfit, float height = -1.0f)
 	{
 		if(Entity.FindByIndex<HomePlayer>(networkIdent) is not HomePlayer player) return;
-		player.ChangeOutfit(outfit, height);
+		await player.ChangeOutfit(outfit, height);
 	}
-	public void ChangeOutfit(string outfit, float height = -1.0f)
+
+	public async Task ChangeOutfit(string outfit, float height = -1.0f)
 	{
+		Game.AssertServer();
+
 		ClothingString = outfit;
-		Dress();
+		await Dress();
 		
 		if(height >= 0)
 			SetHeight(height);
 	}
 
-	[ConCmd.Server("home_playermodel")]
+	[ConCmd.Server]
 	public static void ChangePlayerModel(string name)
 	{
 		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;

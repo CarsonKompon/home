@@ -11,18 +11,7 @@ public partial class HomePlayer
 
     public IDictionary<long, float> PlayerVolumes {get; set;} = new Dictionary<long, float>();
 
-
-    private void InitAdmin(IClient client)
-    {
-        Game.AssertServer();
-
-        InitRole(client);
-
-        LoadAdminRpc(To.Single(client));
-    }
-
-    [ClientRpc]
-    private void LoadAdminRpc()
+    private void LoadAdmin()
     {
         Game.AssertClient();
 
@@ -39,10 +28,10 @@ public partial class HomePlayer
         }
     }
 
-    private void InitRole(IClient clint)
+    private void InitRole(IClient client)
     {
         Log.Info("🏠: Initializing player role...");
-        switch(clint.SteamId)
+        switch(client.SteamId)
         {
             // Owner
             case 76561198031113835: // Carson
@@ -58,6 +47,9 @@ public partial class HomePlayer
                 IsModerator = true;
                 break;
         }
+
+        if(IsAdmin) Log.Info("🏠: Player is an admin.");
+        if(IsModerator) Log.Info("🏠: Player is a moderator.");
     }
 
     private async void LoadBadges()

@@ -22,7 +22,7 @@
                 @if(Player.Data != null)
                 {
                     <div class="badges">
-                        @foreach(var badge in Player.Data.Badges)
+                        @foreach(var badge in Player.Data.GetBadges())
                         {
                             <img class="badge" src=@badge.Icon Tooltip=@badge.Name />
                         }

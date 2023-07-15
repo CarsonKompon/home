@@ -39,7 +39,7 @@ public partial class MediaVideo : BaseNetworkable
         if(youtubePlayer.Thumbnails.Count > 0) ThumbnailUrl = youtubePlayer.Thumbnails[0].Url;
     }
 
-    public static async Task<MediaVideo> CreateFromUrl(string url)
+    public static MediaVideo CreateFromUrl(string url)
     {
         MediaVideo video = new MediaVideo();
         video.Url = url;
