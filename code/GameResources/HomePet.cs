@@ -40,20 +40,7 @@ public partial class HomePet : GameResource, IShopItem
     public async Task<string> GetVideoThumbnail()
     {
         if(!string.IsNullOrEmpty(_VideoThumbnail)) return _VideoThumbnail;
-        if(string.IsNullOrEmpty(CloudIdent)) return "";
-        var package = await Package.FetchAsync(CloudIdent, true);
-        int videoId = -1;
-        for(int i=0; i<package.Screenshots.Length; i++)
-        {
-            if(package.Screenshots[i].IsVideo)
-            {
-                videoId = i;
-                break;
-            }
-        }
-        if(videoId != -1) _VideoThumbnail = package.Screenshots[videoId].Url;
-        else _VideoThumbnail = (package.VideoThumb ?? package.Thumb);
-        return _VideoThumbnail;
+        return await PackageHelper.GetVideoThumbnail(CloudIdent);
     }
 
     public static List<HomePet> All => ResourceLibrary.GetAll<HomePet>().ToList();

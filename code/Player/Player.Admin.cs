@@ -88,6 +88,7 @@ public partial class HomePlayer
         if(IsModerator) GiveBadge("moderator");
 
         Log.Info("🏠: Awaiting game package...");
+        Log.Info($"Getting game package carsonk.home");
         var package = await Package.FetchAsync("carsonk.home", false);
         if(package != null)
         {

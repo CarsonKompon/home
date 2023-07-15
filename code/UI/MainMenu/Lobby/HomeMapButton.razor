@@ -30,6 +30,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        Log.Info($"Getting map package for {MapIdent}");
         MapPackage = await Package.FetchAsync( MapIdent, true );
     }
 

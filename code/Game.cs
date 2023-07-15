@@ -88,12 +88,6 @@ public partial class HomeGame : GameManager
 		}
 	}
 
-	[GameEvent.Tick.Client]
-	private void ClientTick()
-	{
-		CheckClothingQueue();
-	}
-
 	[ConCmd.Server("home_try_place")]
 	public static async void TryPlace()
 	{
@@ -356,6 +350,7 @@ public partial class HomeGame : GameManager
 
 	public static async Task<Entity> SpawnPackage(string ident, Vector3 position, Rotation rotation, float scale, string className = "")
     {
+		Log.Info($"Spawning package {ident}");
         var package = await Package.FetchAsync( ident, false );
         if(className == "")
 		{
@@ -367,7 +362,8 @@ public partial class HomeGame : GameManager
 			return null;
 		}
 
-        var thing = await package.MountAsync( true );
+		Log.Info($"Mounting package {ident}");
+        await package.MountAsync( true );
 
 		var type = TypeLibrary.GetType( className );
 		if ( type == null )
@@ -386,6 +382,7 @@ public partial class HomeGame : GameManager
 
 	public static async Task<Prop> SpawnPackageProp(string ident, Vector3 position, Rotation rotation, float scale)
 	{
+		Log.Info($"Spawning prop package {ident}");
 		var package = await Package.FetchAsync( ident, false );
 		if ( package == null || package.PackageType != Package.Type.Model || package.Revision == null )
 		{
@@ -398,6 +395,7 @@ public partial class HomeGame : GameManager
 		var maxs = package.GetMeta( "RenderMaxs", Vector3.Zero );
 
 		// downloads if not downloads, mounts if not mounted
+		Log.Info($"Mounting package {ident}");
 		await package.MountAsync();
 
 		var model = Model.Load(modelName);
@@ -464,35 +462,6 @@ public partial class HomeGame : GameManager
 
 		// Delete the layout from the local layouts
 		player.RoomLayouts.RemoveAll(l => l.Name == name);
-	}
-
-
-	// Load the clothing in the queue
-	bool IsLoadingClothing = false;
-	private void CheckClothingQueue()
-	{
-		if(HomeClothing.LoadingQueue.Count() > 0 && !IsLoadingClothing)
-		{
-			LoadNextClothing();
-		}
-	}
-
-	private async void LoadNextClothing()
-	{
-		IsLoadingClothing = true;
-
-		// Get the next clothing
-		HomeClothing clothing = HomeClothing.LoadingQueue.First();
-		HomeClothing.LoadingQueue.Remove(clothing);
-
-		if(clothing.CloudModel != "")
-		{
-			Package pck = await Package.FetchAsync(clothing.CloudModel, false);
-			await pck.MountAsync(true);
-			clothing.Model = pck.GetMeta("PrimaryAsset", "");
-		}
-
-		IsLoadingClothing = false;
 	}
 
 	public override void DoPlayerDevCam( IClient client )

@@ -51,7 +51,7 @@ public partial class PlayerData : BaseNetworkable
 		Pets = newData.Pets;
 		CurrentPet = newData.CurrentPet;
 
-		HomePlayer.SetHeight(GetPlayer().NetworkIdent, Height);
+		GetPlayer()?.SetHeight(Height);
 
 		CombStash();
 
@@ -191,28 +191,23 @@ public partial class HomePlayer
 	{
 		if(Game.LocalPawn is not HomePlayer player) return;
 
-		// Load thumbnails for placeables
-		// LoadPlaceableThumbnails();
-		
-		// Load thumbnails for playermodels
-		foreach(HomePlayermodel playermodel in HomePlayermodel.All)
-		{
-			if(string.IsNullOrEmpty(playermodel.ThumbnailOverride) && !string.IsNullOrEmpty(playermodel.Model))
-			{
-				playermodel.Texture = SceneHelper.CreateModelThumbnail(playermodel.Model);
-			}
-			else
-			{
-				playermodel.Texture = Texture.Load(playermodel.ThumbnailOverride);
-			}
-		}
-
 		// Load player data from client data
 		HomeUploadData = FileSystem.Data.ReadAllText(Client.SteamId.ToString() + "/player.json");
 		if(string.IsNullOrEmpty(HomeUploadData))
 		{
 			HomeUploadData = JsonSerializer.Serialize(new PlayerData(Client.SteamId));
-			Log.Info(HomeUploadData);
+		}
+
+		// Load Clothing
+		string clothing = Cookie.GetString("home.outfit", "");
+		if(clothing != "")
+		{
+			ClothingString = clothing;
+			HomeGUI.UpdateAvatar(clothing);
+		}
+		else
+		{
+			clothing = "default";
 		}
 
 		// Load local layouts
@@ -236,18 +231,30 @@ public partial class HomePlayer
 			player.RoomLayouts.Add(layout);
 		}
 
-		OnPlayerDataLoaded(Client.SteamId.ToString());
+		OnPlayerDataLoaded(Client.SteamId, clothing);
 	}
 
 	[ConCmd.Server]
-	public static void OnPlayerDataLoaded(string steamIdString)
+	public static void OnPlayerDataLoaded(long steamId, string clothing = "")
 	{
-		long steamId = long.Parse(steamIdString);
 		IClient client = Game.Clients.FirstOrDefault(c => c.SteamId == steamId);
 		if(client.Pawn is not HomePlayer player) return;
+		Log.Info("Loading player data for " + client.Name);
 		player.Data = new PlayerData(steamId);
 		player.Data.LoadFromString(client.GetClientData<string>("HomeUploadData"));
 		player.LoadBadges();
+
+		// Set Clothing
+		if(clothing == "default")
+		{
+			LoadDefaultOutfit(steamId);
+		}
+		else if(clothing != "")
+		{
+			player.ChangeOutfit(clothing);
+		}
+
+		// Set Pet
 		HomePlayer.SetPet(player.NetworkIdent, player.Data.CurrentPet);
 	}
 
@@ -278,11 +285,16 @@ public partial class HomePlayer
 	public static void SetHeight(int networkIdent, float height)
 	{
 		if(Entity.FindByIndex<HomePlayer>(networkIdent) is not HomePlayer player) return;
-		player.SetAnimParameter("scale_height", height);
-		if(player.Data != null)
+		player.SetHeight(height);
+		if(player.Data != null) player.SavePlayerDataClientRpc(To.Single(player));
+	}
+
+	public void SetHeight(float height)
+	{
+		SetAnimParameter("scale_height", height);
+		if(Data != null)
 		{
-			player.Data.Height = Math.Clamp(height, 0.5f, 1.5f);
-			player.SavePlayerDataClientRpc(To.Single(player));
+			Data.Height = Math.Clamp(height, 0.5f, 1.5f);
 		}
 		//player.CreateHull();
 	}

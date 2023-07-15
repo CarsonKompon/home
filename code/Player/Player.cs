@@ -85,32 +85,15 @@ public partial class HomePlayer : AnimatedEntity
 		// Load Administrative Stuffs
 		InitAdmin(client);
 
-		LoadOutfitRpc(To.Single(client));
-
 		LoadPlayerDataClientRpc(To.Single(client));
     }
 
-	[ClientRpc]
-	public void LoadOutfitRpc()
-	{
-		string clothing = Cookie.GetString("home.outfit", "");
-		if(clothing != "")
-		{
-			ClothingString = clothing;
-			ConsoleSystem.Run("home_outfit", clothing);
-			HomeGUI.UpdateAvatar(clothing);
-		}
-		else
-		{
-			LoadDefaultOutfit(NetworkIdent);
-		}
-	}
-
 	[ConVar.Server]
-	public static void LoadDefaultOutfit(int id)
+	public static void LoadDefaultOutfit(long steamId)
 	{
-		var player = Entity.FindByIndex(id) as HomePlayer;
-		if(player == null) return;
+		var client = Game.Clients.FirstOrDefault(x => x.SteamId == steamId);
+		if(client == null) return;
+		if(client.Pawn is not HomePlayer player) return;
 
 		player.Clothing.LoadFromClient(player.Client);
 		player.ClothingString = player.Clothing.Serialize();
@@ -913,15 +896,19 @@ public partial class HomePlayer : AnimatedEntity
 		}
 	}
 
-	[ConCmd.Server("home_outfit")]
-	public static void ChangeOutfit(string outfit, float height = -1.0f)
+	[ConCmd.Server]
+	public static void ChangeOutfit(int networkIdent, string outfit, float height = -1.0f)
 	{
-		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
-		player.ClothingString = outfit;
-		player.Dress();
+		if(Entity.FindByIndex<HomePlayer>(networkIdent) is not HomePlayer player) return;
+		player.ChangeOutfit(outfit, height);
+	}
+	public void ChangeOutfit(string outfit, float height = -1.0f)
+	{
+		ClothingString = outfit;
+		Dress();
 		
 		if(height >= 0)
-			HomePlayer.SetHeight(player.NetworkIdent, height);
+			SetHeight(height);
 	}
 
 	[ConCmd.Server("home_playermodel")]

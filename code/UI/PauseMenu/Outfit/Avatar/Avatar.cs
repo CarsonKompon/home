@@ -204,7 +204,7 @@ public partial class Avatar : Panel
 		if(Game.LocalPawn is not HomePlayer player) return;
 		var str = Container.Serialize();
 		Cookie.SetString("home.outfit", str);
-		ConsoleSystem.Run( "home_outfit", str, (1.0f - HeightSlider.Value) + 0.5f);
+		HomePlayer.ChangeOutfit(player.NetworkIdent, str, (1.0f - HeightSlider.Value) + 0.5f);
 
 		HomeGUI.UpdateAvatar(str);
 

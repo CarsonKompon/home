@@ -25,8 +25,6 @@ public partial class HomeClothing : Clothing
 
 	private Model _Model = null;
 
-	public static List<HomeClothing> LoadingQueue = new List<HomeClothing>();
-
 	protected override void PostLoad()
 	{
 		base.PostLoad();
@@ -34,6 +32,7 @@ public partial class HomeClothing : Clothing
 
 	public async Task MountPackage()
 	{
+		Log.Info($"Mounting clothing from {CloudModel}");
 		Package package = await Package.FetchAsync(CloudModel, false);
 		try {
 			await package.MountAsync();
@@ -75,7 +74,8 @@ public partial class HomeClothing : Clothing
 		
 		if(clothing is HomeClothing hcloth && !string.IsNullOrEmpty(hcloth.CloudModel))
 		{
-			var package = await Package.Fetch(hcloth.CloudModel, true);
+			Log.Info($"Getting cloud thumbnail for {hcloth.CloudModel}");
+			var package = await Package.FetchAsync(hcloth.CloudModel, true);
 			return Texture.Load(package.Thumb);
 		}
 
@@ -87,6 +87,7 @@ public partial class HomeClothing : Clothing
     {
         if(!string.IsNullOrEmpty(_VideoThumbnail)) return _VideoThumbnail;
         if(string.IsNullOrEmpty(CloudModel)) return "";
+		Log.Info($"Getting cloud video for {CloudModel}");
         var package = await Package.FetchAsync(CloudModel, true);
         int videoId = -1;
         for(int i=0; i<package.Screenshots.Length; i++)

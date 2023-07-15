@@ -43,7 +43,6 @@
 
    async void GetMapName()
    {
-      Log.Info(Game.Server.MapIdent);
       var pack = await Package.FetchAsync(Game.Server.MapIdent, true);
       MapName = pack.Title;
    }
