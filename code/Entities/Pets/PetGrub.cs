@@ -24,19 +24,11 @@ public partial class PetGrub : Pet
         var model = package.GetMeta("PrimaryAsset", "");
         SetModel( model );
         SetupPhysicsFromModel( PhysicsMotionType.Dynamic, false );
+        DressFromString(Player.ClothingString);
     }
 
     protected override void TickAnimation()
     {
-        if(!IsDressed)
-        {
-            if(Player.ClothingString != "")
-            {
-                DressFromString(Player.ClothingString);
-                IsDressed = true;
-            }
-        }
-
         SetAnimParameter( "grounded", true );
         SetAnimParameter( "velocity", PreviousVelocity.Length);
 

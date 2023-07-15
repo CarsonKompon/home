@@ -40,6 +40,7 @@ public partial class HomeClothing : Clothing
 			Log.Info($"Failed to mount package {package.Title} for {e}");
 		}
 		Model = package.GetMeta("PrimaryAsset", "");
+		Log.Info($"Mounted {CloudModel}");
 	}
 
 	// public static string GetModel(Clothing clothing)
