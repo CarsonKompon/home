@@ -21,6 +21,11 @@ public partial class HomeBadge : GameResource
 
     public static List<HomeBadge> All => ResourceLibrary.GetAll<HomeBadge>().ToList();
 
+    public static HomeBadge Find(int id)
+    {
+        return All.Find(p => p.ResourceId == id);
+    }
+
     public static HomeBadge FindById(string id)
     {
         return All.Find(p => p.ResourceName.Split("/").Last() == id);

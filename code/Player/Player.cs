@@ -83,8 +83,8 @@ public partial class HomePlayer : AnimatedEntity
     public HomePlayer(IClient client) : this()
     {
 		// Load Administrative Stuffs
-		InitAdmin(client);
-
+		InitRole(client);
+		
 		LoadPlayerDataClientRpc(To.Single(client));
     }
 
@@ -475,6 +475,7 @@ public partial class HomePlayer : AnimatedEntity
 	public async void Dress()
 	{
 		Clothing.Deserialize(ClothingString);
+		Log.Info(">>>>> DRESSING THE PLAYER <<<<<");
 		foreach(var item in Clothing.Clothing)
 		{
 			if(item is HomeClothing hcloth && !string.IsNullOrEmpty(hcloth.CloudModel))
