@@ -85,10 +85,6 @@ public partial class HomePlayer : AnimatedEntity
 		// Load Administrative Stuffs
 		InitAdmin(client);
 
-        // Load clothing from client data
-        Clothing.LoadFromClient(client);
-		ClothingString = Clothing.Serialize();
-
 		LoadOutfitRpc(To.Single(client));
 
 		LoadPlayerDataClientRpc(To.Single(client));
@@ -104,7 +100,24 @@ public partial class HomePlayer : AnimatedEntity
 			ConsoleSystem.Run("home_outfit", clothing);
 			HomeGUI.UpdateAvatar(clothing);
 		}
+		else
+		{
+			LoadDefaultOutfit(NetworkIdent);
+		}
 	}
+
+	[ConVar.Server]
+	public static void LoadDefaultOutfit(int id)
+	{
+		var player = Entity.FindByIndex(id) as HomePlayer;
+		if(player == null) return;
+
+		player.Clothing.LoadFromClient(player.Client);
+		player.ClothingString = player.Clothing.Serialize();
+
+		player.Dress();
+	}
+
 
     /// <summary>
 	/// Return the controller to use. Remember any logic you use here needs to match
@@ -593,7 +606,7 @@ public partial class HomePlayer : AnimatedEntity
 						SetPlacing(tr.Entity.Root);
 						var dragging = Game.RootPanel.AddChild<HomeInventoryDragging>();
 			            dragging.Placeable = HomePlaceable.Find(component.PlaceableId);
-						dragging.SetBackgroundImage(dragging.Placeable.GetTexture().Result);
+						dragging.SetBackgroundImage(dragging.Placeable.GetThumbnail().Result);
 
 						PlacingAngle = component.LocalAngle;
 					}

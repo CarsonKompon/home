@@ -18,7 +18,9 @@ public partial class PlayerData : BaseNetworkable
 	[Net] public List<StashEntry> Stash { get; set; } = new();
 	[Net] public List<int> Clothing { get; set; } = new();
 	[Net] public List<AchievementProgress> Achievements {get; set;} = new();
+	[Net] public List<int> Pets {get; set;} = new();
 	[Net] public List<HomeBadge> Badges {get; set;} = new();
+	[Net] public int CurrentPet {get; set;} = 0; 
 
 	public PlayerData() {}
 
@@ -46,6 +48,8 @@ public partial class PlayerData : BaseNetworkable
 		Height = newData.Height;
 		Achievements = newData.Achievements;
 		Badges = newData.Badges.Where(x => x.RequiresAuthority == false).ToList();
+		Pets = newData.Pets;
+		CurrentPet = newData.CurrentPet;
 
 		HomePlayer.SetHeight(GetPlayer().NetworkIdent, Height);
 
@@ -167,6 +171,7 @@ public partial class HomePlayer
 {
     [Net] public PlayerData Data { get; set; }
 	public List<RoomLayout> RoomLayouts = new List<RoomLayout>();
+	[Net] public Pet PetEntity { get; set; }
 
 	[ConVar.ClientData] public string HomeUploadData { get; set; } = "";
 
@@ -243,6 +248,7 @@ public partial class HomePlayer
 		player.Data = new PlayerData(steamId);
 		player.Data.LoadFromString(client.GetClientData<string>("HomeUploadData"));
 		player.LoadBadges();
+		HomePlayer.SetPet(player.NetworkIdent, player.Data.CurrentPet);
 	}
 
 	public bool HasMoney(long amount)
@@ -311,6 +317,13 @@ public partial class HomePlayer
 		SavePlayerDataClientRpc(To.Single(this.Client));
 	}
 
+	public void GivePet(int id)
+	{
+		if(Data.Pets.Contains(id)) return;
+		Data.Pets.Add(id);
+		SavePlayerDataClientRpc(To.Single(this.Client));
+	}
+
 	public bool TakePlaceable(string id, int amount = 1)
 	{
 		if(!HasPlaceable(id, amount))
@@ -345,6 +358,36 @@ public partial class HomePlayer
 		if(Data.Badges.Contains(badge)) return;
 		Data.Badges.Add(badge);
 		SavePlayerDataClientRpc(To.Single(this.Client));
+	}
+
+	[ConCmd.Server]
+	public static void SetPet(int networkIdent, int petId)
+	{
+		if(Entity.FindByIndex<HomePlayer>(networkIdent) is not HomePlayer player) return;
+		if(petId != 0 && !player.Data.Pets.Contains(petId)) return;
+		if(player.PetEntity.IsValid()) player.PetEntity.Delete();
+		if(petId != 0)
+		{
+			var pet = HomePet.Find(petId);
+
+			// Getting a type that matches the name
+			var entityType = TypeLibrary.GetType<Pet>( pet.ClassName )?.TargetType;
+			if ( entityType == null ) return;
+
+			// Creating an instance of that type
+			Pet entity = TypeLibrary.Create<Pet>( entityType );
+			if(entity == null) return;
+
+			// Setting the entity's position
+			entity.Position = player.Position;
+			entity.Rotation = player.Rotation;
+			entity.Transmit = TransmitType.Always;
+			entity.Player = player;
+
+			player.PetEntity = entity;
+		}
+		player.Data.CurrentPet = petId;
+		player.SavePlayerDataClientRpc(To.Single(player));
 	}
 
 }

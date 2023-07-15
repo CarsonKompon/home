@@ -11,6 +11,7 @@
         <panel class="container">
             <a href="/">Players</a>
             <a href="/outfit">Outfit</a>
+            <a href="/equipment">Equipment</a>
             <a href="/settings">Settings</a>
             <a href="/about">About</a>
             @if(IsAdmin())
@@ -30,6 +31,7 @@
         
         AddDestination("/", typeof(PlayersTab));
         AddDestination("/outfit", typeof(OutfitTab));
+        AddDestination("/equipment", typeof(EquipmentTab));
         AddDestination("/settings", typeof(SettingsTab));
         AddDestination("/about", typeof(AboutTab));
         AddDestination("/admin", typeof(AdminTab));

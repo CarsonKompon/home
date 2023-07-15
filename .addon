@@ -285,6 +285,16 @@
         "GameSettings": {},
         "Addons": "carsonk.home_base_content#local",
         "PreLaunchCommand": "",
+        "PostLaunchCommand": "snd_mute_losefocus 0"
+      },
+      {
+        "Name": "zFlatGrass",
+        "GameIdent": "carsonk.home#local",
+        "MapName": "facepunch.flatgrass",
+        "MaxPlayers": 1,
+        "GameSettings": {},
+        "Addons": "carsonk.home_base_content#local",
+        "PreLaunchCommand": "",
         "PostLaunchCommand": ""
       }
     ]

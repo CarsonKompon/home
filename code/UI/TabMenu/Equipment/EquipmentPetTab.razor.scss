@@ -1,0 +1,36 @@
+EquipmentPetTab
+{
+    flex-grow: 1;
+    padding: 16px;
+    overflow-y: scroll;
+    flex-wrap: wrap;
+
+    EquipmentPetButton
+    {
+        width: 200px;
+        height: 200px;
+        border-radius: 24px;
+        transition: all 0.1s ease-in-out;
+        background-color: rgb(119, 81, 255);
+
+        .background {
+            flex-grow: 1;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            border-radius: 24px;
+        }
+
+        &.selected {
+            padding: 8px;
+        }
+
+        &:hover {
+            transform: scale(1.05);
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
+    }
+}

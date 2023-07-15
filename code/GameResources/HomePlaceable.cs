@@ -23,10 +23,11 @@ public enum PlaceableState
 }
 
 [GameResource("Home Placeable", "placeabl", "Describes a placeable model or entity that can be stored in the player's inventory and placed in their room.", Icon = "house" )]
-public partial class HomePlaceable : GameResource
+public partial class HomePlaceable : GameResource, IShopItem
 {
     public string Id { get; set; } = "missing_id";
     public string Name { get; set; } = "Missingname.";
+    public string Description { get; set; } = "";
 
     public int Cost { get; set; } = 0;
 
@@ -104,14 +105,13 @@ public partial class HomePlaceable : GameResource
         return All.Find(p => p.Cost <= cost);
     }
 
-    public async Task<Texture> GetTexture()
+    public async Task<Texture> GetThumbnail()
     {
         if(string.IsNullOrEmpty(ThumbnailOverride))
         {
             if(!string.IsNullOrEmpty(CloudIdent))
             {
-                var package = await Package.FetchAsync(CloudIdent, true);
-                return Texture.Load(package.Thumb);
+                return await PackageHelper.GetThumbnail(CloudIdent);
 
             }
             return SceneHelper.CreateModelThumbnail(Model);
@@ -120,23 +120,17 @@ public partial class HomePlaceable : GameResource
         return Texture.Load(FileSystem.Mounted, ThumbnailOverride);
     }
 
-    private string _VideoThumbnail = "";
+    public string _VideoThumbnail { get; set; }
     public async Task<string> GetVideoThumbnail()
     {
-        if(!string.IsNullOrEmpty(_VideoThumbnail)) return _VideoThumbnail;
-        if(string.IsNullOrEmpty(CloudIdent)) return "";
-        var package = await Package.FetchAsync(CloudIdent, true);
-        int videoId = -1;
-        for(int i=0; i<package.Screenshots.Length; i++)
+        if(string.IsNullOrEmpty(_VideoThumbnail))
         {
-            if(package.Screenshots[i].IsVideo)
+            if(!string.IsNullOrEmpty(CloudIdent))
             {
-                videoId = i;
-                break;
+                return await PackageHelper.GetVideoThumbnail(CloudIdent);
             }
+            return "";
         }
-        if(videoId != -1) _VideoThumbnail = package.Screenshots[videoId].Url;
-        else _VideoThumbnail = (package.VideoThumb ?? package.Thumb);
         return _VideoThumbnail;
     }
 

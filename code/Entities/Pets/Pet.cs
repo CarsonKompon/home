@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sandbox;
 
@@ -6,10 +7,10 @@ namespace Home;
 
 public partial class Pet : AnimatedEntity
 {
-    enum PetState { Idle, Following }
-    PetState State = PetState.Idle;
+    protected enum PetState { Idle, Following }
+    protected PetState State = PetState.Idle;
 
-    HomePlayer Player;
+    public HomePlayer Player;
 
     protected Vector3[] Path;
 
@@ -18,14 +19,11 @@ public partial class Pet : AnimatedEntity
 
     public float MovementSpeed => 2f;
     public float FollowDistance => 48f;
-
-    public Pet(HomePlayer player)
-    {
-        Player = player;
-    }
+    public Vector3 PreviousVelocity = Vector3.Zero;
+    
 
     [GameEvent.Tick.Server]
-    public void Tick()
+    public void ServerTick()
     {
         if(!Player.IsValid())
         {
@@ -43,10 +41,13 @@ public partial class Pet : AnimatedEntity
                 break;
         }
 
+        TickAnimation();
     }
 
     protected void TickIdle()
     {
+        PreviousVelocity = PreviousVelocity.LerpTo( Vector3.Zero, 0.25f );
+
         if( Player.Position.Distance(Position) > FollowDistance )
         {
             State = PetState.Following;
@@ -100,13 +101,15 @@ public partial class Pet : AnimatedEntity
             if(distanceToTarget > distanceToTravel)
             {
                 var direction = (currentTarget - Position).Normal;
-                Position += direction * distanceToTravel;
+                PreviousVelocity = direction * distanceToTravel;
+                Position += PreviousVelocity;
                 return;
             }
             else
             {
                 var direction = (currentTarget - Position).Normal;
-                Position += direction * distanceToTarget;
+                PreviousVelocity = direction * distanceToTarget;
+                Position += PreviousVelocity;
                 distanceToTravel -= distanceToTarget;
                 CurrentPathSegment++;
             }
@@ -117,6 +120,16 @@ public partial class Pet : AnimatedEntity
                 return;
             }
         }
+    }
+
+    protected virtual void TickAnimation()
+    {
+
+    }
+
+    public virtual void DressFromString(string clothingString)
+    {
+
     }
 
 }

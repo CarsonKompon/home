@@ -1,11 +1,23 @@
 @using Sandbox;
 @using Sandbox.UI;
 @using Sandbox.UI.Construct;
+@attribute [StyleSheet]
 
 @namespace Home
 
 @inherits Panel
 
 <root>
-    <label>TODO: Admin Tab</label>
+    <div class="content">
+        <button onclick=@GetClothingString>Get Clothing String</button>
+    </div>
 </root>
+
+@code
+{
+    void GetClothingString()
+    {
+        if(Game.LocalPawn is not HomePlayer player) return;
+        Log.Info(player.ClothingString);
+    }
+}
