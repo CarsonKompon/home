@@ -1,0 +1,30 @@
+AdminTab
+{
+    flex-grow: 1;
+    
+    .content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 8px;
+        flex-grow: 1;
+
+        .button {
+            border-radius: 8px;
+            background-color: #ccc;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            flex-shrink: 0;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+
+            &:active {
+                transform: scale(0.9);
+            }
+        }
+    }
+}

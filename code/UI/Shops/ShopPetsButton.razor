@@ -10,25 +10,25 @@
     <div class="info">
         <img class="icon" @ref="Icon" />
         <div class="names">
-            <div class="name">@Clothes.Title</div>
-            <div class="description">@Clothes.Subtitle</div>
+            <div class="name">@Pet.Name</div>
+            <div class="description">@Pet.Description</div>
         </div>
     </div>
-    @if(HasClothing())
+    @if(HasPet())
     {
         <button class="buy owned" >#ui.shop.owned</button>
     }
     else
     {
-        <button class="buy" onclick="@Purchase" >$@Clothes.Cost</button>
+        <button class="buy" onclick="@Purchase" >$@Pet.Cost</button>
     }
 </root>
 
 @code
 {
     public Image Icon { get; set; }
-    public HomeClothing Clothes { get; set; }
-    public ShopClothing Shop { get; set; }
+    public HomePet Pet { get; set; }
+    public ShopPets Shop { get; set; }
 
     protected override void OnAfterTreeRender( bool firstTime )
     {
@@ -38,12 +38,12 @@
         {
             Panel parent = Parent;
             int fallback = 0;
-            while(parent is not ShopClothing && fallback < 10)
+            while(parent is not ShopPets && fallback < 10)
             {
                 parent = parent.Parent;
                 fallback++;
             }
-            Shop = parent as ShopClothing;
+            Shop = parent as ShopPets;
             SetIcon();
         }
     }
@@ -56,29 +56,29 @@
 
     private async void SetIcon()
     {
-        Icon.Style.BackgroundImage = await HomeClothing.GetIcon( Clothes );
+        Icon.Style.BackgroundImage = await Pet.GetThumbnail();
     }
 
-    public bool HasClothing()
+    public bool HasPet()
     {
         if(Game.LocalPawn is not HomePlayer player) return false;
-        return player.Data.Clothing.Contains(Clothes.ResourceId);
+        return player.Data.Pets.Contains(Pet.ResourceId);
     }
 
     public void Purchase()
     {
-        HomeGame.PurchaseClothing( Clothes.ResourceId );
+        HomeGame.PurchasePet( Pet.ResourceId );
     }
 
     protected override void OnMouseOver(MousePanelEvent e)
     {
         base.OnMouseOver(e);
         if(Game.LocalPawn is not HomePlayer player) return;
-        Shop?.SetTarget(Clothes);
+        Shop?.SetTarget(Pet);
     }
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(Clothes);
+        return HashCode.Combine(Pet);
     }
 }

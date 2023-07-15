@@ -36,7 +36,7 @@
         HomePlaceable placeable = Entry.GetPlaceable();
         if(placeable != null)
         {
-            Background.Style.BackgroundImage = await placeable.GetTexture();
+            Background.Style.BackgroundImage = await placeable.GetThumbnail();
         }
     }
 

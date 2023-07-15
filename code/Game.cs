@@ -195,6 +195,24 @@ public partial class HomeGame : GameManager
 		player.GiveClothing(clothing.ResourceId);
 	}
 
+	[ConCmd.Server]
+	public static void PurchasePet(int id)
+	{
+		// Check the player and their variables
+		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
+
+		// Check the clothing
+		HomePet pet = HomePet.All.Where(x => x.ResourceId == id).FirstOrDefault();
+		if(pet == null) return;
+
+		// Check the player's money
+		if(!player.HasMoney(pet.Cost)) return;
+		player.TakeMoney(pet.Cost);
+
+		// Give the placeable to the player
+		player.GivePet(pet.ResourceId);
+	}
+
 	[ConCmd.Admin("home_give_money", Help = "Gives money to a player")]
 	public static void GiveMoney(int amount, string target = "")
 	{

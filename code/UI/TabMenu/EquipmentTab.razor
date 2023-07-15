@@ -6,35 +6,20 @@
 
 @inherits Sandbox.UI.NavHostPanel
 
-<root class="tab-menu">
-    <panel class="navbar">
-        <panel class="container">
-            <a href="/">Players</a>
-            <a href="/outfit">Outfit</a>
-            <a href="/equipment">Equipment</a>
-            <a href="/settings">Settings</a>
-            <a href="/about">About</a>
-            @if(IsAdmin())
-            {
-                <a href="/admin">Admin</a>
-            }
-        </panel>
+<root>
+    <panel class="left">
+            <a href="/">Pets</a>
     </panel>
     <div class="content navigator-canvas" slot="navigator-canvas"></div>
 </root>
 
 @code
 {
-    public TabMenu()
+    public EquipmentTab()
     {
         DefaultUrl = "/";
         
-        AddDestination("/", typeof(PlayersTab));
-        AddDestination("/outfit", typeof(OutfitTab));
-        AddDestination("/equipment", typeof(EquipmentTab));
-        AddDestination("/settings", typeof(SettingsTab));
-        AddDestination("/about", typeof(AboutTab));
-        AddDestination("/admin", typeof(AdminTab));
+        AddDestination("/", typeof(EquipmentPetTab));
     }
     protected override void OnAfterTreeRender(bool firstTime)
     {

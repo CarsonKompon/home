@@ -1,0 +1,30 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Sandbox;
+@using Sandbox.UI;
+@attribute [StyleSheet]
+
+@namespace Home
+
+<root>
+    @foreach(var item in GetPets())
+    {
+        <EquipmentPetButton Pet=@item />   
+    }
+</root>
+
+@code
+{
+    List<HomePet> GetPets()
+    {
+        if(Game.LocalPawn is not HomePlayer player) return null;
+        if(player.Data is null) return null;
+        return HomePet.All.Where(x => player.Data.Pets.Contains(x.ResourceId)).ToList();
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(GetPets());
+    }
+}
