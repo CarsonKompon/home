@@ -24,7 +24,7 @@ public partial class PetGrub : Pet
         var model = package.GetMeta("PrimaryAsset", "");
         SetModel( model );
         SetupPhysicsFromModel( PhysicsMotionType.Dynamic, false );
-        DressFromString(Player.ClothingString);
+        if(Player.IsValid()) DressFromString(Player.ClothingString);
     }
 
     protected override void TickAnimation()
@@ -74,48 +74,48 @@ public partial class PetGrub : Pet
 
         ClothingHelper.DressEntity(this, clothes);
         
-        // foreach(var item in clothes.Clothing)
-        // {
-        //     var ent = new AnimatedEntity(item.Model, this);
+        foreach(var item in clothes.Clothing)
+        {
+            var ent = new AnimatedEntity(item.Model, this);
                 
-        //     ent.Tags.Add("clothes");
+            ent.Tags.Add("clothes");
 
-        //     if(!string.IsNullOrEmpty(item.MaterialGroup))
-        //         ent.SetMaterialGroup(item.MaterialGroup);
+            if(!string.IsNullOrEmpty(item.MaterialGroup))
+                ent.SetMaterialGroup(item.MaterialGroup);
 
-        //     if(item.Category != Clothing.ClothingCategory.Skin)
-        //         continue;
+            if(item.Category != Clothing.ClothingCategory.Skin)
+                continue;
 
-        //     if(item.Model != null)
-        //     {
-        //         if(item.ResourceName.ToLower().Contains("skel"))
-        //         {
-        //             // TODO: Support Grub Skeleton
-        //             continue;
-        //         }
+            if(item.Model != null)
+            {
+                if(item.ResourceName.ToLower().Contains("skel"))
+                {
+                    // TODO: Support Grub Skeleton
+                    continue;
+                }
 
-        //         var materials = Model.Load(item.Model).Materials;
+                var materials = Model.Load(item.Model).Materials;
 
-        //         var skinMaterial = Material.Load("models/citizen/skin/citizen_skin01.vmat");
-        //         var eyeMaterial = Material.Load( "models/citizen/skin/citizen_eyes_advanced.vmat" );
-        //         foreach ( var mat in materials )
-        //         {
-        //             if ( mat.Name.Contains( "eyes" ) )
-        //                 eyeMaterial = mat;
+                var skinMaterial = Material.Load("models/citizen/skin/citizen_skin01.vmat");
+                var eyeMaterial = Material.Load( "models/citizen/skin/citizen_eyes_advanced.vmat" );
+                foreach ( var mat in materials )
+                {
+                    if ( mat.Name.Contains( "eyes" ) )
+                        eyeMaterial = mat;
 
-        //             if ( mat.Name.Contains( "_skin" ) )
-        //                 skinMaterial = mat;
-        //         }
+                    if ( mat.Name.Contains( "_skin" ) )
+                        skinMaterial = mat;
+                }
 
-        //         SetMaterialOverride( skinMaterial, "skin" );
-        //         SetMaterialOverride( eyeMaterial, "eyes" );
-        //     }
-        //     else
-        //     {
-        //         var skinMaterial = Material.Load(item.SkinMaterial);
-        //         SetMaterialOverride( skinMaterial, "skin" );
-        //     }
-        // }
+                SetMaterialOverride( skinMaterial, "skin" );
+                SetMaterialOverride( eyeMaterial, "eyes" );
+            }
+            else
+            {
+                var skinMaterial = Material.Load(item.SkinMaterial);
+                SetMaterialOverride( skinMaterial, "skin" );
+            }
+        }
     }
 
 }

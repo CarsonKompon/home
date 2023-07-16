@@ -179,7 +179,7 @@
     {
         Target = clothing;
 
-        VideoPreview.Style.SetBackgroundImage(await clothing.GetVideoThumbnail());
+        VideoPreview?.Style.SetBackgroundImage(await clothing.GetVideoThumbnail());
     }
 
     enum ShopSortType { Categories, Name, Cost, Owned }

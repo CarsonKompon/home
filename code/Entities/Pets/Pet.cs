@@ -12,7 +12,7 @@ public partial class Pet : AnimatedEntity
 
     public HomePlayer Player;
 
-    protected Vector3[] Path;
+    protected NavPath? Path;
 
     protected int CurrentPathSegment;
     protected TimeSince TimeSinceGeneratedPath = 0;
@@ -69,7 +69,7 @@ public partial class Pet : AnimatedEntity
         TraversePath();
     }
 
-    protected void GeneratePath()
+    protected virtual void GeneratePath()
     {
         TimeSinceGeneratedPath = 0;
 
@@ -79,15 +79,12 @@ public partial class Pet : AnimatedEntity
                 .WithStepHeight(16f)
                 .WithMaxDistance(99999999)
                 .WithPartialPaths()
-                .Build(Player.Position)
-                .Segments
-                .Select( x => x.Position )
-                .ToArray();
+                .Build(Player.Position);
 
         CurrentPathSegment = 0;
     }
 
-    protected void TraversePath()
+    protected virtual void TraversePath()
     {
         if(Path == null) return;
 
@@ -95,26 +92,26 @@ public partial class Pet : AnimatedEntity
 
         while(distanceToTravel > 0)
         {
-            var currentTarget = Path[CurrentPathSegment];
-            var distanceToTarget = Position.Distance(currentTarget);
+            var currentTarget = Path.Segments[CurrentPathSegment];
+            var distanceToTarget = Position.Distance(currentTarget.Position);
 
             if(distanceToTarget > distanceToTravel)
             {
-                var direction = (currentTarget - Position).Normal;
+                var direction = (currentTarget.Position - Position).Normal;
                 PreviousVelocity = direction * distanceToTravel;
                 Position += PreviousVelocity;
                 return;
             }
             else
             {
-                var direction = (currentTarget - Position).Normal;
+                var direction = (currentTarget.Position - Position).Normal;
                 PreviousVelocity = direction * distanceToTarget;
                 Position += PreviousVelocity;
                 distanceToTravel -= distanceToTarget;
                 CurrentPathSegment++;
             }
 
-            if(CurrentPathSegment == Path.Count())
+            if(CurrentPathSegment == Path.Count)
             {
                 Path = null;
                 return;
