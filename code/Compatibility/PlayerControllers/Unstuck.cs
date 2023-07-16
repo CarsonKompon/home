@@ -1,84 +1,83 @@
 using Sandbox;
 
-namespace Home
+namespace Home;
+
+public class HomeUnstuck
 {
-	public class HomeUnstuck
+	public HomeBasePlayerController Controller;
+
+	public bool IsActive; // replicate
+
+	internal int StuckTries = 0;
+
+	public HomeUnstuck( HomeBasePlayerController controller )
 	{
-		public HomeBasePlayerController Controller;
+		Controller = controller;
+	}
 
-		public bool IsActive; // replicate
+	public virtual bool TestAndFix()
+	{
+		var result = Controller.TraceBBox( Controller.Position, Controller.Position );
 
-		internal int StuckTries = 0;
-
-		public HomeUnstuck( HomeBasePlayerController controller )
+		// Not stuck, we cool
+		if ( !result.StartedSolid )
 		{
-			Controller = controller;
+			StuckTries = 0;
+			return false;
 		}
 
-		public virtual bool TestAndFix()
+		if ( result.StartedSolid )
 		{
-			var result = Controller.TraceBBox( Controller.Position, Controller.Position );
-
-			// Not stuck, we cool
-			if ( !result.StartedSolid )
+			if ( HomeBasePlayerController.Debug )
 			{
-				StuckTries = 0;
-				return false;
+				DebugOverlay.Text( $"[stuck in {result.Entity}]", Controller.Position, Color.Red );
+				DebugOverlay.Box( result.Entity, Color.Red );
+			}
+		}
+
+		//
+		// Client can't jiggle its way out, needs to wait for
+		// server correction to come
+		//
+		if ( Game.IsClient )
+			return true;
+
+		int AttemptsPerTick = 20;
+
+		for ( int i=0; i< AttemptsPerTick; i++ )
+		{
+			var pos = Controller.Position + Vector3.Random.Normal * (((float)StuckTries) / 2.0f);
+
+			// First try the up direction for moving platforms
+			if ( i == 0 )
+			{
+				pos = Controller.Position + Vector3.Up * 5;
 			}
 
-			if ( result.StartedSolid )
+			result = Controller.TraceBBox( pos, pos );
+
+			if ( !result.StartedSolid )
 			{
 				if ( HomeBasePlayerController.Debug )
 				{
-					DebugOverlay.Text( $"[stuck in {result.Entity}]", Controller.Position, Color.Red );
-					DebugOverlay.Box( result.Entity, Color.Red );
+					DebugOverlay.Text( $"unstuck after {StuckTries} tries ({StuckTries* AttemptsPerTick} tests)", Controller.Position, Color.Green, 5.0f );
+					DebugOverlay.Line( pos, Controller.Position, Color.Green, 5.0f, false );
 				}
+
+				Controller.Position = pos;
+				return false;
 			}
-
-			//
-			// Client can't jiggle its way out, needs to wait for
-			// server correction to come
-			//
-			if ( Game.IsClient )
-				return true;
-
-			int AttemptsPerTick = 20;
-
-			for ( int i=0; i< AttemptsPerTick; i++ )
+			else
 			{
-				var pos = Controller.Position + Vector3.Random.Normal * (((float)StuckTries) / 2.0f);
-
-				// First try the up direction for moving platforms
-				if ( i == 0 )
+				if ( HomeBasePlayerController.Debug )
 				{
-					pos = Controller.Position + Vector3.Up * 5;
-				}
-
-				result = Controller.TraceBBox( pos, pos );
-
-				if ( !result.StartedSolid )
-				{
-					if ( HomeBasePlayerController.Debug )
-					{
-						DebugOverlay.Text( $"unstuck after {StuckTries} tries ({StuckTries* AttemptsPerTick} tests)", Controller.Position, Color.Green, 5.0f );
-						DebugOverlay.Line( pos, Controller.Position, Color.Green, 5.0f, false );
-					}
-
-					Controller.Position = pos;
-					return false;
-				}
-				else
-				{
-					if ( HomeBasePlayerController.Debug )
-					{
-						DebugOverlay.Line( pos, Controller.Position, Color.Yellow, 0.5f, false );
-					}
+					DebugOverlay.Line( pos, Controller.Position, Color.Yellow, 0.5f, false );
 				}
 			}
-
-			StuckTries++;
-
-			return true;
 		}
+
+		StuckTries++;
+
+		return true;
 	}
 }

@@ -39,9 +39,17 @@ public partial class HomeClothing : Clothing
 			return;
 		}
 		Package package = await Package.FetchAsync(CloudModel, true);
-		await package.MountAsync();
-		Model = package.GetMeta("PrimaryAsset", "");
-		Log.Info($"Mounted clothing from {CloudModel} as {Model}");
+		try
+		{
+			await package.MountAsync();
+			Model = package.GetMeta("PrimaryAsset", "");
+			Log.Info($"Mounted clothing from {CloudModel} as {Model}");
+		}
+		catch(Exception e)
+		{
+			Log.Info($"Failed to mount clothing from {CloudModel}:");
+			Log.Info(e);
+		}
 	}
 
 	// public static string GetModel(Clothing clothing)

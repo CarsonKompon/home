@@ -411,7 +411,7 @@ public partial class HomePlayer
 			if(entity == null) return;
 
 			// Setting the entity's position
-			entity.Position = player.Position;
+			entity.Position = player.Position + Vector3.Up * 20f;
 			entity.Rotation = player.Rotation;
 			entity.Transmit = TransmitType.Always;
 			entity.Player = player;

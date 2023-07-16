@@ -243,7 +243,10 @@
         "solid": "Collide",
         "trigger": "Trigger",
         "ladder": "Ignore",
-        "water": "Trigger"
+        "water": "Trigger",
+        "complex": "Collide",
+        "npc": "Ignore",
+        "player": "Collide"
       },
       "Pairs": [
         {
@@ -269,6 +272,49 @@
         {
           "a": "playerclip",
           "b": "solid",
+          "r": "Collide"
+        },
+        {
+          "a": "complex",
+          "b": "npc",
+          "r": "Ignore"
+        },
+        {
+          "a": "solid",
+          "b": "complex",
+          "r": "Collide"
+        },
+        {
+          "a": "solid",
+          "b": "npc",
+          "r": "Collide"
+        },
+        {
+          "a": "solid",
+          "b": "player",
+          "r": "Collide"
+        },
+        {
+          "a": "player",
+          "b": "player"
+        },
+        {
+          "a": "complex",
+          "b": "player",
+          "r": "Collide"
+        },
+        {
+          "a": "complex",
+          "b": "complex"
+        },
+        {
+          "a": "npc",
+          "b": "player",
+          "r": "Collide"
+        },
+        {
+          "a": "npc",
+          "b": "npc",
           "r": "Collide"
         }
       ]
@@ -297,6 +343,18 @@
         "PreLaunchCommand": "",
         "PostLaunchCommand": ""
       }
-    ]
+    ],
+    "Physics": {
+      "SubSteps": 1,
+      "TimeScale": 1,
+      "Gravity": "0,0,-800",
+      "AirDensity": 1.2,
+      "SleepingEnabled": true,
+      "SimulationMode": "Continuous",
+      "PositionIterations": 2,
+      "VelocityIterations": 8,
+      "SoftBodyIterations": 1,
+      "SoftBodySubsteps": 1
+    }
   }
 }

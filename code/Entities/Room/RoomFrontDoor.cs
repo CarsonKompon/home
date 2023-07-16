@@ -29,6 +29,11 @@ public partial class RoomFrontDoor : DoorEntity
     {
         base.Spawn();
 
+        Tags.Add("complex");
+        Tags.Add("solid");
+
+        
+
         StartTransform = Transform;
         SetState(RoomState.Vacant);
     }

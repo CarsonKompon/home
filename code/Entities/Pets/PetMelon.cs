@@ -5,15 +5,22 @@ using Home.Util;
 
 namespace Home;
 
+[Library("pet_melon", Title = "Melon Pet", Group = "Pet")]
 public partial class PetMelon : Pet
 {
 
-    public float BaseForce { get; set; } = 15000;
-    public float CorrectionForce { get; set; } = 300;
+    public float BaseForce { get; set; } = 80000;
+    public float CorrectionForce { get; set; } = 2000;
+
+    public override float FollowDistance => 128f;
+
+    protected UnstuckEntity Unstuck;
 
     public override void Spawn()
     {
         base.Spawn();
+        
+        Unstuck = new UnstuckEntity(this);
 
         InitModel();
     }
@@ -25,8 +32,6 @@ public partial class PetMelon : Pet
 
         PhysicsEnabled = true;
         UsePhysicsCollision = true;
-
-        Tags.Add("solid");
     }
 
     protected override void TraversePath()
@@ -48,18 +53,6 @@ public partial class PetMelon : Pet
         MoveTowards(targetLocation);
     }
 
-    protected override void TickAnimation()
-    {
-        SetAnimParameter( "grounded", true );
-        SetAnimParameter( "velocity", PreviousVelocity.Length);
-
-        if(State != PetState.Idle)
-        {
-            // Set Rotation from PreviousVelocity
-            Rotation = Rotation.LookAt( PreviousVelocity.WithZ( 0 ), Vector3.Up );
-        }
-    }
-
     protected override void GeneratePath()
     {
         TimeSinceGeneratedPath = 0;
@@ -75,9 +68,17 @@ public partial class PetMelon : Pet
         TimeSinceGeneratedPath = 0;
     }
 
-    // Thank you Igrium for this code
-    public void MoveTowards(Vector3 targetPos)
+    protected override void StateTick()
     {
+        if (Unstuck.TestAndFix()) return;
+        base.StateTick();
+    }
+
+    // Thank you Igrium for this code
+    private void MoveTowards(Vector3 targetPos)
+    {
+        if(PhysicsBody == null) return;
+
         targetPos = targetPos.WithZ( Position.z );
 
         Vector3 normal = (targetPos - Position).Normal;
