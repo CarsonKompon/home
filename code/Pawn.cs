@@ -54,7 +54,7 @@ partial class Pawn : AnimatedEntity
 		Velocity = Rotation * movement;
 
 		// apply some speed to it
-		Velocity *= Input.Down( InputButton.Run ) ? 1000 : 200;
+		Velocity *= Input.Down( "run" ) ? 1000 : 200;
 
 		// apply it to our position using MoveHelper, which handles collision
 		// detection and sliding across surfaces for us

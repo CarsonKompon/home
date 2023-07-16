@@ -16,7 +16,7 @@
 	@if(Player.Data != null)
 	{
 		<div class="badges">
-			@foreach(var badge in Player.Data.Badges)
+			@foreach(var badge in Player.Data.GetBadges())
 			{
 				<img class="badge" src=@badge.Icon Tooltip=@badge.Name />
 			}
@@ -56,7 +56,7 @@
 
 	string GetStyle()
 	{
-		return Player.GetDisplayStyle() + (((Player?.Data?.Badges?.Count ?? 0) > 2 ? " column" : ""));
+		return Player.GetDisplayStyle() + (((Player?.Data?.BadgeIds?.Count ?? 0) > 2 ? " column" : ""));
 	}
 
 	protected override int BuildHash()

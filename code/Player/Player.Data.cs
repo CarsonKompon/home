@@ -15,11 +15,11 @@ public partial class PlayerData : BaseNetworkable
 	[Net] public long SteamId { get; set; } = 0;
 	[Net, Change] public long Money { get; set; } = 0;
 	[Net] public float Height { get; set; } = 1f;
-	[Net] public List<StashEntry> Stash { get; set; } = new();
-	[Net] public List<int> Clothing { get; set; } = new();
-	[Net] public List<AchievementProgress> Achievements {get; set;} = new();
-	[Net] public List<int> Pets {get; set;} = new();
-	[Net] public List<HomeBadge> Badges {get; set;} = new();
+	[Net] public IList<StashEntry> Stash { get; set; } = new List<StashEntry>();
+	[Net] public IList<int> Clothing { get; set; } = new List<int>();
+	[Net] public IList<AchievementProgress> Achievements {get; set;} = new List<AchievementProgress>();
+	[Net] public IList<int> Pets {get; set;} = new List<int>();
+	[Net] public IList<int> BadgeIds {get; set;} = new List<int>();
 	[Net] public int CurrentPet {get; set;} = 0; 
 
 	public PlayerData() {}
@@ -47,29 +47,34 @@ public partial class PlayerData : BaseNetworkable
 		Clothing = newData.Clothing;
 		Height = newData.Height;
 		Achievements = newData.Achievements;
-		Badges = newData.Badges.Where(x => x.RequiresAuthority == false).ToList();
 		Pets = newData.Pets;
 		CurrentPet = newData.CurrentPet;
+
+		// Authorize badges
+		BadgeIds = new List<int>();
+		foreach(var badgeId in newData.BadgeIds)
+		{
+			var badge = HomeBadge.Find(badgeId);
+			if(!badge.RequiresAuthority) BadgeIds.Add(badgeId);
+		} 
 
 		GetPlayer()?.SetHeight(Height);
 
 		CombStash();
-
-		Log.Info("🏠: Player data loaded from string!");
 	}
 
 	public void Save()
 	{
 		Game.AssertClient();
 		if(SteamId == 0) return;
-		Log.Info("🏠: Saving player data...");
+		Log.Info("Saving player data...");
 		string steamId = Game.LocalClient.SteamId.ToString();
 		if(!FileSystem.Data.DirectoryExists(steamId))
 		{
 			FileSystem.Data.CreateDirectory(steamId);
 		}
 		FileSystem.Data.WriteJson(steamId + "/player.json", this);
-		Log.Info("🏠: Player data saved!");
+		Log.Info("Player data saved!");
 	}
 
 	public void SetAchievementProgress(string name, int progress)
@@ -161,6 +166,16 @@ public partial class PlayerData : BaseNetworkable
 		}
 	}
 
+	public List<HomeBadge> GetBadges()
+	{
+		var badges = new List<HomeBadge>();
+		foreach(var badgeId in BadgeIds)
+		{
+			badges.Add(HomeBadge.Find(badgeId));
+		}
+		return badges;
+	}
+
 	public HomePlayer GetPlayer()
 	{
 		return Game.Clients.FirstOrDefault(c => c.SteamId == SteamId)?.Pawn as HomePlayer;
@@ -210,7 +225,10 @@ public partial class HomePlayer
 			clothing = "default";
 		}
 
-		// Load local layouts
+		// Load Admin Settings
+		player.LoadAdmin();
+
+		// Create layout folder structure
 		long steamId = Game.LocalClient.SteamId;
 		if(!FileSystem.Data.DirectoryExists(steamId.ToString()))
 		{
@@ -225,17 +243,19 @@ public partial class HomePlayer
 			FileSystem.Data.CreateDirectory(steamId + "/layouts/" + Game.Server.MapIdent);
 		}
 
+		// Load local layouts
 		foreach(string file in FileSystem.Data.FindFile(steamId + "/layouts/" + Game.Server.MapIdent, "*.json"))
 		{
 			RoomLayout layout = FileSystem.Data.ReadJson<RoomLayout>(steamId + "/layouts/" + Game.Server.MapIdent + "/" + file);
 			player.RoomLayouts.Add(layout);
 		}
 
+		// Tell the server we loaded the player's data
 		OnPlayerDataLoaded(Client.SteamId, clothing);
 	}
 
 	[ConCmd.Server]
-	public static void OnPlayerDataLoaded(long steamId, string clothing = "")
+	public static async void OnPlayerDataLoaded(long steamId, string clothing = "")
 	{
 		IClient client = Game.Clients.FirstOrDefault(c => c.SteamId == steamId);
 		if(client.Pawn is not HomePlayer player) return;
@@ -247,11 +267,11 @@ public partial class HomePlayer
 		// Set Clothing
 		if(clothing == "default")
 		{
-			LoadDefaultOutfit(steamId);
+			await player.LoadDefaultOutfit();
 		}
 		else if(clothing != "")
 		{
-			player.ChangeOutfit(clothing);
+			await player.ChangeOutfit(clothing);
 		}
 
 		// Set Pet
@@ -367,9 +387,9 @@ public partial class HomePlayer
 		Game.AssertServer();
 		var badge = HomeBadge.FindById(id);
 		if(badge == null) return;
-		if(Data.Badges.Contains(badge)) return;
-		Data.Badges.Add(badge);
-		SavePlayerDataClientRpc(To.Single(this.Client));
+		if(Data.BadgeIds.Contains(badge.ResourceId)) return;
+		Data.BadgeIds.Add(badge.ResourceId);
+		Log.Info("Gave badge " + id + " to " + Client.Name);
 	}
 
 	[ConCmd.Server]

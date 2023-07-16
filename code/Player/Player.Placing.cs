@@ -25,7 +25,7 @@ public partial class HomePlayer
 			return;
 		}
 
-		ConsoleSystem.Run("home_try_place");
+		HomeGame.TryPlace(NetworkIdent);
 		StopPlacing();
 	}
 
@@ -37,7 +37,7 @@ public partial class HomePlayer
 			return;
 		}
 		
-		ConsoleSystem.Run("home_try_pickup");
+		HomeGame.TryPickup(NetworkIdent);
 	}
 
 	public void SetPlacing(HomePlaceable placeable)

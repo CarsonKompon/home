@@ -64,6 +64,8 @@ public partial class PetGrub : Pet
             }
         }
 
+
+        Log.Info(">>>>> MOUNTING GRUB CLOTHING <<<<<");
         foreach(var item in clothes.Clothing)
 		{
 			if(item is HomeClothing hcloth && !string.IsNullOrEmpty(hcloth.CloudModel))
