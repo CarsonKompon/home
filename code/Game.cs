@@ -192,6 +192,7 @@ public partial class HomeGame : GameManager
 	[ConCmd.Server]
 	public static void PurchasePet(int id)
 	{
+		Log.Info("Purchasing pet!");
 		// Check the player and their variables
 		if(ConsoleSystem.Caller.Pawn is not HomePlayer player) return;
 

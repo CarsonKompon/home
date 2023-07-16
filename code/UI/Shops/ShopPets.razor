@@ -120,7 +120,7 @@
     {
         Target = pet;
 
-        VideoPreview.Style.SetBackgroundImage(await pet.GetVideoThumbnail());
+        VideoPreview?.Style.SetBackgroundImage(await pet.GetVideoThumbnail());
     }
 
     enum ShopSortType { Id, Name, Cost, Owned }
