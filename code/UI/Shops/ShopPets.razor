@@ -118,9 +118,11 @@
 
     public async void SetTarget(HomePet pet)
     {
+        if(pet == null) return;
         Target = pet;
 
-        VideoPreview?.Style.SetBackgroundImage(await pet.GetVideoThumbnail());
+        var thumb = await pet.GetVideoThumbnail();
+        VideoPreview?.Style.SetBackgroundImage(thumb);
     }
 
     enum ShopSortType { Id, Name, Cost, Owned }
