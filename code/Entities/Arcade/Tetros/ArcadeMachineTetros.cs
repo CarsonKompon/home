@@ -61,7 +61,14 @@ public partial class ArcadeMachineTetros : ArcadeMachineBase
     [ClientRpc]
     public void StartGameRpc()
     {
-        Screen?.StartGame();
+        if(Game.LocalPawn == CurrentUser)
+        {
+            Screen?.StartGame();
+        }
+        else
+        {
+            Screen?.StartViewingGame();
+        }
     }
 
     public override void EndGame(long steamId)

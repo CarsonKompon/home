@@ -39,10 +39,11 @@ public static class PackageHelper
         return _VideoThumbnails[ident];
     }
 
-    public static async Task<string> GetPrimaryAsset(string ident)
+    public static async Task<string> GetPrimaryAsset(string ident, bool mount = false)
     {
         var package = await Package.FetchAsync(ident, true);
         if(package == null) return "";
+        if(mount) await package.MountAsync();
         return package.GetMeta("PrimaryAsset", "");
     }
 

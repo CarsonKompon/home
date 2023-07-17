@@ -40,6 +40,11 @@ public partial class ArcadeScreenTetros : WorldPanel
         Menu.StartGame.Invoke();
     }
 
+    public void StartViewingGame()
+    {
+        Menu.Navigate("/viewing");
+    }
+
     [GameEvent.Tick.Client]
     public void OnTick()
     {

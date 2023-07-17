@@ -24,6 +24,7 @@
 
         AddDestination("/", typeof(AttractMenuPage));
         AddDestination("/game", typeof(TetrosGamePage));
+        AddDestination("/viewing", typeof(TetrosViewingPage));
 
         StartGame += () => {
             if(Machine == null || Machine.CurrentUser == null) return;
