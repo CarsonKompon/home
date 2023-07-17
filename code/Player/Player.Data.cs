@@ -193,11 +193,6 @@ public partial class HomePlayer
 	[ClientRpc]
 	public void SavePlayerDataClientRpc()
 	{
-		if(!FileSystem.Data.DirectoryExists(Client.SteamId.ToString()))
-		{
-			FileSystem.Data.CreateDirectory(Client.SteamId.ToString());
-		}
-
 		Data?.Save();
 	}
 
@@ -396,8 +391,13 @@ public partial class HomePlayer
 	public static void SetPet(int networkIdent, int petId)
 	{
 		if(Entity.FindByIndex<HomePlayer>(networkIdent) is not HomePlayer player) return;
-		if(petId != 0 && !player.Data.Pets.Contains(petId)) return;
-		if(player.PetEntity.IsValid()) player.PetEntity.Delete();
+		player.SetPet(petId);
+	}
+
+	public void SetPet(int petId)
+	{
+		if(petId != 0 && !Data.Pets.Contains(petId)) return;
+		if(PetEntity.IsValid()) PetEntity.Delete();
 		if(petId != 0)
 		{
 			var pet = HomePet.Find(petId);
@@ -411,15 +411,15 @@ public partial class HomePlayer
 			if(entity == null) return;
 
 			// Setting the entity's position
-			entity.Position = player.Position + Vector3.Up * 20f;
-			entity.Rotation = player.Rotation;
+			entity.Position = Position + Vector3.Up * 20f;
+			entity.Rotation = Rotation;
 			entity.Transmit = TransmitType.Always;
-			entity.Player = player;
+			entity.Player = this;
 
-			player.PetEntity = entity;
+			PetEntity = entity;
 		}
-		player.Data.CurrentPet = petId;
-		player.SavePlayerDataClientRpc(To.Single(player));
+		Data.CurrentPet = petId;
+		SavePlayerDataClientRpc(To.Single(Client));
 	}
 
 }
