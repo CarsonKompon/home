@@ -96,7 +96,7 @@ public partial class ArcadeMachineTetros : ArcadeMachineBase
     [ClientRpc]
     public void UpdateBoardRpc(string board)
     {
-        if(Game.LocalClient == CurrentUser) return;
+        if(Game.LocalPawn == CurrentUser) return;
         Screen?.Menu?.UpdateBoard.Invoke(TetrosGamePage.StringToBoard(board));
     }
 
@@ -112,7 +112,7 @@ public partial class ArcadeMachineTetros : ArcadeMachineBase
     [ClientRpc]
     public void UpdatePlayerRpc(int blockType, int x, int y, int rot)
     {
-        if(Game.LocalClient == CurrentUser) return;
+        if(Game.LocalPawn == CurrentUser) return;
         Screen?.Menu?.UpdatePlayer.Invoke((BlockType)blockType, new Vector2(x, y), rot);
     }
 
@@ -127,7 +127,7 @@ public partial class ArcadeMachineTetros : ArcadeMachineBase
     [ClientRpc]
     public void UpdateHeldPieceRpc(int blockType)
     {
-        if(Game.LocalClient == CurrentUser) return;
+        if(Game.LocalPawn == CurrentUser) return;
         Screen?.Menu?.UpdateHeldPiece.Invoke((BlockType)blockType);
     }
 
@@ -158,7 +158,7 @@ public partial class ArcadeMachineTetros : ArcadeMachineBase
     [ClientRpc]
     public void UpdateScoreRpc(long score)
     {
-        if(Game.LocalClient == CurrentUser) return;
+        if(Game.LocalPawn == CurrentUser) return;
         Screen?.Menu?.UpdateScore.Invoke(score);
     }
 

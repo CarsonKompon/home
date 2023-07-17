@@ -32,19 +32,19 @@
         };
 
         ServerUpdateBoard += (board) => {
-            ArcadeMachineTetros.RequestUpdateBoard(Machine.NetworkIdent, board);
+            //ArcadeMachineTetros.RequestUpdateBoard(Machine.NetworkIdent, board);
         };
 
         ServerUpdatePlayer += (blockType, x, y, rotation) => {
-            ArcadeMachineTetros.RequestUpdatePlayer(Machine.NetworkIdent, (int)blockType, x, y, rotation);
+            //ArcadeMachineTetros.RequestUpdatePlayer(Machine.NetworkIdent, (int)blockType, x, y, rotation);
         };
 
         ServerRequestHeldPiece += (blockType) => {
-            ArcadeMachineTetros.RequestHeldPiece(Machine.NetworkIdent, (int)blockType);
+            //ArcadeMachineTetros.RequestHeldPiece(Machine.NetworkIdent, (int)blockType);
         };
 
         ServerRequestNextPieces += (blocks) => {
-            ArcadeMachineTetros.RequestNextPieces(Machine.NetworkIdent, blocks);
+            //ArcadeMachineTetros.RequestNextPieces(Machine.NetworkIdent, blocks);
         };
 
         OnExit += (score) => {
