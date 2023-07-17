@@ -32,6 +32,7 @@
         OnExit += (score) => {
             ArcadeMachineRhythm4K.Payout(Machine.PreviousUserSteamId, score / 4000);
             ArcadeMachineRhythm4K.RequestRemoveUser(Machine.NetworkIdent);
+            Navigate("/");
         };
     }
 
