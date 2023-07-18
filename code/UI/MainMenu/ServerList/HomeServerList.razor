@@ -44,6 +44,7 @@
     async Task CreateNewLobby()
     {
         await Game.Menu.CreateLobbyAsync(16, null, true);
+        Game.Menu.Lobby.Map = "carsonk.home_staycation_strip";
         // we will navigate to lobby when it's ready
     }
 }
