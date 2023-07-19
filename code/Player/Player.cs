@@ -911,6 +911,7 @@ public partial class HomePlayer : AnimatedEntity
 	{
 		if(Entity.FindByIndex<HomePlayer>(networkIdent) is not HomePlayer player) return;
 		await player.ChangeOutfit(outfit, height);
+		if(height != -1.0f) player.SavePlayerDataClientRpc(To.Single(player.Client));
 	}
 
 	public async Task ChangeOutfit(string outfit, float height = -1.0f)

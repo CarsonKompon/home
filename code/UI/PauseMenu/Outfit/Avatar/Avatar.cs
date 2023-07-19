@@ -45,7 +45,6 @@ public partial class Avatar : Panel
 	public Clothing.ClothingCategory CurrentCategory { get; set; }
 
 	VSlider HeightSlider { get; set; }
-	float Height { get; set; }
 
 	string originalValue;
 	RealTimeSince timeSinceSave = 0;
@@ -60,8 +59,7 @@ public partial class Avatar : Panel
 
 		if ( firstTime )
 		{
-			if(Game.LocalPawn is HomePlayer player)
-				HeightSlider.Value = player.Data.Height;
+			
 
 			HeightSlider.OnValueChanged += ( value ) =>
 			{
@@ -73,6 +71,8 @@ public partial class Avatar : Panel
 
 			Load();
 		}
+
+		AvatarHud.SetHeight( (1.0f - HeightSlider.Value) + 0.5f );
 	}
 
 	public void ChangeCategory( Clothing.ClothingCategory category )
@@ -186,7 +186,6 @@ public partial class Avatar : Panel
 		originalValue = player.ClothingString;
 		PreviewClothing = originalValue;
 		HeightSlider.Value = 1.0f - (player.Data.Height - 0.5f);
-		Log.Info(PreviewClothing);
 
 		Container.Deserialize( originalValue );
 		DressModel();
@@ -204,8 +203,8 @@ public partial class Avatar : Panel
 		if(Game.LocalPawn is not HomePlayer player) return;
 		var str = Container.Serialize();
 		Cookie.SetString("home.outfit", str);
-		HomePlayer.ChangeOutfit(player.NetworkIdent, str, (1.0f - HeightSlider.Value) + 0.5f);
 
+		HomePlayer.ChangeOutfit(player.NetworkIdent, str, (1.0f - HeightSlider.Value) + 0.5f);
 		HomeGUI.UpdateAvatar(str);
 
 		SetClass( "is-dirty", false );
