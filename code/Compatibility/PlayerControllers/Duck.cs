@@ -5,11 +5,11 @@ namespace Home
 	[Library]
 	public class HomeDuck : BaseNetworkable
 	{
-		public HomeBasePlayerController Controller;
+		public WalkController Controller;
 
 		public bool IsActive; // replicate
 
-		public HomeDuck( HomeBasePlayerController controller )
+		public HomeDuck( WalkController controller )
 		{
 			Controller = controller;
 		}
@@ -38,7 +38,7 @@ namespace Home
 
 		protected virtual void TryUnDuck()
 		{
-			var pm = Controller.TraceBBox( Controller.Position, Controller.Position, originalMins, originalMaxs );
+			var pm = Controller.TraceBBox( Controller.Position, Controller.Position, 0, 0 );
 			if ( pm.StartedSolid ) return;
 
 			IsActive = false;

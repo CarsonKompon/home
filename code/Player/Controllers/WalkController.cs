@@ -5,21 +5,16 @@ using Sandbox;
 namespace Home
 {
     [Library]
-	public partial class HomeWalkController : HomeBasePlayerController
+	public partial class WalkController : PawnController
     {
         [Net] public float SprintSpeed { get; set; } = 400.0f;
         [Net] public float WalkSpeed { get; set; } = 80.0f;
         [Net] public float DefaultSpeed { get; set; } = 250.0f;
         [Net] public float Acceleration { get; set; } = 10.0f;
         [Net] public float AirAcceleration { get; set; } = 50.0f;
-        [Net] public float FallSoundZ { get; set; } = -30.0f;
         [Net] public float GroundFriction { get; set; } = 4.0f;
         [Net] public float StopSpeed { get; set; } = 100.0f;
-        [Net] public float Size { get; set; } = 20.0f;
-        [Net] public float DistEpsilon { get; set; } = 0.03125f;
         [Net] public float GroundAngle { get; set; } = 46.0f;
-        [Net] public float Bounce { get; set; } = 0.0f;
-        [Net] public float MoveFriction { get; set; } = 1.0f;
         [Net] public float StepSize { get; set; } = 18.0f;
         [Net] public float MaxNonJumpVelocity { get; set; } = 140.0f;
         [Net] public float BodyGirth { get; set; } = 32.0f;
@@ -34,24 +29,11 @@ namespace Home
         public HomeUnstuck Unstuck;
 
 
-        public HomeWalkController()
+        public WalkController()
         {
             Duck = new HomeDuck(this);
             Unstuck = new HomeUnstuck(this);
         }
-
-        /// <summary>
-        /// This is temporary, get the hull size for the player's collision
-        /// </summary>
-        public override BBox GetHull()
-        {
-            var girth = BodyGirth * 0.5f;
-            var mins = new Vector3(-girth, -girth, 0);
-            var maxs = new Vector3(+girth, +girth, BodyHeight);
-
-            return new BBox(mins, maxs);
-        }
-
 
         // Duck body height 32
         // Eye Height 64
@@ -75,12 +57,12 @@ namespace Home
         public virtual void UpdateBBox()
         {
             var girth = BodyGirth * 0.5f;
-            var height = ((Pawn as HomePlayer)?.Data?.Height ?? 1f);
+            var height = (Entity?.Data?.Height ?? 1f);
 
-            var mins = new Vector3(-girth, -girth, 0) * Pawn.Scale;
-            var maxs = new Vector3(+girth, +girth, BodyHeight * height) * Pawn.Scale;
+            var mins = new Vector3(-girth, -girth, 0) * Entity.Scale;
+            var maxs = new Vector3(+girth, +girth, BodyHeight * height) * Entity.Scale;
 
-            Duck.UpdateBBox(ref mins, ref maxs, Pawn.Scale);
+            Duck.UpdateBBox(ref mins, ref maxs, Entity.Scale);
 
             SetBBox(mins, maxs);
         }
@@ -92,57 +74,31 @@ namespace Home
         {
             base.FrameSimulate();
 
-			var pl = Pawn as HomePlayer;
-			EyeRotation = pl.ViewAngles.ToRotation();
+			EyeRotation = Entity.ViewAngles.ToRotation();
 		}
 
         public override void Simulate()
         {
-			var pl = Pawn as HomePlayer;
-
-			EyeLocalPosition = Vector3.Up * (EyeHeight * Pawn.Scale);
-            EyeLocalPosition *= (Pawn as HomePlayer)?.Data?.Height ?? 1f;
+			EyeLocalPosition = Vector3.Up * (EyeHeight * Entity.Scale);
+            EyeLocalPosition *= Entity?.Data?.Height ?? 1f;
 
 			UpdateBBox();
 
-            EyeLocalPosition += TraceOffset;
-
 			// If we're a bot, spin us around 180 degrees.
-			if ( pl.Client.IsBot )
-				EyeRotation = pl.ViewAngles.WithYaw( pl.ViewAngles.yaw + 180f ).ToRotation();
+			if ( Entity.Client.IsBot )
+				EyeRotation = Entity.ViewAngles.WithYaw( Entity.ViewAngles.yaw + 180f ).ToRotation();
 			else
-				EyeRotation = pl.ViewAngles.ToRotation();
+				EyeRotation = Entity.ViewAngles.ToRotation();
 
 			RestoreGroundPos();
-
-            //Velocity += BaseVelocity * ( 1 + Time.Delta * 0.5f );
-            //BaseVelocity = Vector3.Zero;
-
-            //Rot = Rotation.LookAt( Input.Rotation.Forward.WithZ( 0 ), Vector3.Up );
 
             if (Unstuck.TestAndFix())
                 return;
 
-            // Check Stuck
-            // Unstuck - or return if stuck
-
-            // Set Ground Entity to null if  falling faster then 250
-
-            // store water level to compare later
-
-            // if not on ground, store fall velocity
-
-            // player->UpdateStepSound( player->m_pSurfaceData, mv->GetAbsOrigin(), mv->m_vecVelocity )
-
-
-            // RunLadderMode
-
             CheckLadder();
-            Swimming = Pawn.GetWaterLevel() > 0.5f;
+            Swimming = Entity.GetWaterLevel() > 0.5f;
 
-            //
-            // Start Gravity
-            //
+            // Gravity - First Half
             if (!Swimming && !IsTouchingLadder)
             {
                 Velocity -= new Vector3(0, 0, Gravity * 0.5f) * Time.Delta;
@@ -151,35 +107,16 @@ namespace Home
                 BaseVelocity = BaseVelocity.WithZ(0);
             }
 
-
-            /*
-             if (player->m_flWaterJumpTime)
-	            {
-		            WaterJump();
-		            TryPlayerMove();
-		            // See if we are still in water?
-		            CheckWater();
-		            return;
-	            }
-            */
-
-            // if ( underwater ) do underwater movement
-
             if (AutoJump ? Input.Down("jump") : Input.Pressed("jump"))
             {
                 CheckJumpButton();
             }
 
-            // Fricion is handled before we add in any base velocity. That way, if we are on a conveyor,
-            //  we don't slow when standing still, relative to the conveyor.
             bool bStartOnGround = GroundEntity != null;
-            //bool bDropSound = false;
+
             if (bStartOnGround)
             {
-                //if ( Velocity.z < FallSoundZ ) bDropSound = true;
-
                 Velocity = Velocity.WithZ(0);
-                //player->m_Local.m_flFallVelocity = 0.0f;
 
                 if (GroundEntity != null)
                 {
@@ -187,12 +124,10 @@ namespace Home
                 }
             }
 
-            //
-            // Work out wish velocity.. just take input, rotate it to view, clamp to -1, 1
-            //
-            WishVelocity = new Vector3( pl.InputDirection.x.Clamp( -1f, 1f ), pl.InputDirection.y.Clamp( -1f, 1f ), 0);
+            // Wish Velocity
+            WishVelocity = new Vector3( Entity.InputDirection.x.Clamp( -1f, 1f ), Entity.InputDirection.y.Clamp( -1f, 1f ), 0);
             var inSpeed = WishVelocity.Length.Clamp(0, 1);
-            WishVelocity *= pl.ViewAngles.WithPitch(0).ToRotation();
+            WishVelocity *= Entity.ViewAngles.WithPitch(0).ToRotation();
 
             if (!Swimming && !IsTouchingLadder)
             {
@@ -227,41 +162,18 @@ namespace Home
 
             CategorizePosition(bStayOnGround);
 
-            // FinishGravity
+            // Gravity - Second Half
             if (!Swimming && !IsTouchingLadder)
             {
                 Velocity -= new Vector3(0, 0, Gravity * 0.5f) * Time.Delta;
             }
-
 
             if (GroundEntity != null)
             {
                 Velocity = Velocity.WithZ(0);
             }
 
-            // CheckFalling(); // fall damage etc
-
-            // Land Sound
-            // Swim Sounds
-
             SaveGroundPos();
-
-            if (Debug)
-            {
-                DebugOverlay.Box(Position + TraceOffset, mins, maxs, Color.Red);
-                DebugOverlay.Box(Position, mins, maxs, Color.Blue);
-
-                var lineOffset = 0;
-                if (Game.IsServer) lineOffset = 10;
-
-                DebugOverlay.ScreenText($"        Position: {Position}", lineOffset + 0);
-                DebugOverlay.ScreenText($"        Velocity: {Velocity}", lineOffset + 1);
-                DebugOverlay.ScreenText($"    BaseVelocity: {BaseVelocity}", lineOffset + 2);
-                DebugOverlay.ScreenText($"    GroundEntity: {GroundEntity} [{GroundEntity?.Velocity}]", lineOffset + 3);
-                DebugOverlay.ScreenText($" SurfaceFriction: {SurfaceFriction}", lineOffset + 4);
-                DebugOverlay.ScreenText($"    WishVelocity: {WishVelocity}", lineOffset + 5);
-                DebugOverlay.ScreenText($"    Speed: {Velocity.Length}", lineOffset + 6);
-            }
 
         }
 
@@ -336,7 +248,7 @@ namespace Home
         public virtual void StepMove()
         {
             MoveHelper mover = new MoveHelper(Position, Velocity);
-            mover.Trace = mover.Trace.Size(mins, maxs).Ignore(Pawn);
+            mover.Trace = mover.Trace.Size(mins, maxs).Ignore(Entity);
             mover.MaxStandableAngle = GroundAngle;
 
             mover.TryMoveWithStep(Time.Delta, StepSize);
@@ -348,7 +260,7 @@ namespace Home
         public virtual void Move()
         {
             MoveHelper mover = new MoveHelper(Position, Velocity);
-            mover.Trace = mover.Trace.Size(mins, maxs).Ignore(Pawn);
+            mover.Trace = mover.Trace.Size(mins, maxs).Ignore(Entity);
             mover.MaxStandableAngle = GroundAngle;
 
             mover.TryMove(Time.Delta);
@@ -510,6 +422,53 @@ namespace Home
 
         }
 
+        public virtual BBox GetBBox(float crouch = -1f, float liftFeet = -1f)
+	{
+		if(crouch == -1f) crouch = 1;
+		if(liftFeet == -1f) liftFeet = 1;
+
+		var girth = BodyGirth * 0.5f;
+		var height = BodyHeight * (Entity?.Data?.Height ?? 1f);
+		var mins = new Vector3(-girth, -girth, 0) * Entity.Scale;
+		var maxs = new Vector3(+girth, +girth, height) * Entity.Scale;
+
+		if( crouch > 0f )
+		{
+			maxs.WithZ( 36 * Entity.Scale * (Entity?.Data.Height ?? 1f));
+		}
+		if ( liftFeet > 0 )
+		{
+			maxs = maxs.WithZ( maxs.z - liftFeet );
+		}
+
+		return new BBox(mins, maxs);
+	}
+
+	/// <summary>
+	/// Traces the bbox and returns the trace result.
+	/// LiftFeet will move the start position up by this amount, while keeping the top of the bbox at the same 
+	/// position. This is good when tracing down because you won't be tracing through the ceiling above.
+	/// </summary>
+	public virtual TraceResult TraceBBox( Vector3 start, Vector3 end, float crouch = -1f, float liftFeet = -1f )
+	{
+		if(crouch == -1f) crouch = 1;
+		if(liftFeet == -1f) liftFeet = 1;
+
+		var bounds = GetBBox(crouch, liftFeet);
+
+		if ( liftFeet > 0 )
+		{
+			start += Vector3.Up * liftFeet;
+		}
+
+		var tr = Trace.Ray( start, end )
+					.Size( bounds.Mins, bounds.Maxs )
+					.WithAnyTags( "solid", "playerclip", "passbullets", "player" )
+					.Ignore( Entity )
+					.Run();
+		return tr;
+	}
+
         public virtual void AirMove()
         {
             var wishdir = WishVelocity.Normal;
@@ -545,10 +504,8 @@ namespace Home
 
         public virtual void CheckLadder()
         {
-			var pl = Pawn as HomePlayer;
-
-            var wishvel = new Vector3( pl.InputDirection.x.Clamp( -1f, 1f ), pl.InputDirection.y.Clamp( -1f, 1f ), 0);
-            wishvel *= pl.ViewAngles.WithPitch(0).ToRotation();
+            var wishvel = new Vector3( Entity.InputDirection.x.Clamp( -1f, 1f ), Entity.InputDirection.y.Clamp( -1f, 1f ), 0);
+            wishvel *= Entity.ViewAngles.WithPitch(0).ToRotation();
             wishvel = wishvel.Normal;
 
             if (IsTouchingLadder)
@@ -576,7 +533,7 @@ namespace Home
             var pm = Trace.Ray(start, end)
                         .Size(mins, maxs)
                         .WithTag("ladder")
-                        .Ignore(Pawn)
+                        .Ignore(Entity)
                         .Run();
 
             IsTouchingLadder = false;
@@ -698,16 +655,6 @@ namespace Home
             GroundEntity = null;
             GroundNormal = Vector3.Up;
             SurfaceFriction = 1.0f;
-        }
-
-        /// <summary>
-        /// Traces the current bbox and returns the result.
-        /// liftFeet will move the start position up by this amount, while keeping the top of the bbox at the same
-        /// position. This is good when tracing down because you won't be tracing through the ceiling above.
-        /// </summary>
-        public override TraceResult TraceBBox(Vector3 start, Vector3 end, float liftFeet = 0.0f)
-        {
-            return TraceBBox(start, end, mins, maxs, liftFeet);
         }
 
         /// <summary>

@@ -10,12 +10,9 @@ public class ArcadeControllerTetros : ArcadeControllerBase
     {
         base.Simulate();
 
-        if(Pawn is HomePlayer player)
-        {
-            ArcadeMachine?.SetAnimParameter("left", Input.Down("TetrosMoveLeft"));
-            ArcadeMachine?.SetAnimParameter("right", Input.Down("TetrosMoveRight"));
-            ArcadeMachine?.SetAnimParameter("down", Input.Down("TetrosSoftDrop"));
-        }
+        ArcadeMachine?.SetAnimParameter("left", Input.Down("TetrosMoveLeft"));
+        ArcadeMachine?.SetAnimParameter("right", Input.Down("TetrosMoveRight"));
+        ArcadeMachine?.SetAnimParameter("down", Input.Down("TetrosSoftDrop"));
 
     }
 }
