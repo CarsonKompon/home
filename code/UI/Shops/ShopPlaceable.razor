@@ -182,7 +182,7 @@
         switch(SortType)
         {
             case ShopSortType.Id:
-                PlaceableListDisplay = GetSearchList().OrderBy(x => x.Id).ToList();
+                PlaceableListDisplay = GetSearchList().OrderBy(x => x.ResourceName).ToList();
                 break;
             case ShopSortType.Name:
                 PlaceableListDisplay = GetSearchList().OrderBy(x => x.Name).ToList();
@@ -192,7 +192,7 @@
                 break;
             case ShopSortType.Owned:
                 if(Game.LocalPawn is not HomePlayer player) return;
-                PlaceableListDisplay = GetSearchList().OrderBy(x => player.Data.Stash.Where(y => y.Id == x.Id).FirstOrDefault()?.Amount ?? 0 ).ToList();
+                PlaceableListDisplay = GetSearchList().OrderBy(x => player.Data.Stash.Where(y => y.Id == x.ResourceName).FirstOrDefault()?.Amount ?? 0 ).ToList();
                 break;
         }
         if(Descending) PlaceableListDisplay.Reverse();

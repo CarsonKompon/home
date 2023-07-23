@@ -123,10 +123,10 @@ public partial class HomeGame : GameManager
 		else
 		{
 			// Check the player's inventory
-			if(!player.UsePlaceable(placeable.Id)) return;
+			if(!player.UsePlaceable(placeable.ResourceName)) return;
 
 			// Create the placeable
-			Entity ent = await SpawnPlaceable(placeable.Id, ConsoleSystem.Caller.SteamId, player.PlacingPosition, player.PlacingRotation, 1.0f);
+			Entity ent = await SpawnPlaceable(placeable.ResourceName, ConsoleSystem.Caller.SteamId, player.PlacingPosition, player.PlacingRotation, 1.0f);
 			if(ent.Components.Get<PlaceableComponent>() is PlaceableComponent component)
 			{
 				component.LocalAngle = player.PlacingAngle;
@@ -168,7 +168,7 @@ public partial class HomeGame : GameManager
 		player.TakeMoney(placeable.Cost);
 
 		// Give the placeable to the player
-		player.GivePlaceable(placeable.Id);
+		player.GivePlaceable(placeable.ResourceName);
 	}
 
 	[ConCmd.Server]
@@ -240,7 +240,7 @@ public partial class HomeGame : GameManager
 		if(placeable == null) return;
 
 		// Give the placeable to the player
-		player.GivePlaceable(placeable.Id);
+		player.GivePlaceable(placeable.ResourceName);
 	}
 
 	[ConCmd.Server]

@@ -22,7 +22,7 @@ public partial class PlaceableComponent : EntityComponent
 
     public PlaceableComponent(HomePlaceable placeable, long owner) : this()
     {
-        PlaceableId = placeable.Id;
+        PlaceableId = placeable.ResourceName;
         OwnerId = owner;
 
         Placeable = HomePlaceable.Find(PlaceableId);

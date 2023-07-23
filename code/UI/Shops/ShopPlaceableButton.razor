@@ -52,14 +52,14 @@
     public string GetDescription()
     {
         if(Game.LocalPawn is not HomePlayer player) return "";
-        var stashEntry = player.Data.Stash.Where(x => x.GetPlaceable().Id == Placeable.Id).FirstOrDefault();
+        var stashEntry = player.Data.Stash.Where(x => x.GetPlaceable().ResourceName == Placeable.ResourceName).FirstOrDefault();
         if(stashEntry == null) return $"You currently own 0";
         return $"You currently own {stashEntry.Amount}";
     }
 
     public void Purchase()
     {
-        HomeGame.PurchasePlaceable(Placeable.Id);
+        HomeGame.PurchasePlaceable(Placeable.ResourceName);
     }
 
     protected override void OnMouseOver(MousePanelEvent e)

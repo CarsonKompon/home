@@ -43,7 +43,7 @@ public partial class HomePlayer
 	public void SetPlacing(HomePlaceable placeable)
 	{
 		Game.AssertClient();
-		Placing = placeable.Id;
+		Placing = placeable.ResourceName;
 		PlacingGuide.StartPlacing(placeable);
 		MovingEntity = null;
 		CanPlace = true;

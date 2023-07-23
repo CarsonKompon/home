@@ -25,7 +25,6 @@ public enum PlaceableState
 [GameResource("Home Placeable", "placeabl", "Describes a placeable model or entity that can be stored in the player's inventory and placed in their room.", Icon = "house" )]
 public partial class HomePlaceable : GameResource, IShopItem
 {
-    public string Id { get; set; } = "missing_id";
     public string Name { get; set; } = "Missingname.";
     public string Description { get; set; } = "";
 
@@ -87,7 +86,7 @@ public partial class HomePlaceable : GameResource, IShopItem
 
     public static HomePlaceable Find(string id)
     {
-        return All.Find(p => p.Id == id);
+        return All.Find(p => p.ResourceName == id);
     }
 
     public static HomePlaceable FindByModel(string model)
