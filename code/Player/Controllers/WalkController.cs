@@ -434,7 +434,7 @@ namespace Home
 
 		if( crouch > 0f )
 		{
-			maxs.WithZ( 36 * Entity.Scale * (Entity?.Data.Height ?? 1f));
+			maxs.WithZ( 36 * Entity.Scale * (Entity?.Data?.Height ?? 1f));
 		}
 		if ( liftFeet > 0 )
 		{
