@@ -5,8 +5,25 @@ namespace Home;
 public partial class ArcadeControllerBase : PawnController
 {
     [Net] public ArcadeMachineBase ArcadeMachine { get; set; }
+    protected CitizenAnimationHelper AnimHelper;
     public override bool HasAnimations => false; // Disable base animator
-    public virtual bool AnimateHandsToJoystick => true; 
+    public virtual bool AnimateHandsToJoystick => true;
+    public Transform PlayerTransform;
+
+    protected override void OnActivate()
+    {
+        base.OnActivate();
+        AnimHelper = new CitizenAnimationHelper(Entity);
+        var attachment = ArcadeMachine.GetAttachment("PlayerPos");
+        if(attachment != null)
+        {
+            PlayerTransform = attachment.Value;
+        }
+        else
+        {
+            PlayerTransform = new Transform(ArcadeMachine.Position + Vector3.Down * 10 + ArcadeMachine.Rotation.Forward * 40f + Vector3.Up * 10f);
+        }
+    }
 
     public override void Simulate()
     {
@@ -20,17 +37,35 @@ public partial class ArcadeControllerBase : PawnController
 
         WishVelocity = Vector3.Zero;
         Velocity = Vector3.Zero;
-
-        var attachment = ArcadeMachine.GetAttachment("PlayerPos");
-        if(attachment != null)
-        {
-            Position = attachment.Value.Position;
-        }
-        else
-        {
-            Position = ArcadeMachine.Position + Vector3.Down * 10 + ArcadeMachine.Rotation.Forward * 40f + Vector3.Up * 10f;
-        }
+        Position = PlayerTransform.Position;
     
+        SimulateAnimations();
+
+        if(Input.Pressed("crouch"))
+        {
+            ArcadeMachine.EndGame(Entity.Client.SteamId);
+        }
+
+        BuildInput();
+    }
+
+    protected virtual void SimulateAnimations()
+    {
+        // var turnSpeed = 0.02f;
+		// var rotation = Entity.ViewAngles.ToRotation();
+		// var idealRotation = Rotation.LookAt( rotation.Forward.WithZ( 0 ), Vector3.Up );
+		// Entity.Rotation = Rotation.Slerp( Entity.Rotation, idealRotation, 1f * Time.Delta * turnSpeed );
+		// Entity.Rotation = Entity.Rotation.Clamp( idealRotation, 45.0f, out var shuffle ); // lock facing to within 45 degrees of look direction
+
+        // Stay still and grounded, with the ability to look around
+        AnimHelper.WithWishVelocity(WishVelocity);
+        AnimHelper.WithVelocity(Velocity);
+        //AnimHelper.WithLookAt( Entity.EyePosition + Entity.EyeRotation.Forward * 100.0f, 1.0f, 1.0f, 0.5f );
+        //AnimHelper.AimAngle = rotation;
+        AnimHelper.IsGrounded = true;
+        AnimHelper.DuckLevel = 0;
+        AnimHelper.AimBodyWeight = 0.5f;
+
         if(AnimateHandsToJoystick)
         {
             if(Entity.GetAnimParameterBool("b_vr") == false) SetVRIK(Entity, true);
@@ -44,18 +79,7 @@ public partial class ArcadeControllerBase : PawnController
 
             Entity.SetAnimParameter( "left_hand_ik.rotation", leftHandLocal.Rotation * Rotation.From( 0, 0, 180 ) );
             Entity.SetAnimParameter( "right_hand_ik.rotation", rightHandLocal.Rotation );
-
-            Entity.SetAnimParameter( "duck", 0f );
         }
-
-        Entity.SetAnimParameter( "b_grounded", true );
-
-        if(Input.Pressed("crouch"))
-        {
-            ArcadeMachine.EndGame(Entity.Client.SteamId);
-        }
-
-        BuildInput();
     }
 
     public virtual void OnExit()

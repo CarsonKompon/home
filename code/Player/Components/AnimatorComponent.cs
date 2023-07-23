@@ -5,10 +5,17 @@ namespace Home;
 
 public partial class AnimatorComponent : EntityComponent<HomePlayer>
 {
+	CitizenAnimationHelper AnimHelper;
+
+	protected override void OnActivate()
+	{
+		base.OnActivate();
+		AnimHelper = new CitizenAnimationHelper(Entity);
+	}
+
     public void Simulate()
     {
         if(Entity.Controller == null) return;
-        if(!Entity.Controller.HasAnimations) return;
 
 		var turnSpeed = 0.02f;
         var controller = Entity.Controller;
@@ -20,39 +27,42 @@ public partial class AnimatorComponent : EntityComponent<HomePlayer>
 		else
 			rotation = Entity.ViewAngles.ToRotation();
 
-		var idealRotation = Rotation.LookAt( rotation.Forward.WithZ( 0 ), Vector3.Up );
-		Entity.Rotation = Rotation.Slerp( Entity.Rotation, idealRotation, controller.WishVelocity.Length * Time.Delta * turnSpeed );
-		Entity.Rotation = Entity.Rotation.Clamp( idealRotation, 45.0f, out var shuffle ); // lock facing to within 45 degrees of look direction
+		if(Entity.Controller.HasRotation)
+		{
+			var idealRotation = Rotation.LookAt( rotation.Forward.WithZ( 0 ), Vector3.Up );
+			Entity.Rotation = Rotation.Slerp( Entity.Rotation, idealRotation, controller.WishVelocity.Length * Time.Delta * turnSpeed );
+			Entity.Rotation = Entity.Rotation.Clamp( idealRotation, 45.0f, out var shuffle ); // lock facing to within 45 degrees of look direction
+			AnimHelper.FootShuffle = shuffle;
+		}
 
-		CitizenAnimationHelper animHelper = new CitizenAnimationHelper( Entity );
+		if(!Entity.Controller.HasAnimations) return;
 
-		animHelper.WithWishVelocity(controller.WishVelocity);
-		animHelper.WithVelocity(controller.Velocity);
-		animHelper.WithLookAt( Entity.EyePosition + Entity.EyeRotation.Forward * 100.0f, 1.0f, 1.0f, 0.5f );
-		animHelper.AimAngle = rotation;
-		animHelper.FootShuffle = shuffle;
-		animHelper.DuckLevel = MathX.Lerp( animHelper.DuckLevel, controller.HasTag( "ducked" ) ? 1 : 0, Time.Delta * 10.0f );
-		animHelper.VoiceLevel = (Game.LocalPawn == Entity) ? Voice.Level : Entity.Client.Voice.CurrentLevel;
-		animHelper.IsGrounded = Entity.GroundEntity != null;
-		animHelper.IsSitting = controller.HasTag( "sitting" );
-		animHelper.IsNoclipping = controller.HasTag( "noclip" );
-		animHelper.IsClimbing = controller.HasTag( "climbing" );
-		animHelper.IsSwimming = Entity.GetWaterLevel() >= 0.5f;
-		animHelper.IsWeaponLowered = false;
-		animHelper.MoveStyle = Input.Down( "walk" ) ? CitizenAnimationHelper.MoveStyles.Walk : CitizenAnimationHelper.MoveStyles.Run;
+		AnimHelper.WithWishVelocity(controller.WishVelocity);
+		AnimHelper.WithVelocity(controller.Velocity);
+		AnimHelper.WithLookAt( Entity.EyePosition + Entity.EyeRotation.Forward * 100.0f, 1.0f, 1.0f, 0.5f );
+		AnimHelper.AimAngle = rotation;
+		AnimHelper.DuckLevel = MathX.Lerp( AnimHelper.DuckLevel, controller.HasTag( "ducked" ) ? 1 : 0, Time.Delta * 10.0f );
+		AnimHelper.VoiceLevel = (Game.LocalPawn == Entity) ? Voice.Level : Entity.Client.Voice.CurrentLevel;
+		AnimHelper.IsGrounded = Entity.GroundEntity != null;
+		AnimHelper.IsSitting = controller.HasTag( "sitting" );
+		AnimHelper.IsNoclipping = controller.HasTag( "noclip" );
+		AnimHelper.IsClimbing = controller.HasTag( "climbing" );
+		AnimHelper.IsSwimming = Entity.GetWaterLevel() >= 0.5f;
+		AnimHelper.IsWeaponLowered = false;
+		AnimHelper.MoveStyle = Input.Down( "walk" ) ? CitizenAnimationHelper.MoveStyles.Walk : CitizenAnimationHelper.MoveStyles.Run;
 	
 
-		if ( controller.HasEvent( "jump" ) ) animHelper.TriggerJump();
+		if ( controller.HasEvent( "jump" ) ) AnimHelper.TriggerJump();
 		// if ( ActiveChild != lastWeapon ) animHelper.TriggerDeploy();
 
 		if ( Entity.ActiveChild is HomeBaseCarriable carry )
 		{
-			carry.SimulateAnimator( animHelper );
+			carry.SimulateAnimator( AnimHelper );
 		}
 		else
 		{
-			animHelper.HoldType = CitizenAnimationHelper.HoldTypes.None;
-			animHelper.AimBodyWeight = 0.5f;
+			AnimHelper.HoldType = CitizenAnimationHelper.HoldTypes.None;
+			AnimHelper.AimBodyWeight = 0.5f;
 		}
     }
 

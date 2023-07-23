@@ -19,6 +19,7 @@ namespace Home
 
 		public Vector3 WishVelocity { get; set; }
 		public virtual bool HasAnimations => true;
+		public virtual bool HasRotation => true;
 
 		public void UpdateFromEntity()
 		{
