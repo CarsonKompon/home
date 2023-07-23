@@ -25,7 +25,7 @@ public partial class HomePlayer : AnimatedEntity
 	/// on the client.
 	/// </summary>
 	[Net, Predicted]
-	public HomePawnController Controller { get; set; }
+	public PawnController Controller { get; set; }
 
 	public static HomePlayer Local => Game.LocalPawn as HomePlayer;
 
@@ -33,7 +33,7 @@ public partial class HomePlayer : AnimatedEntity
 	/// This is used for noclip mode
 	/// </summary>
 	[Net, Predicted]
-	public HomePawnController DevController { get; set; }
+	public PawnController DevController { get; set; }
 
     [Net, Predicted] public Entity ActiveChild { get; set; }
 	[ClientInput] public Vector3 InputDirection { get; protected set; }
@@ -113,7 +113,7 @@ public partial class HomePlayer : AnimatedEntity
 	/// on both client and server. This is called as an accessor every tick.. so maybe
 	/// avoid creating new classes here or you're gonna be making a ton of garbage!
 	/// </summary>
-	public virtual HomePawnController GetActiveController()
+	public virtual PawnController GetActiveController()
 	{
 		if ( DevController != null ) return DevController;
 
@@ -197,13 +197,16 @@ public partial class HomePlayer : AnimatedEntity
 		{
 			if(player.HasModeratorPermissions() || ConsoleSystem.GetValue("sv_cheats") == "1")
 			{
-				if(player.DevController is HomeNoclipController)
+				if(player.DevController is NoclipController)
 				{
 					player.DevController = null;
+					player.Components.RemoveAny<NoclipController>();
 				}
 				else
 				{
-					player.DevController = new HomeNoclipController();
+					var controller = new NoclipController();
+					player.Components.Add(controller);
+					player.DevController = controller;
 				}
 			}
 		}
@@ -224,7 +227,7 @@ public partial class HomePlayer : AnimatedEntity
 
 	}
 
-	void SimulateAnimation(HomePawnController controller)
+	void SimulateAnimation(PawnController controller)
 	{
 		if(controller == null) return;
 		if(!controller.HasAnimations) return;
@@ -439,7 +442,7 @@ public partial class HomePlayer : AnimatedEntity
 
 		ResetController();
 
-        if(DevController is HomeNoclipController)
+        if(DevController is NoclipController)
         {
             DevController = null;
         }
@@ -469,15 +472,24 @@ public partial class HomePlayer : AnimatedEntity
 		ResetInterpolation();
 	}
 
+	public void SetController(PawnController controller)
+	{
+		Game.AssertServer();
+		Components.RemoveAny<PawnController>();
+		Components.Add(controller);
+		Controller = controller;
+	}
+
 	public void ResetController()
 	{
-		if(Input.VR.IsActive)
+		// TODO: VR Controller
+		// if(Input.VR.IsActive)
+		// {
+		// 	Controller = new WalkControllerVR();
+		// }
+		// else
 		{
-			Controller = new WalkControllerVR();
-		}
-		else
-		{
-        	Controller = new HomeWalkController();
+        	SetController(new WalkController());
 		}
 	}
 
@@ -507,7 +519,7 @@ public partial class HomePlayer : AnimatedEntity
 
         BecomeRagdollOnClient( Velocity, lastDamage.Position, lastDamage.Force, lastDamage.BoneIndex, lastDamage.HasTag( "bullet" ), lastDamage.HasTag( "blast" ) );
 
-		Controller = null;
+		Components.RemoveAny<PawnController>();
 
 		EnableAllCollisions = false;
 		EnableDrawing = false;

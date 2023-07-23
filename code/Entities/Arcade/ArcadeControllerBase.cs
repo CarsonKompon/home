@@ -2,21 +2,18 @@ using Sandbox;
 
 namespace Home;
 
-public partial class ArcadeControllerBase : HomePawnController
+public partial class ArcadeControllerBase : PawnController
 {
-    public ArcadeMachineBase ArcadeMachine { get; set; }
+    [Net] public ArcadeMachineBase ArcadeMachine { get; set; }
     public virtual bool AnimateHandsToJoystick => true; 
 
     public override void Simulate()
     {
         base.Simulate();
 
-        if(!ArcadeMachine.IsValid())
+        if(Game.IsServer && !ArcadeMachine.IsValid())
         {
-            if(Pawn is HomePlayer ply)
-            {
-                ply.ResetController();
-            }
+            Entity.ResetController();
             return;
         }
 
@@ -33,29 +30,28 @@ public partial class ArcadeControllerBase : HomePawnController
             Position = ArcadeMachine.Position + Vector3.Down * 10 + ArcadeMachine.Rotation.Forward * 40f + Vector3.Up * 10f;
         }
     
-        if(Pawn is HomePlayer player)
+        if(AnimateHandsToJoystick)
         {
-            if(AnimateHandsToJoystick)
-            {
-                if(player.GetAnimParameterBool("b_vr") == false) SetVRIK(player, true);
+            if(Entity.GetAnimParameterBool("b_vr") == false) SetVRIK(Entity, true);
 
-                var leftHandLocal = player.Transform.ToLocal( ArcadeMachine.GetAttachment("hand_L") ?? Transform.Zero );
-                var rightHandLocal = player.Transform.ToLocal( ArcadeMachine.GetAttachment("hand_R") ?? Transform.Zero );
+            var leftHandLocal = Entity.Transform.ToLocal( ArcadeMachine.GetAttachment("hand_L") ?? Transform.Zero );
+            var rightHandLocal = Entity.Transform.ToLocal( ArcadeMachine.GetAttachment("hand_R") ?? Transform.Zero );
 
-                var handOffset = Vector3.Zero;
-                player.SetAnimParameter( "left_hand_ik.position", leftHandLocal.Position);
-                player.SetAnimParameter( "right_hand_ik.position", rightHandLocal.Position);
+            var handOffset = Vector3.Zero;
+            Entity.SetAnimParameter( "left_hand_ik.position", leftHandLocal.Position);
+            Entity.SetAnimParameter( "right_hand_ik.position", rightHandLocal.Position);
 
-                player.SetAnimParameter( "left_hand_ik.rotation", leftHandLocal.Rotation * Rotation.From( 0, 0, 180 ) );
-                player.SetAnimParameter( "right_hand_ik.rotation", rightHandLocal.Rotation );
+            Entity.SetAnimParameter( "left_hand_ik.rotation", leftHandLocal.Rotation * Rotation.From( 0, 0, 180 ) );
+            Entity.SetAnimParameter( "right_hand_ik.rotation", rightHandLocal.Rotation );
 
-                player.SetAnimParameter( "duck", 0f );
-            }
+            Entity.SetAnimParameter( "duck", 0f );
+        }
 
-            if(Input.Pressed("crouch"))
-            {
-                ArcadeMachine.EndGame(Pawn.Client.SteamId);
-            }
+        Entity.SetAnimParameter( "b_grounded", true );
+
+        if(Input.Pressed("crouch"))
+        {
+            ArcadeMachine.EndGame(Entity.Client.SteamId);
         }
 
         BuildInput();
@@ -63,8 +59,7 @@ public partial class ArcadeControllerBase : HomePawnController
 
     public virtual void OnExit()
     {
-        if(Pawn is not HomePlayer player) return;
-        SetVRIK(player, false);
+        SetVRIK(Entity, false);
     }
 
     public void SetVRIK(HomePlayer player, bool enabled)

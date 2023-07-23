@@ -30,7 +30,7 @@ public partial class ChairBase : ModelEntity, IUse
         }
         ChairController chairController = new ChairController();
         chairController.Chair = this;
-        player.Controller = chairController;
+        player.SetController(chairController);
         CurrentUser = player;
         
         player.SetParent(this, "seat", SeatOffset);

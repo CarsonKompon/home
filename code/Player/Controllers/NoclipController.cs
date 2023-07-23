@@ -3,15 +3,13 @@ using Sandbox;
 namespace Home
 {
 	[Library]
-    class HomeNoclipController : HomeBasePlayerController
+    class NoclipController : PawnController
 	{
 		public override void Simulate()
 		{
-			var pl = Pawn as HomePlayer;
-
-			var fwd = pl.InputDirection.x.Clamp( -1f, 1f );
-			var left = pl.InputDirection.y.Clamp( -1f, 1f );
-			var rotation = pl.ViewAngles.ToRotation();
+			var fwd = Entity.InputDirection.x.Clamp( -1f, 1f );
+			var left = Entity.InputDirection.y.Clamp( -1f, 1f );
+			var rotation = Entity.ViewAngles.ToRotation();
 
 			var vel = (rotation.Forward * fwd) + (rotation.Left * left);
 

@@ -3,13 +3,11 @@ using System.Collections.Generic;
 
 namespace Home
 {
-	public class HomePawnController : BaseNetworkable
+	public class PawnController : EntityComponent<HomePlayer>
 	{
 		internal HashSet<string> Events;
 		internal HashSet<string> Tags;
 
-		public Entity Pawn { get; protected set; }
-		public IClient Client { get; protected set; }
 		public Vector3 Position { get; set; }
 		public Rotation Rotation { get; set; }
 		public Vector3 Velocity { get; set; }
@@ -22,55 +20,30 @@ namespace Home
 		public Vector3 WishVelocity { get; set; }
 		public virtual bool HasAnimations => true;
 
-		public void UpdateFromEntity( Entity entity )
+		public void UpdateFromEntity()
 		{
-			Position = entity.Position;
-			Rotation = entity.Rotation;
-			Velocity = entity.Velocity;
+			Position = Entity.Position;
+			Rotation = Entity.Rotation;
+			Velocity = Entity.Velocity;
 
-			if ( entity is HomePlayer player )
-			{
-				EyeRotation = player.EyeRotation;
-				EyeLocalPosition = player.EyeLocalPosition;
-			}
+			EyeRotation = Entity.EyeRotation;
+			EyeLocalPosition = Entity.EyeLocalPosition;
 
-			BaseVelocity = entity.BaseVelocity;
-			GroundEntity = entity.GroundEntity;
-			WishVelocity = entity.Velocity;
+			BaseVelocity = Entity.BaseVelocity;
+			GroundEntity = Entity.GroundEntity;
+			WishVelocity = Entity.Velocity;
 		}
 
-		public void UpdateFromController( HomePawnController controller )
+		public void UpdateEntity( )
 		{
-			Pawn = controller.Pawn;
-			Client = controller.Client;
+			Entity.Position = Position;
+			Entity.Velocity = Velocity;
+			Entity.Rotation = Rotation;
+			Entity.GroundEntity = GroundEntity;
+			Entity.BaseVelocity = BaseVelocity;
 
-			Position = controller.Position;
-			Rotation = controller.Rotation;
-			Velocity = controller.Velocity;
-			EyeRotation = controller.EyeRotation;
-			GroundEntity = controller.GroundEntity;
-			BaseVelocity = controller.BaseVelocity;
-			EyeLocalPosition = controller.EyeLocalPosition;
-			WishVelocity = controller.WishVelocity;
-			GroundNormal = controller.GroundNormal;
-
-			Events = controller.Events;
-			Tags = controller.Tags;
-		}
-
-		public void Finalize( Entity target )
-		{
-			target.Position = Position;
-			target.Velocity = Velocity;
-			target.Rotation = Rotation;
-			target.GroundEntity = GroundEntity;
-			target.BaseVelocity = BaseVelocity;
-
-			if ( target is HomePlayer player )
-			{
-				player.EyeLocalPosition = EyeLocalPosition;
-				player.EyeRotation = EyeRotation;
-			}
+			Entity.EyeLocalPosition = EyeLocalPosition;
+			Entity.EyeRotation = EyeRotation;
 		}
 
 		/// <summary>
@@ -92,7 +65,7 @@ namespace Home
 		/// <summary>
 		/// Call OnEvent for each event
 		/// </summary>
-		public virtual void RunEvents( HomePawnController additionalController )
+		public virtual void RunEvents( PawnController additionalController )
 		{
 			if ( Events == null ) return;
 
@@ -176,26 +149,20 @@ namespace Home
 			Events?.Clear();
 			Tags?.Clear();
 
-			Pawn = pawn;
-			Client = client;
-
-			UpdateFromEntity( pawn );
+			UpdateFromEntity();
 
 			Simulate();
 
-			Finalize( pawn );
+			UpdateEntity();
 		}
 		
 		public void FrameSimulate( IClient client, Entity pawn )
 		{
-			Pawn = pawn;
-			Client = client;
-
-			UpdateFromEntity( pawn );
+			UpdateFromEntity();
 
 			FrameSimulate();
 
-			Finalize( pawn );
+			UpdateEntity();
 		}
 	}
 }

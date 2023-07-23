@@ -66,8 +66,9 @@ public partial class ArcadeMachineBase : AnimatedEntity, IUse
         if(type == null) return;
         var arcadeController = TypeLibrary.Create<ArcadeControllerBase>(type);
         arcadeController.ArcadeMachine = this;
+        Log.Info(arcadeController.ArcadeMachine);
 
-        player.Controller = arcadeController;
+        player.SetController(arcadeController);
         PreviousUserSteamId = player.Client.SteamId;
         StartGame();
     }

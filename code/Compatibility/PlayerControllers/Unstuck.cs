@@ -4,13 +4,13 @@ namespace Home;
 
 public class HomeUnstuck
 {
-	public HomeBasePlayerController Controller;
+	public WalkController Controller;
 
 	public bool IsActive; // replicate
 
 	internal int StuckTries = 0;
 
-	public HomeUnstuck( HomeBasePlayerController controller )
+	public HomeUnstuck( WalkController controller )
 	{
 		Controller = controller;
 	}
@@ -24,15 +24,6 @@ public class HomeUnstuck
 		{
 			StuckTries = 0;
 			return false;
-		}
-
-		if ( result.StartedSolid )
-		{
-			if ( HomeBasePlayerController.Debug )
-			{
-				DebugOverlay.Text( $"[stuck in {result.Entity}]", Controller.Position, Color.Red );
-				DebugOverlay.Box( result.Entity, Color.Red );
-			}
 		}
 
 		//
@@ -58,21 +49,8 @@ public class HomeUnstuck
 
 			if ( !result.StartedSolid )
 			{
-				if ( HomeBasePlayerController.Debug )
-				{
-					DebugOverlay.Text( $"unstuck after {StuckTries} tries ({StuckTries* AttemptsPerTick} tests)", Controller.Position, Color.Green, 5.0f );
-					DebugOverlay.Line( pos, Controller.Position, Color.Green, 5.0f, false );
-				}
-
 				Controller.Position = pos;
 				return false;
-			}
-			else
-			{
-				if ( HomeBasePlayerController.Debug )
-				{
-					DebugOverlay.Line( pos, Controller.Position, Color.Yellow, 0.5f, false );
-				}
 			}
 		}
 
