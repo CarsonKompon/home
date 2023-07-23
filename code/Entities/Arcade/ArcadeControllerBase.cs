@@ -5,6 +5,7 @@ namespace Home;
 public partial class ArcadeControllerBase : PawnController
 {
     [Net] public ArcadeMachineBase ArcadeMachine { get; set; }
+    public override bool HasAnimations => false; // Disable base animator
     public virtual bool AnimateHandsToJoystick => true; 
 
     public override void Simulate()
