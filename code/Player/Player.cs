@@ -52,9 +52,6 @@ public partial class HomePlayer : AnimatedEntity
 	public float ThirdPersonZoom { get; set; } = 0;
 	public Angles ThirdPersonRotation { get; set; }
 	
-	[ClientInput] private bool FlashlightEnabled { get; set; } = false;
-	private SpotLightEntity ViewFlashlight;
-	private SpotLightEntity WorldFlashlight;
 	private Particles PukeParticle = null;
 
 	[ClientInput] public string LastRoomName { get; set; }
@@ -74,6 +71,7 @@ public partial class HomePlayer : AnimatedEntity
 	[Net, Change] public RoomController Room { get; set; } = null;
 
 	[BindComponent] public AnimatorComponent Animator { get; }
+	[BindComponent] public FlashlightComponent Flashlight { get; }
 
     TimeSince timeSinceDied;
 
@@ -99,10 +97,7 @@ public partial class HomePlayer : AnimatedEntity
 		base.Spawn();
 
 		Components.GetOrCreate<AnimatorComponent>();
-
-		WorldFlashlight = CreateFlashlight();
-		WorldFlashlight.EnableHideInFirstPerson = true;
-		WorldFlashlight.SetParent(this, "head" );
+		Components.GetOrCreate<FlashlightComponent>();
 
 		Room = null;
 	}
@@ -112,9 +107,6 @@ public partial class HomePlayer : AnimatedEntity
 		base.ClientSpawn();
 
 		Nametag = new Nametag(this);
-
-		ViewFlashlight = CreateFlashlight();
-		ViewFlashlight.EnableViewmodelRendering = true;
 
 		LastRoomName = Cookie.GetString("home.last_room_name");
 	}
@@ -229,15 +221,8 @@ public partial class HomePlayer : AnimatedEntity
 		SetVrAnimProperties();
 
 		// Flashlight
-		if(WorldFlashlight.IsValid())
-		{
-			var bone = GetBoneTransform(GetBoneIndex("head"));
-			WorldFlashlight.Enabled = FlashlightEnabled;
-			WorldFlashlight.Position = bone.Position + bone.Rotation.Left * 8f;
-			WorldFlashlight.Rotation = Rotation.LookAt(bone.Rotation.Left);
-		}
-		if(ViewFlashlight.IsValid()) ViewFlashlight.Enabled = FlashlightEnabled;
-
+		Flashlight?.Simulate();
+		
 		// Third Person Toggle
 		if(Input.Pressed("view"))
 		{
@@ -293,7 +278,7 @@ public partial class HomePlayer : AnimatedEntity
 
     public override void FrameSimulate( IClient cl )
 	{
-		if(ViewFlashlight.IsValid()) ViewFlashlight.Transform = new Transform(Camera.Position + (Camera.Rotation.Forward * 5f), Camera.Rotation);
+		Flashlight?.FrameSimulate();
 
 		if(ThirdPersonZoom > 0f) // THIRD PERSON CAM
 		{
@@ -392,29 +377,6 @@ public partial class HomePlayer : AnimatedEntity
 		base.OnDestroy();
 
 		Nametag?.Delete();
-	}
-
-	public SpotLightEntity CreateFlashlight()
-	{
-		var light = new SpotLightEntity
-		{
-			Enabled = true,
-			DynamicShadows = true,
-			Range = 512,
-			Falloff = 1.0f,
-			LinearAttenuation = 0.0f,
-			QuadraticAttenuation = 1.0f,
-			Brightness = 2.0f,
-			Color = Color.White,
-			InnerConeAngle = 30,
-			OuterConeAngle = 50,
-			FogStrength = 1.0f,
-			LightCookie = Texture.Load( "materials/effects/lightcookie.vtex" ),
-			Transmit = TransmitType.Always,
-			
-		};
-
-		return light;
 	}
 
 	public void SetController(PawnController controller)
@@ -518,12 +480,6 @@ public partial class HomePlayer : AnimatedEntity
 		WorldInput.MouseRightPressed = Input.Down( "rightclick" );
 
 		Angles look = Input.AnalogLook;
-
-		if(Input.Pressed("flashlight"))
-		{
-			FlashlightEnabled = !FlashlightEnabled;
-			PlaySound( FlashlightEnabled ? "flashlight-on" : "flashlight-off" );
-		}
 
 		// Room interactions
 		if(Room != null && Input.Down("menu"))
