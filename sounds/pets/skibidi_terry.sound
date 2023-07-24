@@ -1,0 +1,12 @@
+{
+  "UI": false,
+  "Volume": "0.05,0.05,0",
+  "Pitch": "1.00,1.00,0",
+  "Decibels": 45,
+  "SelectionMode": "Random",
+  "Sounds": [
+    "sounds/pets/skibidi_terry.vsnd"
+  ],
+  "MaximumDistance": 491.52356,
+  "MinimumDistance": 24.576178
+}

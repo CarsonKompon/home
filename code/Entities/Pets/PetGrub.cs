@@ -18,10 +18,8 @@ public partial class PetGrub : Pet
 
     async void InitModel()
     {
-        Log.Info($"Mounting grub model");
         var package = await Package.FetchAsync("shadb.grubterry", true);
         await package.MountAsync();
-        Log.Info($"We did it reddit");
         var model = package.GetMeta("PrimaryAsset", "");
         SetModel( model );
         SetupPhysicsFromModel( PhysicsMotionType.Dynamic, false );
