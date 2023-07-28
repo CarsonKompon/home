@@ -26,7 +26,7 @@ public static class PlacingGuide
         {
             player.PlacingPosition = tr.EndPosition;
             var placeable = HomePlaceable.Find(player.Placing);
-            var offsetTrans = placeable.TransformOffset;
+            var offsetTrans = (Model == "") ? Transform.Zero : placeable.TransformOffset;
             Vector3 surfaceUp = tr.Normal;
             Vector3 surfaceForward = Vector3.Cross(Vector3.Right, surfaceUp).Normal;
             Vector3 surfaceRight = Vector3.Cross(surfaceUp, surfaceForward).Normal;
@@ -35,7 +35,9 @@ public static class PlacingGuide
             player.PlacingRotation = surfaceRotation * spinRotation;
             if(placeable != null)
             {
-                player.PlacingPosition += offsetTrans.Position.Length * tr.Normal * offsetTrans.Rotation.Forward;
+                // Rotate the offset by the surface rotation
+                Rotation toSurfaceNormal = Rotation.LookAt(surfaceForward, surfaceUp);
+                player.PlacingPosition -= toSurfaceNormal * offsetTrans.Position;
                 player.PlacingRotation = player.PlacingRotation * offsetTrans.Rotation;
             }
             Gizmo.Draw.Color = Color.White.WithAlpha(0.5f);

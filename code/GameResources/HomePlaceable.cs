@@ -68,13 +68,8 @@ public partial class HomePlaceable : GameResource, IShopItem
             if(!TransformOffsetLoaded)
             {
                 FindTransformOffset();
-                TransformOffsetLoaded = true;
             }
             return _TransformOffset;
-        }
-        set
-        {
-            _TransformOffset = value;
         }
     }
     [HideInEditor] private Transform _TransformOffset;
@@ -136,7 +131,7 @@ public partial class HomePlaceable : GameResource, IShopItem
     private void FindTransformOffset()
     {
         _TransformOffset = Transform.Zero;
-        if(Model == null) return;
+        if(string.IsNullOrEmpty(Model)) return;
         Model model = Sandbox.Model.Load(Model);
         switch(Bottom)
         {
@@ -165,6 +160,8 @@ public partial class HomePlaceable : GameResource, IShopItem
                 _TransformOffset.Rotation = Rotation.LookAt(Vector3.Up, Vector3.Up);
                 break;
         }
+        Log.Info(_TransformOffset.Position.ToString());
+        TransformOffsetLoaded = true;
     }
 
     public enum BottomDirection
