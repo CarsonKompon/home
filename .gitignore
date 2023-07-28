@@ -4,3 +4,5 @@ code/Properties/
 *.user
 *.csproj\
 *.bat
+
+.timetracker

@@ -1,17 +1,17 @@
 {
-  "Name": "Tetros Arcade Machine",
+  "Name": "Carson\u0027s Web Arcade",
   "Description": "",
   "Cost": 1000000,
   "State": "Visible",
   "Categories": [
-    "electronics",
-    "arcade"
+    "arcade",
+    "electronics"
   ],
   "Type": "Entity",
   "PhysicsType": "Keyframed",
   "Bottom": "ZNegative",
   "Model": null,
-  "ClassName": "ArcadeMachineTetros",
+  "ClassName": "ArcadeMachineCarsonWeb",
   "CloudIdent": "shadb.arcade_cabinet",
   "CloudModel": "",
   "ThumbnailOverride": "",
