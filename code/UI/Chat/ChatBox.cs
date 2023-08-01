@@ -7,6 +7,8 @@ using System;
 
 namespace Home
 {
+
+	[StyleSheet]
 	public partial class HomeChatBox : Panel
 	{
 		public static HomeChatBox Current;

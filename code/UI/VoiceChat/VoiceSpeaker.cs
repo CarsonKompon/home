@@ -1,5 +1,6 @@
 ﻿namespace Sandbox.UI;
 
+[StyleSheet]
 public class HomeVoiceSpeaker : Label
 {
 	private float VoiceLevel = 0.0f;

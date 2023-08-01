@@ -76,8 +76,8 @@
     {
         position: absolute;
         width: 500px;
-        height: 60%;
-        top: 20%;
+        height: 70%;
+        top: 15%;
         right: 0px;
         background-color: rgba(white, 0.2);
         flex-direction: column;
@@ -93,7 +93,7 @@
             font-weight: 700;
             margin-bottom: 4px;
 
-            animation-name: pulsingred;
+            animation-name: pulsinggreen;
             animation-duration: 2s;
             animation-iteration-count: infinite;
             animation-direction: alternate;
@@ -150,7 +150,7 @@
     }
 }
 
-@keyframes pulsingyellow {
+@keyframes pulsinggreen {
     0% {
         color: rgb(49, 114, 23);
     }

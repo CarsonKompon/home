@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Home;
 
+[StyleSheet]
 public class HomeVoiceList : Panel
 {
 	public static HomeVoiceList Current { get; internal set; }

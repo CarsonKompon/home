@@ -17,6 +17,8 @@ public partial class HomePlayer
 	public List<RoomLayout> RoomLayouts = new List<RoomLayout>();
 	[Net] public Pet PetEntity { get; set; }
 
+	public bool NewVariable { get; set; }
+
 	[ConVar.ClientData] public string HomeUploadData { get; set; } = "";
 
 	[ClientRpc]
